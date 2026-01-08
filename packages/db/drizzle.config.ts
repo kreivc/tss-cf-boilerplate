@@ -8,6 +8,8 @@ dotenv.config({
   path: "../../apps/server/.env",
 });
 
+console.log("Using environment file: ../../apps/server/.env");
+
 const PUSH_CREDENTIALS = {
   dbCredentials: {
     accountId: process.env.CLOUDFLARE_ACCOUNT_ID ?? "",
@@ -20,9 +22,10 @@ const PUSH_CREDENTIALS = {
 // If run via CLI (i.e., process.argv contains 'drizzle-kit'), populate credentials
 const isDrizzleCli = process.argv.some((arg) => arg.includes("drizzle-kit"));
 const isStudio = process.argv.some((arg) => arg.includes("studio"));
+const isPush = process.argv.some((arg) => arg.includes("push"));
 const isLocal = process.env.DRIZZLE_LOCAL === "true";
 
-// Get local SQLite file path for local studio
+// Get local SQLite file path for local operations
 // Path is relative from packages/db to root .alchemy directory
 const getLocalDbPath = () => {
   // Get the directory of this config file
@@ -44,9 +47,10 @@ const getLocalDbPath = () => {
   return null;
 };
 
-const localDbPath = isStudio && isLocal ? getLocalDbPath() : null;
+const useLocal = (isStudio || isPush) && isLocal;
+const localDbPath = useLocal ? getLocalDbPath() : null;
 
-const STUDIO_LOCAL_CREDENTIALS = localDbPath
+const LOCAL_CREDENTIALS = localDbPath
   ? {
       dbCredentials: {
         url: localDbPath,
@@ -56,8 +60,8 @@ const STUDIO_LOCAL_CREDENTIALS = localDbPath
 
 // Determine which credentials to use
 let credentials = {};
-if (isStudio && isLocal && localDbPath) {
-  credentials = STUDIO_LOCAL_CREDENTIALS;
+if (useLocal && localDbPath) {
+  credentials = LOCAL_CREDENTIALS;
 } else if (isDrizzleCli) {
   credentials = PUSH_CREDENTIALS;
 }
@@ -68,6 +72,6 @@ export default defineConfig({
   // DOCS: https://orm.drizzle.team/docs/guides/d1-http-with-drizzle-kit
   dialect: "sqlite",
   // Only set driver for D1 HTTP, omit for local SQLite files (auto-detected from url)
-  ...(isStudio && isLocal && localDbPath ? {} : { driver: "d1-http" }),
+  ...(useLocal && localDbPath ? {} : { driver: "d1-http" }),
   ...credentials,
 });

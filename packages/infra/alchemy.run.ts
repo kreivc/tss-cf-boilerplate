@@ -2,9 +2,20 @@ import alchemy from "alchemy";
 import { D1Database, TanStackStart, Worker } from "alchemy/cloudflare";
 import { config } from "dotenv";
 
-config({ path: "./.env" });
-config({ path: "../../apps/web/.env" });
-config({ path: "../../apps/server/.env" });
+// Detect deploy environment
+const isDeploy = process.env.DEPLOY === "true";
+
+if (isDeploy) {
+  console.log("Deploying to production environment");
+} else {
+  console.log("Running infrastructure in development mode");
+}
+
+// Load appropriate .env files based on environment
+const envSuffix = isDeploy ? ".prod" : "";
+config({ path: `./.env${envSuffix}` });
+config({ path: `../../apps/web/.env${envSuffix}` });
+config({ path: `../../apps/server/.env${envSuffix}` });
 
 const app = await alchemy("test-tss");
 

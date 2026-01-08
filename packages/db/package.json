@@ -10,8 +10,8 @@
     }
   },
   "scripts": {
-    "db:push": "drizzle-kit push",
-    "db:generate": "drizzle-kit generate",
+    "db:push:local": "DRIZZLE_LOCAL=true drizzle-kit push",
+    "db:push:prod": "drizzle-kit push",
     "db:studio:local": "DRIZZLE_LOCAL=true drizzle-kit studio",
     "db:studio:prod": "drizzle-kit studio"
   },
