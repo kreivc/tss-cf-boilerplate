@@ -1,0 +1,29 @@
+{
+  "name": "@test-tss/api",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./*": {
+      "default": "./src/*.ts"
+    }
+  },
+  "scripts": {},
+  "dependencies": {
+    "@orpc/client": "catalog:",
+    "@orpc/openapi": "catalog:",
+    "@orpc/server": "catalog:",
+    "@orpc/zod": "catalog:",
+    "@test-tss/auth": "workspace:*",
+    "@test-tss/db": "workspace:*",
+    "@test-tss/env": "workspace:*",
+    "dotenv": "catalog:",
+    "drizzle-orm": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@test-tss/config": "workspace:*",
+    "typescript": "catalog:"
+  }
+}
