@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Loader2, Trash2 } from "lucide-react";
 import { useState } from "react";
@@ -17,12 +17,15 @@ import { orpc } from "@/utils/orpc";
 
 export const Route = createFileRoute("/todos")({
   component: TodosRoute,
+  loader: async ({ context }) => {
+    await context.queryClient.ensureQueryData(orpc.todo.getAll.queryOptions());
+  },
 });
 
 function TodosRoute() {
   const [newTodoText, setNewTodoText] = useState("");
 
-  const todos = useQuery(orpc.todo.getAll.queryOptions());
+  const todos = useSuspenseQuery(orpc.todo.getAll.queryOptions());
   const createMutation = useMutation(
     orpc.todo.create.mutationOptions({
       onSuccess: () => {
@@ -91,15 +94,9 @@ function TodosRoute() {
             </Button>
           </form>
 
-          {todos.isLoading && (
-            <div className="flex justify-center py-4">
-              <Loader2 className="h-6 w-6 animate-spin" />
-            </div>
-          )}
-          {!todos.isLoading && todos.data?.length === 0 && (
+          {todos.data.length === 0 ? (
             <p className="py-4 text-center">No todos yet. Add one above!</p>
-          )}
-          {!todos.isLoading && todos.data && todos.data.length > 0 && (
+          ) : (
             <ul className="space-y-2">
               {todos.data.map((todo) => (
                 <li

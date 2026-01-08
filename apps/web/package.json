@@ -5,7 +5,8 @@
   "scripts": {
     "build": "vite build",
     "serve": "vite preview",
-    "dev": "vite dev"
+    "dev": "vite dev",
+    "ui-add": "pnpm dlx shadcn@latest add"
   },
   "dependencies": {
     "@base-ui/react": "^1.0.0",
@@ -42,6 +43,7 @@
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "^1.17.1",
+    "@tanstack/devtools-vite": "^0.4.1",
     "@tanstack/react-query-devtools": "^5.91.1",
     "@tanstack/react-router-devtools": "^1.141.1",
     "@test-tss/config": "workspace:*",
