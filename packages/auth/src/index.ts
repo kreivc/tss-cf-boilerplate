@@ -4,14 +4,14 @@ import { env } from "@test-tss/env/server";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 
-console.log(env.CORS_ORIGIN);
+const corsOrigins = env.CORS_ORIGIN.split(",");
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "sqlite",
     schema,
   }),
-  trustedOrigins: [env.CORS_ORIGIN],
+  trustedOrigins: corsOrigins,
   emailAndPassword: {
     enabled: true,
   },
