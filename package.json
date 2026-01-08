@@ -12,8 +12,8 @@
     "check-types": "turbo check-types",
     "dev:web": "turbo -F web dev",
     "dev:server": "turbo -F server dev",
-    "db:push": "turbo -F @test-tss/db db:push",
-    "db:generate": "turbo -F @test-tss/db db:generate"
+    "biome:check": "biome check",
+    "biome:lint": "biome lint"
   },
   "dependencies": {
     "@test-tss/env": "workspace:*",

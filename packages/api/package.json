@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "@test-tss/config": "workspace:*",
+    "hono": "^4.11.3",
     "typescript": "catalog:"
   }
 }

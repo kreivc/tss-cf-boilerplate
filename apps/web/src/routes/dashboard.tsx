@@ -10,6 +10,7 @@ export const Route = createFileRoute("/dashboard")({
     const session = await getUser();
     return { session };
   },
+  // biome-ignore lint/suspicious/useAwait: for not forgetting this can use async/await
   loader: async ({ context }) => {
     if (!context.session) {
       throw redirect({

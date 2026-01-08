@@ -15,11 +15,11 @@ const db = await D1Database("database", {
 export const web = await TanStackStart("web", {
   cwd: "../../apps/web",
   bindings: {
-    VITE_SERVER_URL: alchemy.env.VITE_SERVER_URL!,
+    VITE_SERVER_URL: alchemy.env.VITE_SERVER_URL ?? "",
     DB: db,
-    CORS_ORIGIN: alchemy.env.CORS_ORIGIN!,
-    BETTER_AUTH_SECRET: alchemy.secret.env.BETTER_AUTH_SECRET!,
-    BETTER_AUTH_URL: alchemy.env.BETTER_AUTH_URL!,
+    CORS_ORIGIN: alchemy.env.CORS_ORIGIN ?? "",
+    BETTER_AUTH_SECRET: alchemy.secret.env.BETTER_AUTH_SECRET ?? "",
+    BETTER_AUTH_URL: alchemy.env.BETTER_AUTH_URL ?? "",
   },
 });
 
@@ -29,9 +29,9 @@ export const server = await Worker("server", {
   compatibility: "node",
   bindings: {
     DB: db,
-    CORS_ORIGIN: alchemy.env.CORS_ORIGIN!,
-    BETTER_AUTH_SECRET: alchemy.secret.env.BETTER_AUTH_SECRET!,
-    BETTER_AUTH_URL: alchemy.env.BETTER_AUTH_URL!,
+    CORS_ORIGIN: alchemy.env.CORS_ORIGIN ?? "",
+    BETTER_AUTH_SECRET: alchemy.secret.env.BETTER_AUTH_SECRET ?? "",
+    BETTER_AUTH_URL: alchemy.env.BETTER_AUTH_URL ?? "",
   },
   dev: {
     port: 3000,
