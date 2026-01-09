@@ -1,5 +1,10 @@
 import alchemy from "alchemy";
-import { D1Database, TanStackStart, Worker } from "alchemy/cloudflare";
+import {
+  D1Database,
+  KVNamespace,
+  TanStackStart,
+  Worker,
+} from "alchemy/cloudflare";
 import { config } from "dotenv";
 
 // Detect deploy environment
@@ -23,6 +28,11 @@ const db = await D1Database("database", {
   migrationsDir: "../../packages/db/src/migrations",
 });
 
+const sessions = await KVNamespace("sessions", {
+  title: `${app.name}-user-sessions`,
+  adopt: true,
+});
+
 export const web = await TanStackStart("web", {
   cwd: "../../apps/web",
   bindings: {
@@ -43,6 +53,7 @@ export const server = await Worker("server", {
     CORS_ORIGIN: alchemy.env.CORS_ORIGIN ?? "",
     BETTER_AUTH_SECRET: alchemy.secret.env.BETTER_AUTH_SECRET ?? "",
     BETTER_AUTH_URL: alchemy.env.BETTER_AUTH_URL ?? "",
+    SESSION_KV: sessions,
   },
   dev: {
     port: 3000,

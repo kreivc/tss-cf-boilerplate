@@ -37,4 +37,23 @@ export const auth = betterAuth({
     //   domain: "<your-workers-subdomain>",
     // },
   },
+  secondaryStorage: {
+    get: async (key) => {
+      const value = await env.SESSION_KV.get(key);
+      return value;
+    },
+    set: async (key, value, ttl) => {
+      if (ttl) {
+        await env.SESSION_KV.put(key, value, { expirationTtl: ttl });
+      } else {
+        await env.SESSION_KV.put(key, value);
+      }
+    },
+    delete: async (key) => {
+      await env.SESSION_KV.delete(key);
+    },
+  },
+  rateLimit: {
+    storage: "secondary-storage",
+  },
 });

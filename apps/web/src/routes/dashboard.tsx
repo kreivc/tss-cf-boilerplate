@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
 import { getUser } from "@/functions/get-user";
@@ -10,20 +10,20 @@ export const Route = createFileRoute("/dashboard")({
     const session = await getUser();
     return { session };
   },
-  // biome-ignore lint/suspicious/useAwait: for not forgetting this can use async/await
   loader: async ({ context }) => {
     if (!context.session) {
       throw redirect({
         to: "/login",
       });
     }
+    await context.queryClient.ensureQueryData(orpc.privateData.queryOptions());
   },
 });
 
 function RouteComponent() {
   const { session } = Route.useRouteContext();
 
-  const privateData = useQuery(orpc.privateData.queryOptions());
+  const privateData = useSuspenseQuery(orpc.privateData.queryOptions());
 
   return (
     <div>
