@@ -33,6 +33,8 @@ const sessions = await KVNamespace("sessions", {
   adopt: true,
 });
 
+const isDev = !isDeploy;
+
 export const web = await TanStackStart("web", {
   cwd: "../../apps/web",
   bindings: {
@@ -41,6 +43,8 @@ export const web = await TanStackStart("web", {
     CORS_ORIGIN: alchemy.env.CORS_ORIGIN ?? "",
     BETTER_AUTH_SECRET: alchemy.secret.env.BETTER_AUTH_SECRET ?? "",
     BETTER_AUTH_URL: alchemy.env.BETTER_AUTH_URL ?? "",
+    SESSION_KV: sessions,
+    IS_DEV: isDev ? "true" : "false",
   },
 });
 
@@ -54,6 +58,7 @@ export const server = await Worker("server", {
     BETTER_AUTH_SECRET: alchemy.secret.env.BETTER_AUTH_SECRET ?? "",
     BETTER_AUTH_URL: alchemy.env.BETTER_AUTH_URL ?? "",
     SESSION_KV: sessions,
+    IS_DEV: isDev ? "true" : "false",
   },
   dev: {
     port: 3000,
