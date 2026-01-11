@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import z from "zod";
 
 import { authClient } from "@/lib/auth-client";
+import { m } from "@/paraglide/messages";
 
 import Loader from "./loader";
 import { Button } from "./ui/button";
@@ -36,7 +37,7 @@ export default function SignInForm({
             navigate({
               to: "/dashboard",
             });
-            toast.success("Sign in successful");
+            toast.success(m.signInSuccess());
           },
           onError: (error) => {
             toast.error(error.error.message || error.error.statusText);
@@ -46,8 +47,8 @@ export default function SignInForm({
     },
     validators: {
       onSubmit: z.object({
-        email: z.email("Invalid email address"),
-        password: z.string().min(8, "Password must be at least 8 characters"),
+        email: z.email(m.invalidEmail()),
+        password: z.string().min(8, m.passwordMinLength()),
       }),
     },
   });
@@ -58,7 +59,7 @@ export default function SignInForm({
 
   return (
     <div className="mx-auto mt-10 w-full max-w-md p-6">
-      <h1 className="mb-6 text-center font-bold text-3xl">Welcome Back</h1>
+      <h1 className="mb-6 text-center font-bold text-3xl">{m.welcomeBack()}</h1>
 
       <form
         className="space-y-4"
@@ -72,7 +73,7 @@ export default function SignInForm({
           <form.Field name="email">
             {(field) => (
               <div className="space-y-2">
-                <Label htmlFor={field.name}>Email</Label>
+                <Label htmlFor={field.name}>{m.email()}</Label>
                 <Input
                   id={field.name}
                   name={field.name}
@@ -95,7 +96,7 @@ export default function SignInForm({
           <form.Field name="password">
             {(field) => (
               <div className="space-y-2">
-                <Label htmlFor={field.name}>Password</Label>
+                <Label htmlFor={field.name}>{m.password()}</Label>
                 <Input
                   id={field.name}
                   name={field.name}
@@ -121,7 +122,7 @@ export default function SignInForm({
               disabled={!state.canSubmit || state.isSubmitting}
               type="submit"
             >
-              {state.isSubmitting ? "Submitting..." : "Sign In"}
+              {state.isSubmitting ? m.submitting() : m.signIn()}
             </Button>
           )}
         </form.Subscribe>
@@ -133,7 +134,7 @@ export default function SignInForm({
           onClick={onSwitchToSignUp}
           variant="link"
         >
-          Need an account? Sign Up
+          {m.needAccount()}
         </Button>
       </div>
     </div>

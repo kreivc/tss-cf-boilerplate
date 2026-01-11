@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
+import { m } from "@/paraglide/messages";
 import { orpc } from "@/utils/orpc";
 
 export const Route = createFileRoute("/todos")({
@@ -68,8 +69,8 @@ function TodosRoute() {
     <div className="mx-auto w-full max-w-md py-10">
       <Card>
         <CardHeader>
-          <CardTitle>Todo List</CardTitle>
-          <CardDescription>Manage your tasks efficiently</CardDescription>
+          <CardTitle>{m.todoList()}</CardTitle>
+          <CardDescription>{m.manageTasks()}</CardDescription>
         </CardHeader>
         <CardContent>
           <form
@@ -79,7 +80,7 @@ function TodosRoute() {
             <Input
               disabled={createMutation.isPending}
               onChange={(e) => setNewTodoText(e.target.value)}
-              placeholder="Add a new task..."
+              placeholder={m.addNewTask()}
               value={newTodoText}
             />
             <Button
@@ -89,13 +90,13 @@ function TodosRoute() {
               {createMutation.isPending ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
-                "Add"
+                m.add()
               )}
             </Button>
           </form>
 
           {todos.data.length === 0 ? (
-            <p className="py-4 text-center">No todos yet. Add one above!</p>
+            <p className="py-4 text-center">{m.noTodosYet()}</p>
           ) : (
             <ul className="space-y-2">
               {todos.data.map((todo) => (
@@ -119,7 +120,7 @@ function TodosRoute() {
                     </label>
                   </div>
                   <Button
-                    aria-label="Delete todo"
+                    aria-label={m.deleteTodo()}
                     onClick={() => handleDeleteTodo(todo.id)}
                     size="icon"
                     variant="ghost"

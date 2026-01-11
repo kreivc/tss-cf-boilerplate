@@ -1,5 +1,4 @@
 import type { QueryClient } from "@tanstack/react-query";
-
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import {
   createRootRouteWithContext,
@@ -9,10 +8,12 @@ import {
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { Toaster } from "@/components/ui/sonner";
+import { getLocale } from "@/paraglide/runtime";
 import type { orpc } from "@/utils/orpc";
 
 import Header from "../components/header";
 import appCss from "../index.css?url";
+
 export interface RouterAppContext {
   orpc: typeof orpc;
   queryClient: QueryClient;
@@ -44,8 +45,10 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
 });
 
 function RootDocument() {
+  const locale = getLocale();
+
   return (
-    <html className="dark" lang="en">
+    <html className="dark" lang={locale}>
       <head>
         <HeadContent />
       </head>

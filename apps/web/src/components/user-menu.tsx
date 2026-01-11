@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { authClient } from "@/lib/auth-client";
+import { m } from "@/paraglide/messages";
 
 import { Button } from "./ui/button";
 import { Skeleton } from "./ui/skeleton";
@@ -25,7 +26,7 @@ export default function UserMenu() {
   if (!session) {
     return (
       <Link to="/login">
-        <Button variant="outline">Sign In</Button>
+        <Button variant="outline">{m.signIn()}</Button>
       </Link>
     );
   }
@@ -37,7 +38,7 @@ export default function UserMenu() {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="bg-card">
         <DropdownMenuGroup>
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          <DropdownMenuLabel>{m.myAccount()}</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem>{session.user.email}</DropdownMenuItem>
           <DropdownMenuItem
@@ -54,7 +55,7 @@ export default function UserMenu() {
             }}
             variant="destructive"
           >
-            Sign Out
+            {m.signOut()}
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>

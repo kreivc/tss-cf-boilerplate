@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.0.0",
+    "@inlang/paraglide-js": "^2.8.0",
     "@libsql/client": "catalog:",
     "@orpc/client": "catalog:",
     "@orpc/server": "catalog:",

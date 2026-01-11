@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-
+import { m } from "@/paraglide/messages";
 import { orpc } from "@/utils/orpc";
 
 export const Route = createFileRoute("/")({
@@ -26,11 +26,11 @@ const TITLE_TEXT = `
 function HomeComponent() {
   const healthCheck = useQuery(orpc.healthCheck.queryOptions());
 
-  let statusText = "Disconnected";
+  let statusText = m.disconnected();
   if (healthCheck.isLoading) {
-    statusText = "Checking...";
+    statusText = m.checking();
   } else if (healthCheck.data) {
-    statusText = "Connected";
+    statusText = m.connected();
   }
 
   return (
@@ -38,13 +38,19 @@ function HomeComponent() {
       <pre className="overflow-x-auto font-mono text-sm">{TITLE_TEXT}</pre>
       <div className="grid gap-6">
         <section className="rounded-lg border p-4">
-          <h2 className="mb-2 font-medium">API Status</h2>
+          <h2 className="mb-2 font-medium">{m.apiStatus()}</h2>
           <div className="flex items-center gap-2">
             <div
               className={`h-2 w-2 rounded-full ${healthCheck.data ? "bg-green-500" : "bg-red-500"}`}
             />
             <span className="text-muted-foreground text-sm">{statusText}</span>
           </div>
+        </section>
+        <section className="rounded-lg border p-4">
+          <h2 className="mb-2 font-medium">{m.hello()}</h2>
+          <p className="text-muted-foreground text-sm">
+            {m.greeting({ name: "User" })}
+          </p>
         </section>
       </div>
     </div>
