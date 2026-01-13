@@ -1,0 +1,14 @@
+{
+  "extends": "@test-tss/config/tsconfig.base.json",
+  "include": ["."],
+  "exclude": ["dist", "build", "node_modules"],
+  "compilerOptions": {
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "outDir": "dist",
+    "composite": true,
+    "strictNullChecks": true,
+    "jsx": "react-jsx"
+  }
+}

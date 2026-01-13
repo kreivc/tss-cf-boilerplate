@@ -1,0 +1,28 @@
+{
+  "name": "background",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "tsdown",
+    "check-types": "tsc -b",
+    "compile": "bun build --compile --minify --sourcemap --bytecode ./src/index.ts --outfile server"
+  },
+  "dependencies": {
+    "@test-tss/auth": "workspace:*",
+    "@test-tss/db": "workspace:*",
+    "@test-tss/env": "workspace:*",
+    "@test-tss/infra": "workspace:*",
+    "@test-tss/email": "workspace:*",
+    "dotenv": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "catalog:",
+    "@test-tss/config": "workspace:*",
+    "@types/node": "catalog:",
+    "alchemy": "catalog:",
+    "tsdown": "^0.16.5",
+    "typescript": "catalog:",
+    "wrangler": "catalog:"
+  }
+}

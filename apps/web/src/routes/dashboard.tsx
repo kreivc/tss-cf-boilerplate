@@ -29,8 +29,8 @@ function RouteComponent() {
   return (
     <div className="container mx-auto max-w-3xl px-4 py-6">
       <div className="rounded-lg border p-6">
-        <h1 className="text-2xl font-bold mb-4">{m.dashboard()}</h1>
-        <p className="text-muted-foreground mb-2">
+        <h1 className="mb-4 font-bold text-2xl">{m.dashboard()}</h1>
+        <p className="mb-2 text-muted-foreground">
           {m.welcome({ name: session?.user.name || "" })}
         </p>
         <p className="text-muted-foreground">

@@ -3,6 +3,7 @@ import * as schema from "@test-tss/db/schema/auth";
 import { env } from "@test-tss/env/server";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { admin, username } from "better-auth/plugins";
 
 const corsOrigins = env.CORS_ORIGIN.split(",");
 
@@ -26,8 +27,13 @@ export const auth = betterAuth({
     schema,
   }),
   trustedOrigins: corsOrigins,
+  plugins: [admin(), username()],
   emailAndPassword: {
     enabled: true,
+    requireEmailVerification: false,
+    autoSignIn: true,
+    minPasswordLength: 6,
+    maxPasswordLength: 32,
   },
   // uncomment cookieCache setting when ready to deploy to Cloudflare using *.workers.dev domains
   session: {
@@ -35,9 +41,12 @@ export const auth = betterAuth({
       enabled: env.IS_DEV === "false", // disable cookieCache in development prevent stale data
       maxAge: 5 * 60,
     },
+    expiresIn: 60 * 60 * 24 * 7, // 7 days
+    storeSessionInDatabase: true,
+    preserveSessionInDatabase: true,
   },
   secret: env.BETTER_AUTH_SECRET,
-  baseURL: env.BETTER_AUTH_URL,
+  baseURL: env.BETTER_AUTH_URL, // !Comment me when generating schema
   advanced: {
     defaultCookieAttributes: {
       sameSite: "none",

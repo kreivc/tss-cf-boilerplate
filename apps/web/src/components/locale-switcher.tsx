@@ -1,4 +1,4 @@
-import { CheckIcon, GlobeIcon, ChevronDownIcon } from "lucide-react";
+import { CheckIcon, ChevronDownIcon, GlobeIcon } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -6,6 +6,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { m } from "@/paraglide/messages";
@@ -38,47 +39,41 @@ export function LocaleSwitcher() {
       <DropdownMenuTrigger
         render={
           <Button
-            variant="outline"
+            className="gap-2 border-border/50 bg-background/50 px-3 shadow-sm backdrop-blur-sm transition-all duration-200 hover:border-accent hover:bg-accent/80"
             size="sm"
-            className="gap-2 px-3 bg-background/50 backdrop-blur-sm border-border/50 hover:bg-accent/80 hover:border-accent transition-all duration-200 shadow-sm"
+            variant="outline"
           >
             <GlobeIcon className="size-4 text-muted-foreground" />
-            <span className="text-sm font-medium">{currentInfo.flag}</span>
-            <span className="hidden sm:inline text-sm">{currentInfo.name}</span>
-            <ChevronDownIcon className="size-3 text-muted-foreground ml-1 transition-transform duration-200 group-data-[state=open]:rotate-180" />
+            <span className="font-medium text-sm">{currentInfo.flag}</span>
+            <span className="hidden text-sm sm:inline">{currentInfo.name}</span>
+            <ChevronDownIcon className="ml-1 size-3 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" />
           </Button>
         }
       />
       <DropdownMenuContent
         align="end"
+        className="min-w-[200px] rounded-lg border border-border/50 bg-popover/95 shadow-xl backdrop-blur-md"
         sideOffset={8}
-        className="min-w-[200px] rounded-lg bg-popover/95 backdrop-blur-md border border-border/50 shadow-xl"
       >
-        <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3 py-2">
+        <div className="px-3 py-2 font-semibold text-muted-foreground text-xs uppercase tracking-wider">
           {m.selectLanguage()}
         </div>
-        <div className="h-px bg-border/50 mx-2 mb-1" />
+        <DropdownMenuSeparator />
         {locales.map((loc) => {
           const info = getLocaleInfo(loc);
           const isActive = loc === currentLocale;
           return (
             <DropdownMenuItem
+              className={`mx-1 my-0.5 flex cursor-pointer items-center gap-3 rounded-md px-3 py-2.5 transition-all duration-150 ${
+                isActive ? "bg-primary/10 text-primary" : "hover:bg-accent/50"
+              }
+              `}
               key={loc}
               onClick={() => handleLocaleChange(loc)}
-              className={`
-                flex items-center gap-3 px-3 py-2.5 cursor-pointer rounded-md mx-1 my-0.5
-                transition-all duration-150
-                ${isActive 
-                  ? "bg-primary/10 text-primary" 
-                  : "hover:bg-accent/50"
-                }
-              `}
             >
               <span className="text-lg leading-none">{info.flag}</span>
-              <span className="flex-1 text-sm font-medium">{info.name}</span>
-              {isActive && (
-                <CheckIcon className="size-4 text-primary" />
-              )}
+              <span className="flex-1 font-medium text-sm">{info.name}</span>
+              {isActive && <CheckIcon className="size-4 text-primary" />}
             </DropdownMenuItem>
           );
         })}

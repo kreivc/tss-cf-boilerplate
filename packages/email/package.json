@@ -1,0 +1,29 @@
+{
+  "name": "@test-tss/email",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./index.tsx"
+    },
+    "./*": {
+      "default": "./*.tsx"
+    }
+  },
+  "scripts": {
+    "build": "email build",
+    "dev": "email dev -p 3009",
+    "export": "email export",
+    "start": "email start"
+  },
+  "dependencies": {
+    "@react-email/components": "1.0.1",
+    "react": "19.2.1",
+    "react-dom": "19.2.1"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3",
+    "react-email": "5.0.7",
+    "@react-email/preview-server": "5.0.7"
+  }
+}

@@ -1,8 +1,7 @@
 import { Link } from "@tanstack/react-router";
-
+import { m } from "@/paraglide/messages";
 import { LocaleSwitcher } from "./locale-switcher";
 import UserMenu from "./user-menu";
-import { m } from "@/paraglide/messages";
 
 export default function Header() {
   const links = [

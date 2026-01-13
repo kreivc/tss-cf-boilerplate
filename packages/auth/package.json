@@ -9,7 +9,9 @@
       "default": "./src/*.ts"
     }
   },
-  "scripts": {},
+  "scripts": {
+    "generate:schema": "pnpm dlx @better-auth/cli@latest generate --config ./src/index.ts --output ../db/src/schema/auth.ts --yes"
+  },
   "dependencies": {
     "@test-tss/db": "workspace:*",
     "@test-tss/env": "workspace:*",

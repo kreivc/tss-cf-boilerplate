@@ -1,58 +1,29 @@
-import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { m } from "@/paraglide/messages";
-import { orpc } from "@/utils/orpc";
+import { CategoryGrid } from "@/components/category-grid";
+import { HeroSlider } from "@/components/hero-slider";
+import { QuickAccess } from "@/components/quick-access";
+import { TrendingSection } from "@/components/trending-section";
 
 export const Route = createFileRoute("/")({
   component: HomeComponent,
 });
 
-const TITLE_TEXT = `
- ██████╗ ███████╗████████╗████████╗███████╗██████╗
- ██╔══██╗██╔════╝╚══██╔══╝╚══██╔══╝██╔════╝██╔══██╗
- ██████╔╝█████╗     ██║      ██║   █████╗  ██████╔╝
- ██╔══██╗██╔══╝     ██║      ██║   ██╔══╝  ██╔══██╗
- ██████╔╝███████╗   ██║      ██║   ███████╗██║  ██║
- ╚═════╝ ╚══════╝   ╚═╝      ╚═╝   ╚══════╝╚═╝  ╚═╝
-
- ████████╗    ███████╗████████╗ █████╗  ██████╗██╗  ██╗
- ╚══██╔══╝    ██╔════╝╚══██╔══╝██╔══██╗██╔════╝██║ ██╔╝
-    ██║       ███████╗   ██║   ███████║██║     █████╔╝
-    ██║       ╚════██║   ██║   ██╔══██║██║     ██╔═██╗
-    ██║       ███████║   ██║   ██║  ██║╚██████╗██║  ██╗
-    ╚═╝       ╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝
- `;
-
 function HomeComponent() {
-  const healthCheck = useQuery(orpc.healthCheck.queryOptions());
-
-  let statusText = m.disconnected();
-  if (healthCheck.isLoading) {
-    statusText = m.checking();
-  } else if (healthCheck.data) {
-    statusText = m.connected();
-  }
-
   return (
-    <div className="container mx-auto max-w-3xl px-4 py-2">
-      <pre className="overflow-x-auto font-mono text-sm">{TITLE_TEXT}</pre>
-      <div className="grid gap-6">
-        <section className="rounded-lg border p-4">
-          <h2 className="mb-2 font-medium">{m.apiStatus()}</h2>
-          <div className="flex items-center gap-2">
-            <div
-              className={`h-2 w-2 rounded-full ${healthCheck.data ? "bg-green-500" : "bg-red-500"}`}
-            />
-            <span className="text-muted-foreground text-sm">{statusText}</span>
-          </div>
-        </section>
-        <section className="rounded-lg border p-4">
-          <h2 className="mb-2 font-medium">{m.hello()}</h2>
-          <p className="text-muted-foreground text-sm">
-            {m.greeting({ name: "User" })}
-          </p>
-        </section>
-      </div>
-    </div>
+    <main className="min-h-screen pb-20 md:pb-0">
+      {/* Hero Slider */}
+      <section className="py-6">
+        <HeroSlider />
+      </section>
+
+      {/* Quick Access Bar */}
+      <QuickAccess />
+
+      {/* Trending Section */}
+      <TrendingSection />
+
+      {/* Category Grid */}
+      <CategoryGrid />
+    </main>
   );
 }

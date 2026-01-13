@@ -1,8 +1,8 @@
+import { env } from "cloudflare:workers";
 import { db } from "@test-tss/db";
 import { todo } from "@test-tss/db/schema/todo";
 import { eq } from "drizzle-orm";
 import z from "zod";
-
 import { publicProcedure } from "../index";
 
 export const todoRouter = {
@@ -13,6 +13,12 @@ export const todoRouter = {
   create: publicProcedure
     .input(z.object({ text: z.string().min(1) }))
     .handler(async ({ input }) => {
+      await env.QUEUE.send({
+        name: "sendEmail",
+        data: {
+          text: input.text,
+        },
+      });
       return await db.insert(todo).values({
         text: input.text,
       });
