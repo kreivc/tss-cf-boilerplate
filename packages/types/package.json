@@ -1,5 +1,5 @@
 {
-  "name": "@test-tss/api",
+  "name": "@test-tss/types",
   "type": "module",
   "exports": {
     ".": {
@@ -9,23 +9,13 @@
       "default": "./src/*.ts"
     }
   },
-  "scripts": {},
   "dependencies": {
-    "@orpc/client": "catalog:",
-    "@orpc/openapi": "catalog:",
-    "@orpc/server": "catalog:",
-    "@orpc/zod": "catalog:",
-    "@test-tss/auth": "workspace:*",
-    "@test-tss/db": "workspace:*",
     "@test-tss/env": "workspace:*",
-    "@test-tss/types": "workspace:*",
     "dotenv": "catalog:",
-    "drizzle-orm": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
     "@test-tss/config": "workspace:*",
-    "hono": "^4.11.3",
     "typescript": "catalog:"
   }
 }

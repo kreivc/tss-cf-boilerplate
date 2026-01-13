@@ -13,6 +13,7 @@
     "@test-tss/env": "workspace:*",
     "@test-tss/infra": "workspace:*",
     "@test-tss/email": "workspace:*",
+    "@test-tss/types": "workspace:*",
     "dotenv": "catalog:",
     "zod": "catalog:"
   },

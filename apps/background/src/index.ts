@@ -1,4 +1,5 @@
 import { env as backgroundEnv } from "@test-tss/env/background";
+import type { SendEmailData } from "@test-tss/types";
 import { sendEmail } from "./queue/sendEmail";
 import { expireTransaction } from "./schedule/expireTransaction";
 
@@ -12,7 +13,7 @@ export default {
   async queue(batch: MessageBatch<unknown>) {
     for (const message of batch.messages) {
       try {
-        await sendEmail(message.body);
+        await sendEmail(message.body as SendEmailData);
         message.ack();
       } catch (e) {
         console.error("Failed to process message", message.id, e);

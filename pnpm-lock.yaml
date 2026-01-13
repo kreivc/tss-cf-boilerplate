@@ -105,6 +105,9 @@ importers:
       '@test-tss/infra':
         specifier: workspace:*
         version: link:../../packages/infra
+      '@test-tss/types':
+        specifier: workspace:*
+        version: link:../../packages/types
       dotenv:
         specifier: 'catalog:'
         version: 17.2.3
@@ -244,7 +247,7 @@ importers:
         version: link:../../packages/env
       better-auth:
         specifier: 'catalog:'
-        version: 1.4.10(@tanstack/react-start@1.146.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vite@7.3.1(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.2)))(drizzle-kit@0.31.8)(drizzle-orm@0.45.1(@cloudflare/workers-types@4.20260108.0)(@libsql/client@0.15.15)(kysely@0.28.9))(next@16.0.7(@babel/core@7.28.5)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(solid-js@1.9.10)
+        version: 1.4.10(@tanstack/react-start@1.146.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vite@7.3.1(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.2)))(drizzle-kit@0.31.8)(drizzle-orm@0.45.1(@cloudflare/workers-types@4.20260108.0)(@libsql/client@0.15.15)(kysely@0.27.6))(next@16.0.7(@babel/core@7.28.5)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(solid-js@1.9.10)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -329,7 +332,7 @@ importers:
         version: 5.1.2(vite@7.3.1(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.2))
       alchemy:
         specifier: 'catalog:'
-        version: 0.82.2(@cloudflare/vite-plugin@1.20.1(vite@7.3.1(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.2))(workerd@1.20260107.1)(wrangler@4.58.0(@cloudflare/workers-types@4.20260108.0)))(@libsql/client@0.15.15)(kysely@0.28.9)(vite@7.3.1(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.2))(workerd@1.20260107.1)(wrangler@4.58.0(@cloudflare/workers-types@4.20260108.0))
+        version: 0.82.2(@cloudflare/vite-plugin@1.20.1(vite@7.3.1(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.2))(workerd@1.20260107.1)(wrangler@4.58.0(@cloudflare/workers-types@4.20260108.0)))(@libsql/client@0.15.15)(kysely@0.27.6)(vite@7.3.1(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.2))(workerd@1.20260107.1)(wrangler@4.58.0(@cloudflare/workers-types@4.20260108.0))
       jsdom:
         specifier: ^26.0.0
         version: 26.1.0
@@ -369,6 +372,9 @@ importers:
       '@test-tss/env':
         specifier: workspace:*
         version: link:../env
+      '@test-tss/types':
+        specifier: workspace:*
+        version: link:../types
       dotenv:
         specifier: 'catalog:'
         version: 17.2.3
@@ -512,6 +518,25 @@ importers:
       alchemy:
         specifier: 'catalog:'
         version: 0.82.2(@cloudflare/vite-plugin@1.20.1(vite@7.3.1(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.2))(workerd@1.20260107.1)(wrangler@4.58.0(@cloudflare/workers-types@4.20260108.0)))(@libsql/client@0.15.15)(kysely@0.28.9)(vite@7.3.1(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.2))(workerd@1.20260107.1)(wrangler@4.58.0(@cloudflare/workers-types@4.20260108.0))
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+
+  packages/types:
+    dependencies:
+      '@test-tss/env':
+        specifier: workspace:*
+        version: link:../env
+      dotenv:
+        specifier: 'catalog:'
+        version: 17.2.3
+      zod:
+        specifier: 'catalog:'
+        version: 4.3.5
+    devDependencies:
+      '@test-tss/config':
+        specifier: workspace:*
+        version: link:../config
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -9675,6 +9700,75 @@ snapshots:
       - utf-8-validate
       - workerd
 
+  alchemy@0.82.2(@cloudflare/vite-plugin@1.20.1(vite@7.3.1(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.2))(workerd@1.20260107.1)(wrangler@4.58.0(@cloudflare/workers-types@4.20260108.0)))(@libsql/client@0.15.15)(kysely@0.27.6)(vite@7.3.1(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.2))(workerd@1.20260107.1)(wrangler@4.58.0(@cloudflare/workers-types@4.20260108.0)):
+    dependencies:
+      '@aws-sdk/credential-providers': 3.965.0
+      '@cloudflare/unenv-preset': 2.7.7(unenv@2.0.0-rc.21)(workerd@1.20260107.1)
+      '@cloudflare/workers-types': 4.20260108.0
+      '@iarna/toml': 2.2.5
+      '@octokit/rest': 21.1.1
+      '@smithy/node-config-provider': 4.3.7
+      '@smithy/types': 4.11.0
+      aws4fetch: 1.0.20
+      drizzle-orm: 0.45.1(@cloudflare/workers-types@4.20260108.0)(@libsql/client@0.15.15)(kysely@0.27.6)
+      env-paths: 3.0.0
+      esbuild: 0.25.12
+      execa: 9.6.1
+      fast-json-patch: 3.1.1
+      fast-xml-parser: 5.3.3
+      find-process: 2.0.0
+      glob: 10.5.0
+      jszip: 3.10.1
+      libsodium-wrappers: 0.7.16
+      miniflare: 4.20260107.0
+      neverthrow: 8.2.0
+      open: 10.2.0
+      openapi-types: 12.1.3
+      pathe: 2.0.3
+      picocolors: 1.1.1
+      proper-lockfile: 4.1.2
+      signal-exit: 4.1.0
+      unenv: 2.0.0-rc.21
+      wrangler: 4.58.0(@cloudflare/workers-types@4.20260108.0)
+      ws: 8.19.0
+      yaml: 2.8.2
+    optionalDependencies:
+      '@cloudflare/vite-plugin': 1.20.1(vite@7.3.1(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.2))(workerd@1.20260107.1)(wrangler@4.58.0(@cloudflare/workers-types@4.20260108.0))
+      '@libsql/client': 0.15.15
+      vite: 7.3.1(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.2)
+    transitivePeerDependencies:
+      - '@aws-sdk/client-rds-data'
+      - '@electric-sql/pglite'
+      - '@libsql/client-wasm'
+      - '@neondatabase/serverless'
+      - '@op-engineering/op-sqlite'
+      - '@opentelemetry/api'
+      - '@planetscale/database'
+      - '@prisma/client'
+      - '@tidbcloud/serverless'
+      - '@types/better-sqlite3'
+      - '@types/pg'
+      - '@types/sql.js'
+      - '@upstash/redis'
+      - '@vercel/postgres'
+      - '@xata.io/client'
+      - aws-crt
+      - better-sqlite3
+      - bufferutil
+      - bun-types
+      - expo-sqlite
+      - gel
+      - knex
+      - kysely
+      - mysql2
+      - pg
+      - postgres
+      - prisma
+      - sql.js
+      - sqlite3
+      - utf-8-validate
+      - workerd
+
   alchemy@0.82.2(@cloudflare/vite-plugin@1.20.1(vite@7.3.1(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.2))(workerd@1.20260107.1)(wrangler@4.58.0(@cloudflare/workers-types@4.20260108.0)))(@libsql/client@0.15.15)(kysely@0.28.9)(vite@7.3.1(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.2))(workerd@1.20260107.1)(wrangler@4.58.0(@cloudflare/workers-types@4.20260108.0)):
     dependencies:
       '@aws-sdk/credential-providers': 3.965.0
@@ -9831,7 +9925,7 @@ snapshots:
       react-dom: 19.2.3(react@19.2.3)
       solid-js: 1.9.10
 
-  better-auth@1.4.10(@tanstack/react-start@1.146.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vite@7.3.1(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.2)))(drizzle-kit@0.31.8)(drizzle-orm@0.45.1(@cloudflare/workers-types@4.20260108.0)(@libsql/client@0.15.15)(kysely@0.28.9))(next@16.0.7(@babel/core@7.28.5)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(solid-js@1.9.10):
+  better-auth@1.4.10(@tanstack/react-start@1.146.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vite@7.3.1(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.2)))(drizzle-kit@0.31.8)(drizzle-orm@0.45.1(@cloudflare/workers-types@4.20260108.0)(@libsql/client@0.15.15)(kysely@0.27.6))(next@16.0.7(@babel/core@7.28.5)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(solid-js@1.9.10):
     dependencies:
       '@better-auth/core': 1.4.10(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.7(zod@4.3.5))(jose@6.1.3)(kysely@0.28.9)(nanostores@1.1.0)
       '@better-auth/telemetry': 1.4.10(@better-auth/core@1.4.10(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.7(zod@4.3.5))(jose@6.1.3)(kysely@0.28.9)(nanostores@1.1.0))
@@ -9848,7 +9942,7 @@ snapshots:
     optionalDependencies:
       '@tanstack/react-start': 1.146.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vite@7.3.1(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.2))
       drizzle-kit: 0.31.8
-      drizzle-orm: 0.45.1(@cloudflare/workers-types@4.20260108.0)(@libsql/client@0.15.15)(kysely@0.28.9)
+      drizzle-orm: 0.45.1(@cloudflare/workers-types@4.20260108.0)(@libsql/client@0.15.15)(kysely@0.27.6)
       next: 16.0.7(@babel/core@7.28.5)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       react: 19.2.3
       react-dom: 19.2.3(react@19.2.3)
@@ -10225,6 +10319,12 @@ snapshots:
       esbuild-register: 3.6.0(esbuild@0.25.12)
     transitivePeerDependencies:
       - supports-color
+
+  drizzle-orm@0.45.1(@cloudflare/workers-types@4.20260108.0)(@libsql/client@0.15.15)(kysely@0.27.6):
+    optionalDependencies:
+      '@cloudflare/workers-types': 4.20260108.0
+      '@libsql/client': 0.15.15
+      kysely: 0.27.6
 
   drizzle-orm@0.45.1(@cloudflare/workers-types@4.20260108.0)(@libsql/client@0.15.15)(kysely@0.28.9):
     optionalDependencies:
