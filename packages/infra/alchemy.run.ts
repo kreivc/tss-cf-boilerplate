@@ -80,7 +80,8 @@ export const backgroundWorker = await Worker("background-jobs", {
       },
     },
   ],
-  crons: ["* * * * *", "0 0 * * *", "0 */6 * * *", "0 12 * * MON"],
+  // crons: ["* * * * *", "0 0 * * *", "0 */6 * * *", "0 12 * * MON"],
+  crons: ["0 */6 * * *"],
   dev: {
     port: 3007,
   },
