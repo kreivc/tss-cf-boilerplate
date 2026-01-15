@@ -13,7 +13,10 @@
     "db:push:local": "DRIZZLE_LOCAL=true drizzle-kit push",
     "db:push:prod": "drizzle-kit push",
     "db:studio:local": "DRIZZLE_LOCAL=true drizzle-kit studio",
-    "db:studio:prod": "drizzle-kit studio"
+    "db:studio:prod": "drizzle-kit studio",
+    "db:seed:local": "tsx src/seed/index.ts",
+    "db:seed:prod": "tsx src/seed/index.ts --remote",
+    "db:reset:local": "rm -f ../../.alchemy/miniflare/v3/d1/miniflare-D1DatabaseObject/*.sqlite && pnpm db:push:local && pnpm db:seed:local"
   },
   "dependencies": {
     "@libsql/client": "catalog:",
@@ -26,6 +29,8 @@
   "devDependencies": {
     "@test-tss/config": "workspace:*",
     "drizzle-kit": "^0.31.8",
+    "drizzle-seed": "^0.3.1",
+    "tsx": "^4.19.4",
     "typescript": "catalog:"
   }
 }

@@ -68,9 +68,10 @@ if (useLocal && localDbPath) {
 
 export default defineConfig({
   schema: "./src/schema",
-  out: "./src/migrations",
+  // out: "./src/migrations", // disable migration we use push
   // DOCS: https://orm.drizzle.team/docs/guides/d1-http-with-drizzle-kit
   dialect: "sqlite",
+  tablesFilter: ['/^(?!.*_cf_KV).*$/'],
   // Only set driver for D1 HTTP, omit for local SQLite files (auto-detected from url)
   ...(useLocal && localDbPath ? {} : { driver: "d1-http" }),
   ...credentials,
