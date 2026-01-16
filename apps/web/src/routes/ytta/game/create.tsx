@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { GameCategory } from "@test-tss/types";
+import { GameCategory, GameSlug } from "@test-tss/types";
 import { ArrowLeftIcon, Gamepad2Icon, SaveIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -44,16 +44,6 @@ function CreateGamePage() {
     })
   );
 
-  const handleNameChange = (value: string) => {
-    setName(value);
-    // Auto-generate slug from name
-    const generatedSlug = value
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-|-$/g, "");
-    setSlug(generatedSlug);
-  };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -72,7 +62,7 @@ function CreateGamePage() {
 
     createMutation.mutate({
       name: name.trim(),
-      slug: slug.trim(),
+      slug: slug.trim() as GameSlug,
       category: category as (typeof GameCategory.options)[number],
       logo: logo.trim() || undefined,
       banner: banner.trim() || undefined,
@@ -116,7 +106,7 @@ function CreateGamePage() {
               <Input
                 className="border-glass-border bg-background/50"
                 id="name"
-                onChange={(e) => handleNameChange(e.target.value)}
+                onChange={(e) => setName(e.target.value)}
                 placeholder="e.g., Mobile Legends"
                 value={name}
               />
@@ -125,17 +115,19 @@ function CreateGamePage() {
             {/* Slug */}
             <div className="space-y-2">
               <Label htmlFor="slug">Slug *</Label>
-              <Input
-                className="border-glass-border bg-background/50"
+              <select
+                className="flex h-10 w-full rounded-md border border-glass-border bg-background/50 px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 id="slug"
                 onChange={(e) => setSlug(e.target.value)}
-                placeholder="e.g., mobile-legends"
                 value={slug}
-              />
-              <p className="text-muted-foreground text-xs">
-                URL-friendly identifier. Only lowercase letters, numbers, and
-                hyphens.
-              </p>
+              >
+                <option value="">Select a slug</option>
+                {Object.values(GameSlug.enum).map((slugOption) => (
+                  <option key={slugOption} value={slugOption}>
+                    {slugOption}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Category */}

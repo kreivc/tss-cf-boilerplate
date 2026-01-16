@@ -2,8 +2,11 @@ import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import {
   CurrencyByCountry,
+  type GameSlug,
+  getItemSlugsByGame,
   ItemCategory,
   type ItemDetailInput,
+  type ItemSlug,
   SupportedCountry,
 } from "@test-tss/types";
 import {
@@ -206,7 +209,7 @@ function EditItemPage() {
     updateMutation.mutate({
       id: item.id,
       name: name.trim(),
-      slug: currentSlug.trim(),
+      slug: currentSlug.trim() as ItemSlug,
       category: category as (typeof ItemCategory.options)[number],
       logo: logo.trim() || undefined,
       isActive,
@@ -302,13 +305,19 @@ function EditItemPage() {
               {/* Slug */}
               <div className="space-y-2">
                 <Label htmlFor="slug">Slug *</Label>
-                <Input
-                  className="border-glass-border bg-background/50"
+                <select
+                  className="flex h-10 w-full rounded-md border border-glass-border bg-background/50 px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   id="slug"
                   onChange={(e) => setCurrentSlug(e.target.value)}
-                  placeholder="e.g., 100-diamonds"
                   value={currentSlug}
-                />
+                >
+                  <option value="">Select an item slug</option>
+                  {getItemSlugsByGame(slug as GameSlug).map((slugOption) => (
+                    <option key={slugOption} value={slugOption}>
+                      {slugOption}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               {/* Category */}

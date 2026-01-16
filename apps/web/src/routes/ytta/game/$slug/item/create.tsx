@@ -2,8 +2,11 @@ import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import {
   CurrencyByCountry,
+  type GameSlug,
+  getItemSlugsByGame,
   ItemCategory,
   type ItemDetailInput,
+  type ItemSlug,
   SupportedCountry,
 } from "@test-tss/types";
 import {
@@ -74,16 +77,6 @@ function CreateItemPage() {
       },
     })
   );
-
-  const handleNameChange = (value: string) => {
-    setName(value);
-    // Auto-generate slug from name
-    const generatedSlug = value
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-|-$/g, "");
-    setItemSlug(generatedSlug);
-  };
 
   const addPricing = () => {
     // Find first country not already used
@@ -173,7 +166,7 @@ function CreateItemPage() {
     createMutation.mutate({
       gameId: game.id,
       name: name.trim(),
-      slug: itemSlug.trim(),
+      slug: itemSlug.trim() as ItemSlug,
       category: category as (typeof ItemCategory.options)[number],
       logo: logo.trim() || undefined,
       isActive,
@@ -233,7 +226,7 @@ function CreateItemPage() {
                 <Input
                   className="border-glass-border bg-background/50"
                   id="name"
-                  onChange={(e) => handleNameChange(e.target.value)}
+                  onChange={(e) => setName(e.target.value)}
                   placeholder="e.g., 100 Diamonds"
                   value={name}
                 />
@@ -242,13 +235,19 @@ function CreateItemPage() {
               {/* Slug */}
               <div className="space-y-2">
                 <Label htmlFor="slug">Slug *</Label>
-                <Input
-                  className="border-glass-border bg-background/50"
+                <select
+                  className="flex h-10 w-full rounded-md border border-glass-border bg-background/50 px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   id="slug"
                   onChange={(e) => setItemSlug(e.target.value)}
-                  placeholder="e.g., 100-diamonds"
                   value={itemSlug}
-                />
+                >
+                  <option value="">Select an item slug</option>
+                  {getItemSlugsByGame(slug as GameSlug).map((slugOption) => (
+                    <option key={slugOption} value={slugOption}>
+                      {slugOption}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               {/* Category */}

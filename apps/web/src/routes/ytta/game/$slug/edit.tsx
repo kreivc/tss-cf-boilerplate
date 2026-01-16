@@ -1,6 +1,6 @@
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { GameCategory } from "@test-tss/types";
+import { GameCategory, GameSlug } from "@test-tss/types";
 import {
   ArrowLeftIcon,
   Gamepad2Icon,
@@ -119,7 +119,7 @@ function EditGamePage() {
     updateMutation.mutate({
       id: game.id,
       name: name.trim(),
-      slug: gameSlug.trim(),
+      slug: gameSlug.trim() as GameSlug,
       category: category as (typeof GameCategory.options)[number],
       logo: logo.trim() || undefined,
       banner: banner.trim() || undefined,
@@ -194,17 +194,19 @@ function EditGamePage() {
             {/* Slug */}
             <div className="space-y-2">
               <Label htmlFor="slug">Slug *</Label>
-              <Input
-                className="border-glass-border bg-background/50"
+              <select
+                className="flex h-10 w-full rounded-md border border-glass-border bg-background/50 px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 id="slug"
                 onChange={(e) => setGameSlug(e.target.value)}
-                placeholder="e.g., mobile-legends"
                 value={gameSlug}
-              />
-              <p className="text-muted-foreground text-xs">
-                URL-friendly identifier. Only lowercase letters, numbers, and
-                hyphens.
-              </p>
+              >
+                <option value="">Select a slug</option>
+                {Object.values(GameSlug.enum).map((slugOption) => (
+                  <option key={slugOption} value={slugOption}>
+                    {slugOption}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Category */}

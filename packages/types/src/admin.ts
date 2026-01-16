@@ -1,47 +1,6 @@
 import { z } from "zod";
+import { GameCategory, ItemCategory, SupportedCountry } from "./game";
 
-// Game Categories
-export const GameCategory = z.enum([
-  "MOBA",
-  "RPG",
-  "FPS",
-  "Battle Royale",
-  "Sports",
-  "Racing",
-  "Puzzle",
-  "Card",
-  "Other",
-]);
-export type GameCategory = z.infer<typeof GameCategory>;
-
-// Item Categories
-export const ItemCategory = z.enum([
-  "Diamond",
-  "Coins",
-  "Gems",
-  "Voucher",
-  "Subscription",
-  "Bundle",
-  "Skin",
-  "Character",
-  "Other",
-]);
-export type ItemCategory = z.infer<typeof ItemCategory>;
-
-// Supported Countries for pricing
-export const SupportedCountry = z.enum(["ID", "US", "MY", "SG", "PH"]);
-export type SupportedCountry = z.infer<typeof SupportedCountry>;
-
-// Currency symbols by country
-export const CurrencyByCountry: Record<SupportedCountry, string> = {
-  ID: "Rp",
-  US: "$",
-  MY: "RM",
-  SG: "S$",
-  PH: "₱",
-};
-
-// Game Input Schemas
 export const CreateGameInput = z.object({
   name: z.string().min(1, "Name is required"),
   slug: z
@@ -60,7 +19,6 @@ export const UpdateGameInput = CreateGameInput.partial().extend({
 });
 export type UpdateGameInput = z.infer<typeof UpdateGameInput>;
 
-// Item Detail (Pricing) Input Schema
 export const ItemDetailInput = z.object({
   countryCode: SupportedCountry,
   symbol: z.string().min(1),
