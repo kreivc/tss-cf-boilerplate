@@ -11,6 +11,7 @@
   "todos": "Aufgaben",
   "signIn": "Anmelden",
   "signOut": "Abmelden",
+  "signOutSuccess": "Erfolgreich abgemeldet",
   "myAccount": "Mein Konto",
   "selectLanguage": "Sprache wählen",
   "welcome": "Willkommen {name}",

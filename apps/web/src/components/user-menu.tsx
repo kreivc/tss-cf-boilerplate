@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-
+import { toast } from "sonner";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { authClient } from "@/lib/auth-client";
 import { m } from "@/paraglide/messages";
-
 import { Button } from "./ui/button";
 import { Skeleton } from "./ui/skeleton";
 
@@ -45,10 +44,12 @@ export default function UserMenu() {
             onClick={() => {
               authClient.signOut({
                 fetchOptions: {
+                  credentials: "include",
                   onSuccess: () => {
                     navigate({
                       to: "/",
                     });
+                    toast.success(m.signOutSuccess());
                   },
                 },
               });

@@ -9,12 +9,20 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as YttaRouteImport } from './routes/ytta'
 import { Route as TodosRouteImport } from './routes/todos'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as YttaIndexRouteImport } from './routes/ytta/index'
+import { Route as YttaRouterRouteImport } from './routes/ytta/router'
 import { Route as GameSlugRouteImport } from './routes/game.$slug'
 
+const YttaRoute = YttaRouteImport.update({
+  id: '/ytta',
+  path: '/ytta',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TodosRoute = TodosRouteImport.update({
   id: '/todos',
   path: '/todos',
@@ -35,6 +43,16 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const YttaIndexRoute = YttaIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => YttaRoute,
+} as any)
+const YttaRouterRoute = YttaRouterRouteImport.update({
+  id: '/router',
+  path: '/router',
+  getParentRoute: () => YttaRoute,
+} as any)
 const GameSlugRoute = GameSlugRouteImport.update({
   id: '/game/$slug',
   path: '/game/$slug',
@@ -46,7 +64,10 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/todos': typeof TodosRoute
+  '/ytta': typeof YttaRouteWithChildren
   '/game/$slug': typeof GameSlugRoute
+  '/ytta/router': typeof YttaRouterRoute
+  '/ytta/': typeof YttaIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +75,8 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/todos': typeof TodosRoute
   '/game/$slug': typeof GameSlugRoute
+  '/ytta/router': typeof YttaRouterRoute
+  '/ytta': typeof YttaIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -61,14 +84,41 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/todos': typeof TodosRoute
+  '/ytta': typeof YttaRouteWithChildren
   '/game/$slug': typeof GameSlugRoute
+  '/ytta/router': typeof YttaRouterRoute
+  '/ytta/': typeof YttaIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/login' | '/todos' | '/game/$slug'
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/login'
+    | '/todos'
+    | '/ytta'
+    | '/game/$slug'
+    | '/ytta/router'
+    | '/ytta/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/login' | '/todos' | '/game/$slug'
-  id: '__root__' | '/' | '/dashboard' | '/login' | '/todos' | '/game/$slug'
+  to:
+    | '/'
+    | '/dashboard'
+    | '/login'
+    | '/todos'
+    | '/game/$slug'
+    | '/ytta/router'
+    | '/ytta'
+  id:
+    | '__root__'
+    | '/'
+    | '/dashboard'
+    | '/login'
+    | '/todos'
+    | '/ytta'
+    | '/game/$slug'
+    | '/ytta/router'
+    | '/ytta/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -76,11 +126,19 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
   TodosRoute: typeof TodosRoute
+  YttaRoute: typeof YttaRouteWithChildren
   GameSlugRoute: typeof GameSlugRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/ytta': {
+      id: '/ytta'
+      path: '/ytta'
+      fullPath: '/ytta'
+      preLoaderRoute: typeof YttaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/todos': {
       id: '/todos'
       path: '/todos'
@@ -109,6 +167,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ytta/': {
+      id: '/ytta/'
+      path: '/'
+      fullPath: '/ytta/'
+      preLoaderRoute: typeof YttaIndexRouteImport
+      parentRoute: typeof YttaRoute
+    }
+    '/ytta/router': {
+      id: '/ytta/router'
+      path: '/router'
+      fullPath: '/ytta/router'
+      preLoaderRoute: typeof YttaRouterRouteImport
+      parentRoute: typeof YttaRoute
+    }
     '/game/$slug': {
       id: '/game/$slug'
       path: '/game/$slug'
@@ -119,11 +191,24 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface YttaRouteChildren {
+  YttaRouterRoute: typeof YttaRouterRoute
+  YttaIndexRoute: typeof YttaIndexRoute
+}
+
+const YttaRouteChildren: YttaRouteChildren = {
+  YttaRouterRoute: YttaRouterRoute,
+  YttaIndexRoute: YttaIndexRoute,
+}
+
+const YttaRouteWithChildren = YttaRoute._addFileChildren(YttaRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
   TodosRoute: TodosRoute,
+  YttaRoute: YttaRouteWithChildren,
   GameSlugRoute: GameSlugRoute,
 }
 export const routeTree = rootRouteImport

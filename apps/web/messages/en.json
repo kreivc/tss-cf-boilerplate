@@ -11,6 +11,7 @@
   "todos": "Todos",
   "signIn": "Sign In",
   "signOut": "Sign Out",
+  "signOutSuccess": "Successfully signed out",
   "myAccount": "My Account",
   "selectLanguage": "Select Language",
   "welcome": "Welcome {name}",

@@ -11,6 +11,7 @@
   "todos": "Tugas",
   "signIn": "Masuk",
   "signOut": "Keluar",
+  "signOutSuccess": "Berhasil keluar",
   "myAccount": "Akun Saya",
   "selectLanguage": "Pilih Bahasa",
   "welcome": "Selamat datang {name}",

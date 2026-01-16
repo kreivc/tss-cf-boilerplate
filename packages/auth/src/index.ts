@@ -21,6 +21,8 @@ const getDomain = () => {
   }
 };
 
+const isProd = env.IS_DEV !== "true";
+
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "sqlite",
@@ -38,12 +40,11 @@ export const auth = betterAuth({
   // uncomment cookieCache setting when ready to deploy to Cloudflare using *.workers.dev domains
   session: {
     cookieCache: {
-      enabled: env.IS_DEV === "false", // disable cookieCache in development prevent stale data
+      enabled: isProd, // disable cookieCache in development prevent stale data
       maxAge: 5 * 60,
     },
     expiresIn: 60 * 60 * 24 * 7, // 7 days
     storeSessionInDatabase: true,
-    preserveSessionInDatabase: true,
   },
   secret: env.BETTER_AUTH_SECRET,
   baseURL: env.BETTER_AUTH_URL, // !Comment me when generating schema
@@ -56,7 +57,7 @@ export const auth = betterAuth({
     // uncomment crossSubDomainCookies setting when ready to deploy and replace <your-workers-subdomain> with your actual workers subdomain
     // https://developers.cloudflare.com/workers/wrangler/configuration/#workersdev
     crossSubDomainCookies: {
-      enabled: env.IS_DEV === "false", // disable on localhost
+      enabled: isProd, // disable on localhost
       domain: getDomain(),
     },
   },

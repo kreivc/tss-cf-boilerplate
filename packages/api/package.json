@@ -21,6 +21,7 @@
     "@test-tss/types": "workspace:*",
     "dotenv": "catalog:",
     "drizzle-orm": "catalog:",
+    "uuid": "^13.0.0",
     "zod": "catalog:"
   },
   "devDependencies": {

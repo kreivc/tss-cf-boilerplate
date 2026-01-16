@@ -29,5 +29,10 @@
     "typescript": "catalog:",
     "ultracite": "7.0.10"
   },
-  "packageManager": "pnpm@10.27.0"
+  "packageManager": "pnpm@10.27.0",
+  "pnpm": {
+    "overrides": {
+      "@types/node": "^22.13.14"
+    }
+  }
 }
