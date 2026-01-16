@@ -1,7 +1,7 @@
 import { env as backgroundEnv } from "@test-tss/env/background";
 import type { SendEmailData } from "@test-tss/types";
-import { sendEmail } from "./queue/sendEmail";
-import { expireTransaction } from "./schedule/expireTransaction";
+import { sendEmail } from "./queue/send-email";
+import { expireTransaction } from "./schedule/expire-transaction";
 
 if (backgroundEnv.IS_DEV === "true") {
   console.log(

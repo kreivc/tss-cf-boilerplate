@@ -36,6 +36,7 @@ const sessions = await KVNamespace("sessions", {
 });
 
 const isDev = !isDeploy;
+const corsOrigin = (alchemy.env.CORS_ORIGIN ?? "").split(",");
 
 export const web = await TanStackStart("web", {
   cwd: "../../apps/web",
@@ -52,6 +53,21 @@ export const web = await TanStackStart("web", {
 
 const bucket = await R2Bucket("my-bucket", {
   name: `${app.name}-${app.stage}-bucket`,
+  devDomain: true,
+  dev: {
+    remote: true,
+  },
+  cors: [
+    {
+      allowed: {
+        origins: corsOrigin,
+        methods: ["PUT", "GET"],
+        headers: ["*"],
+      },
+      exposeHeaders: ["ETag"],
+      maxAgeSeconds: 3600,
+    },
+  ],
 });
 
 export const queue = await Queue("queue", {
@@ -99,6 +115,11 @@ export const server = await Worker("server", {
     BETTER_AUTH_SECRET: alchemy.secret.env.BETTER_AUTH_SECRET ?? "",
     BETTER_AUTH_URL: alchemy.env.BETTER_AUTH_URL ?? "",
     SESSION_KV: sessions,
+    R2_ACCESS_KEY_ID: alchemy.env.R2_ACCESS_KEY_ID ?? "",
+    R2_SECRET_ACCESS_KEY: alchemy.env.R2_SECRET_ACCESS_KEY ?? "",
+    R2_PUBLIC_BASE_URL: `https://${bucket.devDomain}`,
+    R2_BUCKET_NAME: bucket.name,
+    CLOUDFLARE_ACCOUNT_ID: alchemy.env.CLOUDFLARE_ACCOUNT_ID ?? "",
     IS_DEV: isDev ? "true" : "false",
   },
   dev: {
@@ -109,5 +130,6 @@ export const server = await Worker("server", {
 console.log(`Web    -> ${web.url}`);
 console.log(`Server -> ${server.url}`);
 console.log(`Background Worker -> ${backgroundWorker.url}`);
+console.log(`Bucket URL -> https://${bucket.devDomain}`);
 
 await app.finalize();

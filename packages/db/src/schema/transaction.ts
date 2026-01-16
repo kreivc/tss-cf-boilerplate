@@ -1,9 +1,9 @@
 import { type InferSelectModel, relations } from "drizzle-orm";
 import { index, real, sqliteTable, text } from "drizzle-orm/sqlite-core";
-import { auditFields } from "./auditFields";
+import { auditFields } from "./audit-fields";
 import { games } from "./game";
 import { items } from "./item";
-import { itemDetails } from "./itemDetail";
+import { itemDetails } from "./item-detail";
 
 export const transactions = sqliteTable(
   "transactions",

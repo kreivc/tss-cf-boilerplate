@@ -32,7 +32,23 @@
       },
       "style": {
         "noNamespace": "off"
+      },
+      "a11y": {
+        "noNoninteractiveElementInteractions": "off",
+        "noStaticElementInteractions": "off"
       }
     }
-  }
+  },
+  "overrides": [
+    {
+      "includes": ["**/*$*"],
+      "linter": {
+        "rules": {
+          "style": {
+            "useFilenamingConvention": "off"
+          }
+        }
+      }
+    }
+  ]
 }

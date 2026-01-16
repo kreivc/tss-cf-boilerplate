@@ -25,6 +25,7 @@
     "@test-tss/api": "workspace:*",
     "@test-tss/auth": "workspace:*",
     "@test-tss/env": "workspace:*",
+    "@test-tss/types": "workspace:*",
     "better-auth": "catalog:",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

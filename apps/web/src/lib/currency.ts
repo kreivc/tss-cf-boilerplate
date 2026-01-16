@@ -15,7 +15,7 @@ const getStoredCurrency = (): Currency => {
     return "USD";
   }
   const stored = localStorage.getItem(CURRENCY_STORAGE_KEY);
-  if (stored && (stored === "USD" || stored === "IDR" || stored === "EUR")) {
+  if (stored && (stored === "USD" || stored === "IDR")) {
     return stored;
   }
   // Derive from locale
@@ -42,7 +42,9 @@ export const setCurrency = (currency: Currency) => {
   if (typeof window !== "undefined") {
     localStorage.setItem(CURRENCY_STORAGE_KEY, currency);
   }
-  listeners.forEach((listener) => listener());
+  for (const listener of listeners) {
+    listener();
+  }
 };
 
 export const useCurrency = () => {
@@ -59,19 +61,12 @@ export const useCurrency = () => {
       const amount = typeof price === "number" ? price : price[currency];
       const info = CURRENCIES[currency];
 
-      return new Intl.NumberFormat(
-        info.locale === "id"
-          ? "id-ID"
-          : info.locale === "de"
-            ? "de-DE"
-            : "en-US",
-        {
-          style: "currency",
-          currency: info.code,
-          minimumFractionDigits: currency === "IDR" ? 0 : 2,
-          maximumFractionDigits: currency === "IDR" ? 0 : 2,
-        }
-      ).format(amount);
+      return new Intl.NumberFormat(info.locale === "id" ? "id-ID" : "en-US", {
+        style: "currency",
+        currency: info.code,
+        minimumFractionDigits: currency === "IDR" ? 0 : 2,
+        maximumFractionDigits: currency === "IDR" ? 0 : 2,
+      }).format(amount);
     },
     [currency]
   );

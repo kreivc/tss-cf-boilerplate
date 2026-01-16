@@ -1,5 +1,6 @@
-import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
+import { AdminLayout } from "@/components/admin/admin-layout";
 import { getUser } from "@/functions/get-user";
 
 export const Route = createFileRoute("/ytta")({
@@ -11,7 +12,6 @@ export const Route = createFileRoute("/ytta")({
   loader: ({ context }) => {
     // Redirect to login if not authenticated
 
-    console.log("context.session", context.session);
     if (!context.session) {
       throw redirect({
         to: "/login",
@@ -28,5 +28,5 @@ export const Route = createFileRoute("/ytta")({
 });
 
 function YttaLayout() {
-  return <Outlet />;
+  return <AdminLayout />;
 }

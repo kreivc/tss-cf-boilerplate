@@ -9,7 +9,7 @@ export const GAMES: Game[] = [
     category: "mobile",
     image: "/games/mobile-legends.webp",
     publisher: "Moonton",
-    price: { USD: 4.99, IDR: 79_000, EUR: 4.49 },
+    price: { USD: 4.99, IDR: 79_000 },
     trending: true,
   },
   {
@@ -19,7 +19,7 @@ export const GAMES: Game[] = [
     category: "mobile",
     image: "/games/genshin-impact.webp",
     publisher: "miHoYo",
-    price: { USD: 9.99, IDR: 159_000, EUR: 8.99 },
+    price: { USD: 9.99, IDR: 159_000 },
     trending: true,
     newRelease: false,
   },
@@ -30,7 +30,7 @@ export const GAMES: Game[] = [
     category: "mobile",
     image: "/games/pubg-mobile.webp",
     publisher: "Krafton",
-    price: { USD: 4.99, IDR: 79_000, EUR: 4.49 },
+    price: { USD: 4.99, IDR: 79_000 },
     trending: true,
   },
   {
@@ -40,7 +40,7 @@ export const GAMES: Game[] = [
     category: "mobile",
     image: "/games/free-fire.webp",
     publisher: "Garena",
-    price: { USD: 2.99, IDR: 49_000, EUR: 2.79 },
+    price: { USD: 2.99, IDR: 49_000 },
     trending: true,
     hotDeal: true,
     discount: 20,
@@ -52,7 +52,7 @@ export const GAMES: Game[] = [
     category: "mobile",
     image: "/games/honor-of-kings.webp",
     publisher: "Tencent",
-    price: { USD: 4.99, IDR: 79_000, EUR: 4.49 },
+    price: { USD: 4.99, IDR: 79_000 },
     trending: true,
   },
   // PC Games
@@ -63,7 +63,7 @@ export const GAMES: Game[] = [
     category: "pc",
     image: "/games/valorant.webp",
     publisher: "Riot Games",
-    price: { USD: 9.99, IDR: 159_000, EUR: 8.99 },
+    price: { USD: 9.99, IDR: 159_000 },
     newRelease: false,
   },
   {
@@ -73,7 +73,7 @@ export const GAMES: Game[] = [
     category: "pc",
     image: "/games/steam.webp",
     publisher: "Valve",
-    price: { USD: 10.0, IDR: 160_000, EUR: 9.0 },
+    price: { USD: 10.0, IDR: 160_000 },
     hotDeal: true,
   },
   {
@@ -83,7 +83,7 @@ export const GAMES: Game[] = [
     category: "pc",
     image: "/games/lol.webp",
     publisher: "Riot Games",
-    price: { USD: 9.99, IDR: 159_000, EUR: 8.99 },
+    price: { USD: 9.99, IDR: 159_000 },
   },
   {
     id: "9",
@@ -92,7 +92,7 @@ export const GAMES: Game[] = [
     category: "pc",
     image: "/games/fortnite.webp",
     publisher: "Epic Games",
-    price: { USD: 7.99, IDR: 129_000, EUR: 7.49 },
+    price: { USD: 7.99, IDR: 129_000 },
     newRelease: true,
   },
   {
@@ -102,7 +102,7 @@ export const GAMES: Game[] = [
     category: "pc",
     image: "/games/apex.webp",
     publisher: "EA",
-    price: { USD: 9.99, IDR: 159_000, EUR: 8.99 },
+    price: { USD: 9.99, IDR: 159_000 },
   },
   // Console Games
   {
@@ -112,7 +112,7 @@ export const GAMES: Game[] = [
     category: "console",
     image: "/games/psn.webp",
     publisher: "Sony",
-    price: { USD: 25.0, IDR: 400_000, EUR: 22.0 },
+    price: { USD: 25.0, IDR: 400_000 },
   },
   {
     id: "12",
@@ -121,7 +121,7 @@ export const GAMES: Game[] = [
     category: "console",
     image: "/games/xbox.webp",
     publisher: "Microsoft",
-    price: { USD: 14.99, IDR: 239_000, EUR: 12.99 },
+    price: { USD: 14.99, IDR: 239_000 },
     newRelease: true,
   },
   {
@@ -131,7 +131,7 @@ export const GAMES: Game[] = [
     category: "console",
     image: "/games/nintendo.webp",
     publisher: "Nintendo",
-    price: { USD: 20.0, IDR: 320_000, EUR: 18.0 },
+    price: { USD: 20.0, IDR: 320_000 },
   },
   // More Mobile Games
   {
@@ -141,7 +141,7 @@ export const GAMES: Game[] = [
     category: "mobile",
     image: "/games/coc.webp",
     publisher: "Supercell",
-    price: { USD: 4.99, IDR: 79_000, EUR: 4.49 },
+    price: { USD: 4.99, IDR: 79_000 },
   },
   {
     id: "15",
@@ -150,7 +150,7 @@ export const GAMES: Game[] = [
     category: "mobile",
     image: "/games/clash-royale.webp",
     publisher: "Supercell",
-    price: { USD: 4.99, IDR: 79_000, EUR: 4.49 },
+    price: { USD: 4.99, IDR: 79_000 },
   },
   {
     id: "16",
@@ -159,7 +159,7 @@ export const GAMES: Game[] = [
     category: "mobile",
     image: "/games/cod-mobile.webp",
     publisher: "Activision",
-    price: { USD: 4.99, IDR: 79_000, EUR: 4.49 },
+    price: { USD: 4.99, IDR: 79_000 },
     newRelease: true,
   },
   {
@@ -169,7 +169,7 @@ export const GAMES: Game[] = [
     category: "pc",
     image: "/games/roblox.webp",
     publisher: "Roblox Corp",
-    price: { USD: 4.99, IDR: 79_000, EUR: 4.49 },
+    price: { USD: 4.99, IDR: 79_000 },
   },
   {
     id: "18",
@@ -178,7 +178,7 @@ export const GAMES: Game[] = [
     category: "pc",
     image: "/games/minecraft.webp",
     publisher: "Mojang",
-    price: { USD: 6.99, IDR: 109_000, EUR: 6.49 },
+    price: { USD: 6.99, IDR: 109_000 },
   },
   {
     id: "19",
@@ -187,7 +187,7 @@ export const GAMES: Game[] = [
     category: "mobile",
     image: "/games/aov.webp",
     publisher: "Tencent",
-    price: { USD: 4.99, IDR: 79_000, EUR: 4.49 },
+    price: { USD: 4.99, IDR: 79_000 },
   },
   {
     id: "20",
@@ -196,7 +196,7 @@ export const GAMES: Game[] = [
     category: "mobile",
     image: "/games/rox.webp",
     publisher: "Gravity",
-    price: { USD: 4.99, IDR: 79_000, EUR: 4.49 },
+    price: { USD: 4.99, IDR: 79_000 },
     hotDeal: true,
     discount: 15,
   },
@@ -238,7 +238,9 @@ export const getTrendingGames = (): Game[] => {
 export const getGamesByCategory = (
   category: "all" | "mobile" | "pc" | "console"
 ): Game[] => {
-  if (category === "all") return GAMES;
+  if (category === "all") {
+    return GAMES;
+  }
   return GAMES.filter((game) => game.category === category);
 };
 

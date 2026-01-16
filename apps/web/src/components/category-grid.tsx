@@ -30,7 +30,7 @@ function GameCard({ game }: { game: Game }) {
           className="absolute inset-0 opacity-40"
           style={{
             background: `linear-gradient(135deg, 
-              hsl(${Number.parseInt(game.id) * 45}, 60%, 45%) 0%, 
+              hsl(${Number.parseInt(game.id, 10) * 45}, 60%, 45%) 0%, 
               transparent 70%
             )`,
           }}
@@ -173,7 +173,12 @@ export function CategoryGrid() {
           {/* Loading Skeletons */}
           {isLoading &&
             Array.from({ length: ITEMS_PER_PAGE }).map((_, i) => (
-              <GameCardSkeleton key={`skeleton-${i}`} />
+              <GameCardSkeleton
+                key={`skeleton-${
+                  // biome-ignore lint/suspicious/noArrayIndexKey: <we need to use the index for the key>
+                  i
+                }`}
+              />
             ))}
         </div>
 

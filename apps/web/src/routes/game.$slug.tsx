@@ -38,6 +38,7 @@ export const Route = createFileRoute("/game/$slug")({
   component: GameDetailPage,
 });
 
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <we need to use a lot of state and logic for the game detail page>
 function GameDetailPage() {
   const { slug } = Route.useParams();
   const game = getGameBySlug(slug);
@@ -129,7 +130,7 @@ function GameDetailPage() {
             className="absolute inset-0 opacity-50"
             style={{
               background: `linear-gradient(135deg, 
-                hsl(${Number.parseInt(game.id) * 45}, 70%, 40%) 0%, 
+                hsl(${Number.parseInt(game.id, 10) * 45}, 70%, 40%) 0%, 
                 transparent 60%
               )`,
             }}
@@ -291,6 +292,7 @@ function GameDetailPage() {
                       }`}
                       key={pkg.id}
                       onClick={() => setSelectedPackage(pkg.id)}
+                      type="button"
                     >
                       {pkg.popular && (
                         <Badge className="absolute -top-2 -right-2 bg-gaming-accent text-black text-xs">
@@ -342,6 +344,7 @@ function GameDetailPage() {
                         }`}
                         key={method.id}
                         onClick={() => setSelectedPayment(method.id)}
+                        type="button"
                       >
                         <span className="text-lg">{method.icon}</span>
                         <span className="font-medium text-sm">
@@ -367,6 +370,7 @@ function GameDetailPage() {
                         }`}
                         key={method.id}
                         onClick={() => setSelectedPayment(method.id)}
+                        type="button"
                       >
                         <span className="text-lg">{method.icon}</span>
                         <span className="font-medium text-sm">
@@ -392,6 +396,7 @@ function GameDetailPage() {
                         }`}
                         key={method.id}
                         onClick={() => setSelectedPayment(method.id)}
+                        type="button"
                       >
                         <span className="text-lg">{method.icon}</span>
                         <span className="font-medium text-sm">

@@ -1,13 +1,14 @@
 import { type InferSelectModel, relations } from "drizzle-orm";
 import { index, integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
-import { auditFields } from "./auditFields";
+import { auditFields } from "./audit-fields";
 import { games } from "./game";
-import { itemDetails } from "./itemDetail";
+import { itemDetails } from "./item-detail";
 
 export const items = sqliteTable(
   "items",
   {
     id: text("id").primaryKey(),
+    slug: text("item_slug").notNull(),
     gameId: text("game_id")
       .notNull()
       .references(() => games.id),

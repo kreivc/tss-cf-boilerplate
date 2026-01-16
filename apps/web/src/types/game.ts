@@ -3,7 +3,6 @@ export type GameCategory = "mobile" | "pc" | "console";
 export interface GamePrice {
   USD: number;
   IDR: number;
-  EUR: number;
 }
 
 export interface Game {
@@ -31,7 +30,7 @@ export interface HeroSlide {
   badge?: string;
 }
 
-export type Currency = "USD" | "IDR" | "EUR";
+export type Currency = "USD" | "IDR";
 
 export interface CurrencyInfo {
   code: Currency;
@@ -43,11 +42,9 @@ export interface CurrencyInfo {
 export const CURRENCIES: Record<Currency, CurrencyInfo> = {
   USD: { code: "USD", symbol: "$", name: "US Dollar", locale: "en" },
   IDR: { code: "IDR", symbol: "Rp", name: "Indonesian Rupiah", locale: "id" },
-  EUR: { code: "EUR", symbol: "€", name: "Euro", locale: "de" },
 };
 
 export const LOCALE_TO_CURRENCY: Record<string, Currency> = {
   en: "USD",
   id: "IDR",
-  de: "EUR",
 };

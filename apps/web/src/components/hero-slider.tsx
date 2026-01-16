@@ -1,3 +1,5 @@
+"use client";
+
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -22,7 +24,9 @@ export function HeroSlider() {
 
   // Track current slide
   useEffect(() => {
-    if (!api) return;
+    if (!api) {
+      return;
+    }
 
     const onSelect = () => {
       setCurrent(api.selectedScrollSnap());
@@ -36,7 +40,9 @@ export function HeroSlider() {
 
   // Auto-play
   useEffect(() => {
-    if (!api || isPaused) return;
+    if (!api || isPaused) {
+      return;
+    }
 
     const interval = setInterval(() => {
       api.scrollNext();
@@ -138,8 +144,10 @@ export function HeroSlider() {
                 : "w-2 bg-muted-foreground/30 hover:bg-muted-foreground/50"
             }
             `}
+            // biome-ignore lint/suspicious/noArrayIndexKey: <we need to use the index for the key>
             key={index}
             onClick={() => scrollTo(index)}
+            type="button"
           />
         ))}
       </div>

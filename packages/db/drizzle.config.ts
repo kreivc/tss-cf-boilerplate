@@ -16,7 +16,6 @@ const PUSH_CREDENTIALS = {
     databaseId: process.env.CLOUDFLARE_DATABASE_ID ?? "",
     token: process.env.CLOUDFLARE_API_TOKEN ?? "",
   },
-  tablesFilter: ["!_cf_KV"],
 };
 
 // If run via CLI (i.e., process.argv contains 'drizzle-kit'), populate credentials
@@ -71,7 +70,7 @@ export default defineConfig({
   // out: "./src/migrations", // disable migration we use push
   // DOCS: https://orm.drizzle.team/docs/guides/d1-http-with-drizzle-kit
   dialect: "sqlite",
-  tablesFilter: ['/^(?!.*_cf_KV).*$/'],
+  tablesFilter: ["/^(?!.*_cf_KV).*$/"],
   // Only set driver for D1 HTTP, omit for local SQLite files (auto-detected from url)
   ...(useLocal && localDbPath ? {} : { driver: "d1-http" }),
   ...credentials,

@@ -23,7 +23,6 @@ const localeConfig: Record<
 > = {
   en: { flag: "🇺🇸", name: "English", currency: "USD" },
   id: { flag: "🇮🇩", name: "Indonesia", currency: "IDR" },
-  de: { flag: "🇩🇪", name: "Deutsch", currency: "EUR" },
 };
 
 // Get locale display info with fallback
@@ -62,8 +61,6 @@ export function LocaleCurrencySelector() {
       description: `${getLocaleInfo(newLocale).flag} ${getLocaleInfo(newLocale).name} • ${CURRENCIES[localeCurrency || "USD"].symbol} ${localeCurrency || "USD"}`,
     });
   };
-
-
 
   return (
     <DropdownMenu>
@@ -107,7 +104,9 @@ export function LocaleCurrencySelector() {
                 <span className="text-muted-foreground text-xs">
                   {CURRENCIES[info.currency].symbol}
                 </span>
-                {isActive && <CheckIcon className="size-4 text-gaming-primary" />}
+                {isActive && (
+                  <CheckIcon className="size-4 text-gaming-primary" />
+                )}
               </DropdownMenuItem>
             );
           })}

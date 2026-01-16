@@ -74,6 +74,7 @@ const ITEM_SEED_DATA = [
   // Mobile Legends Items
   {
     id: "ml-diamond-86",
+    slug: "ml-diamond-86",
     gameId: "ml",
     name: "86 Diamonds",
     logo: "https://example.com/ml-diamond.png",
@@ -81,6 +82,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "ml-diamond-172",
+    slug: "ml-diamond-172",
     gameId: "ml",
     name: "172 Diamonds",
     logo: "https://example.com/ml-diamond.png",
@@ -88,6 +90,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "ml-diamond-257",
+    slug: "ml-diamond-257",
     gameId: "ml",
     name: "257 Diamonds",
     logo: "https://example.com/ml-diamond.png",
@@ -95,6 +98,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "ml-diamond-344",
+    slug: "ml-diamond-344",
     gameId: "ml",
     name: "344 Diamonds",
     logo: "https://example.com/ml-diamond.png",
@@ -102,6 +106,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "ml-diamond-429",
+    slug: "ml-diamond-429",
     gameId: "ml",
     name: "429 Diamonds",
     logo: "https://example.com/ml-diamond.png",
@@ -109,6 +114,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "ml-diamond-514",
+    slug: "ml-diamond-514",
     gameId: "ml",
     name: "514 Diamonds",
     logo: "https://example.com/ml-diamond.png",
@@ -116,6 +122,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "ml-diamond-706",
+    slug: "ml-diamond-706",
     gameId: "ml",
     name: "706 Diamonds",
     logo: "https://example.com/ml-diamond.png",
@@ -123,6 +130,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "ml-diamond-878",
+    slug: "ml-diamond-878",
     gameId: "ml",
     name: "878 Diamonds",
     logo: "https://example.com/ml-diamond.png",
@@ -130,6 +138,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "ml-diamond-1050",
+    slug: "ml-diamond-1050",
     gameId: "ml",
     name: "1050 Diamonds",
     logo: "https://example.com/ml-diamond.png",
@@ -137,6 +146,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "ml-twilight-pass",
+    slug: "ml-twilight-pass",
     gameId: "ml",
     name: "Twilight Pass",
     logo: "https://example.com/ml-pass.png",
@@ -144,6 +154,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "ml-starlight",
+    slug: "ml-starlight",
     gameId: "ml",
     name: "Starlight Member",
     logo: "https://example.com/ml-starlight.png",
@@ -153,6 +164,7 @@ const ITEM_SEED_DATA = [
   // Free Fire Items
   {
     id: "ff-diamond-100",
+    slug: "ff-diamond-100",
     gameId: "ff",
     name: "100 Diamonds",
     logo: "https://example.com/ff-diamond.png",
@@ -160,6 +172,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "ff-diamond-210",
+    slug: "ff-diamond-210",
     gameId: "ff",
     name: "210 Diamonds",
     logo: "https://example.com/ff-diamond.png",
@@ -167,6 +180,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "ff-diamond-530",
+    slug: "ff-diamond-530",
     gameId: "ff",
     name: "530 Diamonds",
     logo: "https://example.com/ff-diamond.png",
@@ -174,6 +188,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "ff-diamond-1080",
+    slug: "ff-diamond-1080",
     gameId: "ff",
     name: "1080 Diamonds",
     logo: "https://example.com/ff-diamond.png",
@@ -181,6 +196,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "ff-diamond-2200",
+    slug: "ff-diamond-2200",
     gameId: "ff",
     name: "2200 Diamonds",
     logo: "https://example.com/ff-diamond.png",
@@ -188,6 +204,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "ff-weekly-membership",
+    slug: "ff-weekly-membership",
     gameId: "ff",
     name: "Weekly Membership",
     logo: "https://example.com/ff-membership.png",
@@ -195,6 +212,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "ff-monthly-membership",
+    slug: "ff-monthly-membership",
     gameId: "ff",
     name: "Monthly Membership",
     logo: "https://example.com/ff-membership.png",
@@ -202,6 +220,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "ff-level-up-pass",
+    slug: "ff-level-up-pass",
     gameId: "ff",
     name: "Level Up Pass",
     logo: "https://example.com/ff-pass.png",
@@ -211,6 +230,7 @@ const ITEM_SEED_DATA = [
   // Magic Chess: Go Go Items
   {
     id: "mcgg-diamond-100",
+    slug: "mcgg-diamond-100",
     gameId: "mcgg",
     name: "100 Diamonds",
     logo: "https://example.com/mcgg-diamond.png",
@@ -218,6 +238,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "mcgg-diamond-250",
+    slug: "mcgg-diamond-250",
     gameId: "mcgg",
     name: "250 Diamonds",
     logo: "https://example.com/mcgg-diamond.png",
@@ -225,6 +246,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "mcgg-diamond-500",
+    slug: "mcgg-diamond-500",
     gameId: "mcgg",
     name: "500 Diamonds",
     logo: "https://example.com/mcgg-diamond.png",
@@ -232,6 +254,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "mcgg-diamond-1000",
+    slug: "mcgg-diamond-1000",
     gameId: "mcgg",
     name: "1000 Diamonds",
     logo: "https://example.com/mcgg-diamond.png",
@@ -239,6 +262,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "mcgg-season-pass",
+    slug: "mcgg-season-pass",
     gameId: "mcgg",
     name: "Season Pass",
     logo: "https://example.com/mcgg-pass.png",
@@ -246,6 +270,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "mcgg-premium-pass",
+    slug: "mcgg-premium-pass",
     gameId: "mcgg",
     name: "Premium Pass",
     logo: "https://example.com/mcgg-pass.png",
@@ -255,6 +280,7 @@ const ITEM_SEED_DATA = [
   // PUBG Mobile Items
   {
     id: "pubgm-uc-60",
+    slug: "pubgm-uc-60",
     gameId: "pubgm",
     name: "60 UC",
     logo: "https://example.com/pubgm-uc.png",
@@ -262,6 +288,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "pubgm-uc-325",
+    slug: "pubgm-uc-325",
     gameId: "pubgm",
     name: "325 UC",
     logo: "https://example.com/pubgm-uc.png",
@@ -269,6 +296,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "pubgm-uc-660",
+    slug: "pubgm-uc-660",
     gameId: "pubgm",
     name: "660 UC",
     logo: "https://example.com/pubgm-uc.png",
@@ -276,6 +304,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "pubgm-uc-1800",
+    slug: "pubgm-uc-1800",
     gameId: "pubgm",
     name: "1800 UC",
     logo: "https://example.com/pubgm-uc.png",
@@ -283,6 +312,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "pubgm-uc-3850",
+    slug: "pubgm-uc-3850",
     gameId: "pubgm",
     name: "3850 UC",
     logo: "https://example.com/pubgm-uc.png",
@@ -290,6 +320,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "pubgm-uc-8100",
+    slug: "pubgm-uc-8100",
     gameId: "pubgm",
     name: "8100 UC",
     logo: "https://example.com/pubgm-uc.png",
@@ -297,6 +328,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "pubgm-royale-pass",
+    slug: "pubgm-royale-pass",
     gameId: "pubgm",
     name: "Royale Pass",
     logo: "https://example.com/pubgm-pass.png",
@@ -304,6 +336,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "pubgm-royale-pass-plus",
+    slug: "pubgm-royale-pass-plus",
     gameId: "pubgm",
     name: "Royale Pass Plus",
     logo: "https://example.com/pubgm-pass.png",
@@ -313,6 +346,7 @@ const ITEM_SEED_DATA = [
   // Blood Strike Items
   {
     id: "bs-gold-100",
+    slug: "bs-gold-100",
     gameId: "bloodstrike",
     name: "100 Gold",
     logo: "https://example.com/bs-gold.png",
@@ -320,6 +354,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "bs-gold-300",
+    slug: "bs-gold-300",
     gameId: "bloodstrike",
     name: "300 Gold",
     logo: "https://example.com/bs-gold.png",
@@ -327,6 +362,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "bs-gold-500",
+    slug: "bs-gold-500",
     gameId: "bloodstrike",
     name: "500 Gold",
     logo: "https://example.com/bs-gold.png",
@@ -334,6 +370,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "bs-gold-1000",
+    slug: "bs-gold-1000",
     gameId: "bloodstrike",
     name: "1000 Gold",
     logo: "https://example.com/bs-gold.png",
@@ -341,6 +378,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "bs-gold-2000",
+    slug: "bs-gold-2000",
     gameId: "bloodstrike",
     name: "2000 Gold",
     logo: "https://example.com/bs-gold.png",
@@ -348,6 +386,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "bs-battle-pass",
+    slug: "bs-battle-pass",
     gameId: "bloodstrike",
     name: "Battle Pass",
     logo: "https://example.com/bs-pass.png",
@@ -355,6 +394,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "bs-elite-pass",
+    slug: "bs-elite-pass",
     gameId: "bloodstrike",
     name: "Elite Pass",
     logo: "https://example.com/bs-pass.png",
@@ -364,6 +404,7 @@ const ITEM_SEED_DATA = [
   // Genshin Impact Items
   {
     id: "genshin-genesis-60",
+    slug: "genshin-genesis-60",
     gameId: "genshin",
     name: "60 Genesis Crystals",
     logo: "https://example.com/genshin-genesis.png",
@@ -371,6 +412,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "genshin-genesis-300",
+    slug: "genshin-genesis-300",
     gameId: "genshin",
     name: "300 Genesis Crystals",
     logo: "https://example.com/genshin-genesis.png",
@@ -378,6 +420,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "genshin-genesis-980",
+    slug: "genshin-genesis-980",
     gameId: "genshin",
     name: "980 Genesis Crystals",
     logo: "https://example.com/genshin-genesis.png",
@@ -385,6 +428,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "genshin-genesis-1980",
+    slug: "genshin-genesis-1980",
     gameId: "genshin",
     name: "1980 Genesis Crystals",
     logo: "https://example.com/genshin-genesis.png",
@@ -392,6 +436,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "genshin-genesis-3280",
+    slug: "genshin-genesis-3280",
     gameId: "genshin",
     name: "3280 Genesis Crystals",
     logo: "https://example.com/genshin-genesis.png",
@@ -399,6 +444,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "genshin-genesis-6480",
+    slug: "genshin-genesis-6480",
     gameId: "genshin",
     name: "6480 Genesis Crystals",
     logo: "https://example.com/genshin-genesis.png",
@@ -406,6 +452,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "genshin-welkin",
+    slug: "genshin-welkin",
     gameId: "genshin",
     name: "Blessing of the Welkin Moon",
     logo: "https://example.com/genshin-welkin.png",
@@ -413,6 +460,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "genshin-battle-pass",
+    slug: "genshin-battle-pass",
     gameId: "genshin",
     name: "Gnostic Hymn",
     logo: "https://example.com/genshin-bp.png",
@@ -420,6 +468,7 @@ const ITEM_SEED_DATA = [
   },
   {
     id: "genshin-battle-pass-bundle",
+    slug: "genshin-battle-pass-bundle",
     gameId: "genshin",
     name: "Gnostic Chorus",
     logo: "https://example.com/genshin-bp.png",
