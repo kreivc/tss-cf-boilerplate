@@ -112,6 +112,7 @@ export const server = await Worker("server", {
     BUCKET: bucket,
     DB: db,
     CORS_ORIGIN: alchemy.env.CORS_ORIGIN ?? "",
+    BASE_FRONTEND_URL: alchemy.env.BASE_FRONTEND_URL ?? "",
     BETTER_AUTH_SECRET: alchemy.secret.env.BETTER_AUTH_SECRET ?? "",
     BETTER_AUTH_URL: alchemy.env.BETTER_AUTH_URL ?? "",
     SESSION_KV: sessions,
@@ -120,6 +121,12 @@ export const server = await Worker("server", {
     R2_PUBLIC_BASE_URL: `https://${bucket.devDomain}`,
     R2_BUCKET_NAME: bucket.name,
     CLOUDFLARE_ACCOUNT_ID: alchemy.env.CLOUDFLARE_ACCOUNT_ID ?? "",
+    // IPAYMU
+    IPAYMU_BASE_URL: alchemy.env.IPAYMU_BASE_URL ?? "",
+    IPAYMU_API_KEY: alchemy.env.IPAYMU_API_KEY ?? "",
+    IPAYMU_VA: alchemy.env.IPAYMU_VA ?? "",
+    IPAYMU_CALLBACK_URL: alchemy.env.IPAYMU_CALLBACK_URL ?? "",
+    // dev
     IS_DEV: isDev ? "true" : "false",
   },
   dev: {

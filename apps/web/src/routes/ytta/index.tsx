@@ -1,6 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
+  FileTextIcon,
   Gamepad2Icon,
   PackageIcon,
   PlusIcon,
@@ -138,6 +139,20 @@ function AdminDashboard() {
                   <p className="font-medium">Add New Game</p>
                   <p className="text-muted-foreground text-sm">
                     Create a new game entry
+                  </p>
+                </div>
+              </div>
+            </Link>
+
+            <Link to="/ytta/reports">
+              <div className="group flex items-center gap-4 rounded-xl border border-glass-border bg-background/50 p-4 transition-all hover:border-gaming-primary/50 hover:bg-gaming-primary/5">
+                <div className="rounded-lg bg-gaming-secondary/20 p-3">
+                  <FileTextIcon className="size-5 text-gaming-secondary" />
+                </div>
+                <div>
+                  <p className="font-medium">Transaction Reports</p>
+                  <p className="text-muted-foreground text-sm">
+                    View and filter all transactions
                   </p>
                 </div>
               </div>

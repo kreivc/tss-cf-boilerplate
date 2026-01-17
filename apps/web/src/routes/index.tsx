@@ -1,14 +1,28 @@
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { CategoryGrid } from "@/components/category-grid";
 import { HeroSlider } from "@/components/hero-slider";
 import { QuickAccess } from "@/components/quick-access";
 import { TrendingSection } from "@/components/trending-section";
+import { orpc } from "@/utils/orpc";
 
 export const Route = createFileRoute("/")({
   component: HomeComponent,
+  loader: async ({ context }) => {
+    // Prefetch all active games for landing page
+    await context.queryClient.ensureQueryData(
+      orpc.game.getAll.queryOptions({ input: { activeOnly: true } })
+    );
+  },
 });
 
 function HomeComponent() {
+  const gamesQuery = useSuspenseQuery(
+    orpc.game.getAll.queryOptions({ input: { activeOnly: true } })
+  );
+
+  const games = gamesQuery.data.data;
+
   return (
     <main className="min-h-screen pb-20 md:pb-0">
       {/* Hero Slider */}
@@ -20,10 +34,10 @@ function HomeComponent() {
       <QuickAccess />
 
       {/* Trending Section */}
-      <TrendingSection />
+      <TrendingSection games={games} />
 
       {/* Category Grid */}
-      <CategoryGrid />
+      <CategoryGrid games={games} />
     </main>
   );
 }

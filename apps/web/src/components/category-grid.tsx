@@ -1,108 +1,124 @@
 import { Link } from "@tanstack/react-router";
-import { useCallback, useState } from "react";
+import { Gamepad2Icon, SparklesIcon } from "lucide-react";
+import { useCallback, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getGamesByCategory } from "@/data/games";
-import { useCurrency } from "@/lib/currency";
+import { CATEGORY_SLUGS, getGamePublisher } from "@/data/game-constants";
 import { m } from "@/paraglide/messages";
-import type { Game, GameCategory } from "@/types/game";
 
-type CategoryTab = "all" | GameCategory;
+// Game type matching API response
+interface Game {
+  id: string;
+  name: string;
+  slug: string;
+  category: string;
+  logo: string | null;
+  banner: string | null;
+  isActive: boolean;
+}
 
-const ITEMS_PER_PAGE = 10;
+type CategoryTab = "all" | "mobile" | "pc" | "console";
 
-function GameCard({ game }: { game: Game }) {
-  const { formatPrice } = useCurrency();
+interface GameCardProps {
+  game: Game;
+}
+
+function GameCard({ game }: GameCardProps) {
+  const publisher = getGamePublisher(game.slug);
 
   return (
     <Link
-      className="gaming-card group relative block cursor-pointer overflow-hidden text-left"
+      className="gaming-card group relative block overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-gaming-primary/50 hover:shadow-gaming-primary/10 hover:shadow-xl"
       params={{ slug: game.slug }}
       to="/game/$slug"
     >
-      {/* Image Placeholder */}
-      <div className="relative aspect-[4/3] bg-gradient-to-br from-muted via-card to-muted">
-        {/* Decorative gradient */}
-        <div
-          className="absolute inset-0 opacity-40"
-          style={{
-            background: `linear-gradient(135deg, 
-              hsl(${Number.parseInt(game.id, 10) * 45}, 60%, 45%) 0%, 
-              transparent 70%
-            )`,
-          }}
-        />
+      {/* Image/Logo Area */}
+      <div className="relative aspect-square overflow-hidden bg-muted/30">
+        {game.logo ? (
+          <div className="flex size-full items-center justify-center p-6">
+            <img
+              alt={game.name}
+              className="max-h-full max-w-full object-contain drop-shadow-lg transition-transform duration-300 group-hover:scale-110"
+              height={96}
+              src={game.logo}
+              width={96}
+            />
+          </div>
+        ) : (
+          <div className="flex size-full items-center justify-center">
+            <Gamepad2Icon className="size-16 text-muted-foreground/50" />
+          </div>
+        )}
 
-        {/* Badges */}
-        <div className="absolute top-3 right-3 flex flex-col gap-1.5">
-          {game.hotDeal && (
-            <Badge className="text-xs" variant="destructive">
-              {game.discount}% OFF
-            </Badge>
-          )}
-          {game.newRelease && (
-            <Badge className="bg-gaming-accent text-black text-xs">NEW</Badge>
-          )}
-        </div>
-
-        {/* Category Badge */}
-        <div className="absolute bottom-3 left-3">
+        {/* Category floating badge */}
+        <div className="absolute top-3 right-3">
           <Badge
-            className="glass border-glass-border text-xs capitalize"
+            className="border-none bg-background/80 text-xs capitalize backdrop-blur-md"
             variant="secondary"
           >
             {game.category}
           </Badge>
         </div>
+
+        {/* Active indicator */}
+        {game.isActive && (
+          <div className="absolute top-3 left-3">
+            <div className="flex items-center gap-1 rounded-full bg-emerald-500/90 px-2 py-0.5 text-white text-xs backdrop-blur-sm">
+              <span className="relative flex size-2">
+                <span className="absolute inline-flex size-full animate-ping rounded-full bg-white opacity-75" />
+                <span className="relative inline-flex size-2 rounded-full bg-white" />
+              </span>
+              Live
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Content */}
       <div className="p-4">
-        <h3 className="mb-1 line-clamp-1 font-semibold text-sm transition-colors group-hover:text-gaming-primary">
+        <h3 className="mb-1 line-clamp-1 font-bold text-base transition-colors group-hover:text-gaming-primary">
           {game.name}
         </h3>
-        <p className="mb-2 text-muted-foreground text-xs">{game.publisher}</p>
+        {publisher && (
+          <p className="mb-2 text-muted-foreground text-xs">{publisher}</p>
+        )}
         <div className="flex items-center justify-between">
-          <span className="font-bold text-gaming-primary text-sm">
-            {formatPrice(game.price)}
-          </span>
+          <div className="flex items-center gap-1.5">
+            <SparklesIcon className="size-3.5 text-gaming-primary" />
+            <span className="font-medium text-gaming-primary text-xs">
+              {m.topUp?.() ?? "Top Up"}
+            </span>
+          </div>
           <span className="text-muted-foreground text-xs opacity-0 transition-opacity group-hover:opacity-100">
-            {m.topUp?.() ?? "Top Up"} →
+            →
           </span>
         </div>
       </div>
+
+      {/* Bottom accent line on hover */}
+      <div className="absolute bottom-0 left-0 h-0.5 w-0 bg-gradient-to-r from-gaming-primary to-gaming-secondary transition-all duration-300 group-hover:w-full" />
     </Link>
   );
 }
 
-function GameCardSkeleton() {
-  return (
-    <div className="gaming-card overflow-hidden">
-      <Skeleton className="aspect-[4/3]" />
-      <div className="space-y-2 p-4">
-        <Skeleton className="h-4 w-3/4" />
-        <Skeleton className="h-3 w-1/2" />
-        <Skeleton className="h-4 w-1/3" />
-      </div>
-    </div>
-  );
+interface CategoryGridProps {
+  games: Game[];
 }
 
-export function CategoryGrid() {
+export function CategoryGrid({ games }: CategoryGridProps) {
   const [activeTab, setActiveTab] = useState<CategoryTab>("all");
-  const [displayCount, setDisplayCount] = useState(ITEMS_PER_PAGE);
-  const [isLoading, setIsLoading] = useState(false);
 
-  const allGames = getGamesByCategory(activeTab);
-  const displayedGames = allGames.slice(0, displayCount);
-  const hasMore = displayCount < allGames.length;
+  const filteredGames = useMemo(() => {
+    if (activeTab === "all") {
+      return games;
+    }
+    const categorySlugs = CATEGORY_SLUGS[activeTab] || [];
+    return games.filter((game) => categorySlugs.includes(game.slug));
+  }, [games, activeTab]);
 
   const handleTabChange = useCallback((value: string) => {
     setActiveTab(value as CategoryTab);
-    setDisplayCount(ITEMS_PER_PAGE);
     toast.info(
       value === "all"
         ? (m.allGames?.() ?? "All Games")
@@ -111,26 +127,11 @@ export function CategoryGrid() {
     );
   }, []);
 
-  const handleLoadMore = useCallback(() => {
-    setIsLoading(true);
-
-    // Simulate loading delay
-    setTimeout(() => {
-      setDisplayCount((prev) =>
-        Math.min(prev + ITEMS_PER_PAGE, allGames.length)
-      );
-      setIsLoading(false);
-      toast.success(m.moreGamesLoaded?.() ?? "More games loaded!", {
-        duration: 1500,
-      });
-    }, 800);
-  }, [allGames.length]);
-
   const tabs = [
-    { value: "all", label: m.categoryAll?.() ?? "All" },
-    { value: "mobile", label: m.categoryMobile?.() ?? "Mobile" },
-    { value: "pc", label: m.categoryPc?.() ?? "PC" },
-    { value: "console", label: m.categoryConsole?.() ?? "Console" },
+    { value: "all", label: m.categoryAll?.() ?? "All", icon: "🎮" },
+    { value: "mobile", label: m.categoryMobile?.() ?? "Mobile", icon: "📱" },
+    { value: "pc", label: m.categoryPc?.() ?? "PC", icon: "💻" },
+    { value: "console", label: m.categoryConsole?.() ?? "Console", icon: "🎯" },
   ];
 
   return (
@@ -138,25 +139,31 @@ export function CategoryGrid() {
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="mb-8 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-          <div>
-            <h2 className="mb-1 font-bold text-2xl tracking-tight sm:text-3xl">
-              {m.browseGames?.() ?? "🎮 Browse Games"}
-            </h2>
-            <p className="text-muted-foreground text-sm">
-              {m.browseGamesSubtitle?.() ??
-                "Find your favorite game and top up instantly"}
-            </p>
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gaming-primary/20">
+              <Gamepad2Icon className="size-5 text-gaming-primary" />
+            </div>
+            <div>
+              <h2 className="font-bold text-2xl tracking-tight sm:text-3xl">
+                {m.browseGames?.() ?? "Browse Games"}
+              </h2>
+              <p className="text-muted-foreground text-sm">
+                {m.browseGamesSubtitle?.() ??
+                  "Find your favorite game and top up instantly"}
+              </p>
+            </div>
           </div>
 
-          {/* Tabs */}
+          {/* Modern Tabs */}
           <Tabs onValueChange={handleTabChange} value={activeTab}>
-            <TabsList className="glass border-glass-border">
-              {tabs.map(({ value, label }) => (
+            <TabsList className="h-auto gap-1 rounded-xl border border-border/50 bg-card/50 p-1.5 backdrop-blur-sm">
+              {tabs.map(({ value, label, icon }) => (
                 <TabsTrigger
-                  className="data-[state=active]:bg-gaming-primary/20 data-[state=active]:text-gaming-primary"
+                  className="rounded-lg px-4 py-2 text-sm transition-all data-[state=active]:bg-gaming-primary data-[state=active]:text-white data-[state=active]:shadow-lg"
                   key={value}
                   value={value}
                 >
+                  <span className="mr-1.5">{icon}</span>
                   {label}
                 </TabsTrigger>
               ))}
@@ -166,55 +173,19 @@ export function CategoryGrid() {
 
         {/* Grid */}
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-          {displayedGames.map((game) => (
+          {filteredGames.map((game) => (
             <GameCard game={game} key={game.id} />
           ))}
-
-          {/* Loading Skeletons */}
-          {isLoading &&
-            Array.from({ length: ITEMS_PER_PAGE }).map((_, i) => (
-              <GameCardSkeleton
-                key={`skeleton-${
-                  // biome-ignore lint/suspicious/noArrayIndexKey: <we need to use the index for the key>
-                  i
-                }`}
-              />
-            ))}
         </div>
 
-        {/* Load More */}
-        {hasMore && !isLoading && (
-          <div className="mt-8 flex justify-center">
-            <Button
-              className="glass glow-hover border-glass-border hover:border-gaming-primary/30 hover:bg-gaming-primary/10 hover:text-gaming-primary"
-              onClick={handleLoadMore}
-              size="lg"
-              variant="outline"
-            >
-              {m.loadMore?.() ?? "Load More"}
-            </Button>
+        {/* Empty state */}
+        {filteredGames.length === 0 && (
+          <div className="gaming-card py-16 text-center">
+            <Gamepad2Icon className="mx-auto size-12 text-muted-foreground/50" />
+            <p className="mt-4 text-muted-foreground">
+              {m.noMoreGames?.() ?? "No games available in this category"}
+            </p>
           </div>
-        )}
-
-        {/* Loading State */}
-        {isLoading && (
-          <div className="mt-8 flex justify-center">
-            <Button
-              className="glass border-glass-border"
-              disabled
-              size="lg"
-              variant="outline"
-            >
-              {m.loading?.() ?? "Loading..."}
-            </Button>
-          </div>
-        )}
-
-        {/* No More Items */}
-        {!hasMore && displayedGames.length > 0 && (
-          <p className="mt-8 text-center text-muted-foreground text-sm">
-            {m.noMoreGames?.() ?? "You've seen all games in this category"}
-          </p>
         )}
       </div>
     </section>

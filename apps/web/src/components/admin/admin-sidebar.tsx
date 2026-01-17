@@ -1,5 +1,6 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import {
+  FileTextIcon,
   Gamepad2Icon,
   HomeIcon,
   type LucideIcon,
@@ -33,6 +34,11 @@ const mainNavItems: NavItem[] = [
     title: "Dashboard",
     href: "/ytta",
     icon: HomeIcon,
+  },
+  {
+    title: "Reports",
+    href: "/ytta/reports",
+    icon: FileTextIcon,
   },
 ];
 
@@ -82,26 +88,23 @@ export function AdminSidebar() {
             <SidebarMenu>
               {mainNavItems.map((item) => (
                 <SidebarMenuItem key={item.href}>
-                  <SidebarMenuButton
-                    isActive={isActive(item.href)}
-                    render={
-                      <Link
-                        className={cn(
-                          isActive(item.href) && "text-gaming-primary"
-                        )}
-                        to={item.href}
-                      />
-                    }
-                    tooltip={item.title}
-                  >
-                    <item.icon className="size-4" />
-                    <span>{item.title}</span>
-                    {item.badge && (
-                      <span className="ml-auto rounded-full bg-gaming-primary/20 px-2 py-0.5 text-gaming-primary text-xs">
-                        {item.badge}
-                      </span>
-                    )}
-                  </SidebarMenuButton>
+                  <Link to={item.href}>
+                    <SidebarMenuButton
+                      className={cn(
+                        isActive(item.href) && "text-gaming-primary"
+                      )}
+                      isActive={isActive(item.href)}
+                      tooltip={item.title}
+                    >
+                      <item.icon className="size-4" />
+                      <span>{item.title}</span>
+                      {item.badge && (
+                        <span className="ml-auto rounded-full bg-gaming-primary/20 px-2 py-0.5 text-gaming-primary text-xs">
+                          {item.badge}
+                        </span>
+                      )}
+                    </SidebarMenuButton>
+                  </Link>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
@@ -120,21 +123,18 @@ export function AdminSidebar() {
             <SidebarMenu>
               {productNavItems.map((item) => (
                 <SidebarMenuItem key={item.href}>
-                  <SidebarMenuButton
-                    isActive={isActive(item.href)}
-                    render={
-                      <Link
-                        className={cn(
-                          isActive(item.href) && "text-gaming-primary"
-                        )}
-                        to={item.href}
-                      />
-                    }
-                    tooltip={item.title}
-                  >
-                    <item.icon className="size-4" />
-                    <span>{item.title}</span>
-                  </SidebarMenuButton>
+                  <Link to={item.href}>
+                    <SidebarMenuButton
+                      className={cn(
+                        isActive(item.href) && "text-gaming-primary"
+                      )}
+                      isActive={isActive(item.href)}
+                      tooltip={item.title}
+                    >
+                      <item.icon className="size-4" />
+                      <span>{item.title}</span>
+                    </SidebarMenuButton>
+                  </Link>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>

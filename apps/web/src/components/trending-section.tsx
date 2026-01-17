@@ -1,92 +1,177 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowRightIcon } from "lucide-react";
+import { ArrowRightIcon, FlameIcon, TrendingUpIcon } from "lucide-react";
+import { useMemo } from "react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { getTrendingGames } from "@/data/games";
-import { useCurrency } from "@/lib/currency";
+import { getGamePublisher, TRENDING_SLUGS } from "@/data/game-constants";
 import { m } from "@/paraglide/messages";
-import type { Game } from "@/types/game";
 
-function TrendingCard({ game, rank }: { game: Game; rank: number }) {
-  const { formatPrice } = useCurrency();
+// Game type matching API response
+interface Game {
+  id: string;
+  name: string;
+  slug: string;
+  category: string;
+  logo: string | null;
+  banner: string | null;
+  isActive: boolean;
+}
 
-  const getRankBadgeClass = (rank: number) => {
+interface TrendingCardProps {
+  game: Game;
+  rank: number;
+}
+
+function TrendingCard({ game, rank }: TrendingCardProps) {
+  const publisher = getGamePublisher(game.slug);
+
+  const getRankBadge = (rank: number) => {
     switch (rank) {
       case 1:
-        return "rank-badge rank-badge-1";
+        return {
+          style:
+            "bg-gradient-to-br from-yellow-400 to-amber-500 text-black shadow-lg shadow-amber-500/40",
+          glow: "ring-2 ring-amber-400/30",
+          accent: "from-amber-500/20 via-transparent to-transparent",
+        };
       case 2:
-        return "rank-badge rank-badge-2";
+        return {
+          style:
+            "bg-gradient-to-br from-slate-300 to-gray-400 text-black shadow-lg shadow-gray-400/30",
+          glow: "ring-2 ring-slate-400/20",
+          accent: "from-slate-400/15 via-transparent to-transparent",
+        };
       case 3:
-        return "rank-badge rank-badge-3";
+        return {
+          style:
+            "bg-gradient-to-br from-orange-400 to-amber-600 text-black shadow-lg shadow-orange-500/30",
+          glow: "ring-2 ring-orange-400/20",
+          accent: "from-orange-500/15 via-transparent to-transparent",
+        };
       default:
-        return "rank-badge rank-badge-default";
+        return {
+          style: "bg-muted/80 text-foreground",
+          glow: "",
+          accent: "from-muted/10 via-transparent to-transparent",
+        };
     }
   };
 
+  const rankConfig = getRankBadge(rank);
+
   return (
     <Link
-      className="gaming-card group relative block aspect-[3/4] w-full cursor-pointer overflow-hidden"
+      className={`group relative block aspect-[3/4] w-full overflow-hidden rounded-2xl border border-border/50 bg-card/80 backdrop-blur-sm transition-all duration-500 hover:-translate-y-2 hover:border-gaming-primary/60 hover:shadow-2xl hover:shadow-gaming-primary/20 ${rankConfig.glow}`}
       params={{ slug: game.slug }}
       to="/game/$slug"
     >
-      {/* Rank Badge */}
-      <div className={getRankBadgeClass(rank)}>{rank}</div>
+      {/* Rank-based subtle gradient accent at top */}
+      <div
+        className={`absolute inset-0 bg-gradient-to-b ${rankConfig.accent} pointer-events-none`}
+      />
 
-      {/* Background Placeholder with Gaming Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-muted via-card to-muted">
-        {/* Decorative gradient */}
-        <div
-          className="absolute inset-0 opacity-60"
-          style={{
-            background: `linear-gradient(135deg, 
-              hsl(${(rank * 60) % 360}, 70%, 50%) 0%, 
-              transparent 60%
-            )`,
-          }}
-        />
+      {/* Animated shimmer effect on hover */}
+      <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/5 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+
+      {/* Logo/Image section with floating effect */}
+      <div className="relative flex h-[55%] items-center justify-center p-4">
+        {game.logo ? (
+          <img
+            alt={game.name}
+            className="max-h-[85%] max-w-[85%] object-contain drop-shadow-2xl transition-all duration-500 group-hover:scale-110 group-hover:drop-shadow-[0_20px_30px_rgba(168,85,247,0.3)]"
+            height={128}
+            src={game.logo}
+            width={128}
+          />
+        ) : (
+          <div className="flex size-20 items-center justify-center rounded-xl bg-muted/50">
+            <span className="text-4xl">🎮</span>
+          </div>
+        )}
       </div>
 
-      {/* Gradient Overlay */}
-      <div className="gradient-overlay-strong absolute inset-0" />
+      {/* Rank Badge with special styling */}
+      <div
+        className={`absolute top-3 left-3 flex h-8 w-8 items-center justify-center rounded-full font-bold text-sm ${rankConfig.style}`}
+      >
+        {rank}
+      </div>
 
-      {/* Content */}
-      <div className="absolute inset-0 flex flex-col justify-end p-4">
-        <h3 className="mb-1 line-clamp-2 font-bold text-lg transition-colors group-hover:text-gaming-primary">
+      {/* Trending fire indicator for top 3 */}
+      {rank <= 3 && (
+        <div className="absolute top-3 right-3">
+          <div className="flex items-center gap-1 rounded-full bg-gaming-primary/20 px-2 py-1 backdrop-blur-sm">
+            <FlameIcon className="size-3 animate-pulse text-gaming-primary" />
+            <span className="font-medium text-gaming-primary text-xs">Hot</span>
+          </div>
+        </div>
+      )}
+
+      {/* Content with gradient overlay */}
+      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-background via-background/95 to-transparent p-4 pt-10">
+        <h3 className="mb-1 line-clamp-1 font-bold text-lg transition-colors group-hover:text-gaming-primary">
           {game.name}
         </h3>
-        <p className="mb-2 text-muted-foreground text-xs">{game.publisher}</p>
-        <div className="flex items-center justify-between">
-          <span className="font-bold text-gaming-primary">
-            {formatPrice(game.price)}
-          </span>
-          <span className="text-muted-foreground text-xs opacity-0 transition-opacity group-hover:opacity-100">
-            {m.topUp?.() ?? "Top Up"} →
-          </span>
+        <div className="flex flex-col gap-1.5">
+          {publisher && (
+            <span className="font-medium text-muted-foreground text-xs">
+              {publisher}
+            </span>
+          )}
+          <div className="flex items-center justify-between">
+            <Badge
+              className="w-fit border-none bg-muted/60 text-xs capitalize backdrop-blur-sm"
+              variant="secondary"
+            >
+              {game.category}
+            </Badge>
+            <span className="flex translate-x-2 items-center gap-1 font-medium text-gaming-primary text-xs opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
+              {m.topUp?.() ?? "Top Up"}
+              <ArrowRightIcon className="size-3" />
+            </span>
+          </div>
         </div>
       </div>
 
-      {/* Hover Glow */}
-      <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-        <div className="glow-primary absolute inset-0 rounded-2xl" />
-      </div>
+      {/* Bottom accent line */}
+      <div className="absolute bottom-0 left-0 h-0.5 w-0 bg-gradient-to-r from-gaming-primary via-gaming-secondary to-gaming-accent transition-all duration-500 group-hover:w-full" />
     </Link>
   );
 }
 
-export function TrendingSection() {
-  const trendingGames = getTrendingGames();
+interface TrendingSectionProps {
+  games: Game[];
+}
+
+export function TrendingSection({ games }: TrendingSectionProps) {
+  const trendingGames = useMemo(() => {
+    return TRENDING_SLUGS.map((slug) =>
+      games.find((game) => game.slug === slug)
+    ).filter((game): game is Game => game !== undefined);
+  }, [games]);
+
+  if (trendingGames.length === 0) {
+    return null;
+  }
 
   return (
     <section className="py-12" id="trending">
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="mb-8 flex items-center justify-between">
-          <div>
-            <h2 className="mb-1 font-bold text-2xl tracking-tight sm:text-3xl">
-              {m.trendingTitle?.() ?? "🔥 Trending Now"}
-            </h2>
-            <p className="text-muted-foreground text-sm">
-              {m.trendingSubtitle?.() ?? "Most popular games this week"}
-            </p>
+          <div className="flex items-center gap-3">
+            <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gaming-primary/20">
+              <TrendingUpIcon className="size-5 text-gaming-primary" />
+              <div className="absolute inset-0 animate-ping rounded-xl bg-gaming-primary/20 opacity-50" />
+            </div>
+            <div>
+              <h2 className="font-bold text-2xl tracking-tight sm:text-3xl">
+                {m.trendingTitle?.() ?? "Trending Now"}
+              </h2>
+              <p className="text-muted-foreground text-sm">
+                {m.trendingSubtitle?.() ?? "Most popular games this week"}
+              </p>
+            </div>
           </div>
           <Button
             className="hidden items-center gap-2 hover:text-gaming-primary sm:flex"

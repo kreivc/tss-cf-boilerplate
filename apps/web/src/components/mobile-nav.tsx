@@ -3,8 +3,8 @@ import {
   FlameIcon,
   HomeIcon,
   LayoutDashboardIcon,
-  ListTodoIcon,
   MenuIcon,
+  PackageSearchIcon,
   SparklesIcon,
   TicketIcon,
 } from "lucide-react";
@@ -31,11 +31,15 @@ export function MobileNav({ className }: MobileNavProps) {
   const mainLinks = [
     { to: "/", label: m.home?.() ?? "Home", icon: HomeIcon },
     {
+      to: "/find-order",
+      label: "Find Order",
+      icon: PackageSearchIcon,
+    },
+    {
       to: "/dashboard",
       label: m.dashboard?.() ?? "Dashboard",
       icon: LayoutDashboardIcon,
     },
-    { to: "/todos", label: m.todos?.() ?? "Todos", icon: ListTodoIcon },
   ] as const;
 
   const quickLinks = [

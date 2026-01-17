@@ -13,7 +13,11 @@ export interface PaymentMethod {
   id: string;
   name: string;
   icon: string; // emoji or icon name
-  category: "ewallet" | "bank" | "convenience" | "other";
+  category: "ewallet" | "bank" | "convenience" | "other" | "gateway";
+  /** Payment gateway provider (if this is a gateway method) */
+  gateway?: "IPAYMU";
+  /** Locales where this payment method is available */
+  availableLocales?: string[];
 }
 
 // Generic packages for games - in a real app this would be per-game
@@ -146,6 +150,20 @@ export const GAME_PACKAGES: Record<string, GamePackage[]> = {
   ],
 };
 
+/**
+ * Payment gateways - these are the main payment providers that handle transactions
+ */
+export const PAYMENT_GATEWAYS: PaymentMethod[] = [
+  {
+    id: "ipaymu",
+    name: "iPaymu",
+    icon: "💳",
+    category: "gateway",
+    gateway: "IPAYMU",
+    availableLocales: ["id"], // Indonesia only
+  },
+];
+
 export const PAYMENT_METHODS: PaymentMethod[] = [
   // E-Wallets
   { id: "dana", name: "DANA", icon: "💳", category: "ewallet" },
@@ -175,4 +193,15 @@ export const getPaymentMethodsByCategory = () => {
     bank: PAYMENT_METHODS.filter((m) => m.category === "bank"),
     other: PAYMENT_METHODS.filter((m) => m.category === "other"),
   };
+};
+
+/**
+ * Get payment gateways with availability status for current locale
+ */
+export const getPaymentGatewaysForLocale = (locale: string) => {
+  return PAYMENT_GATEWAYS.map((gateway) => ({
+    ...gateway,
+    isAvailable:
+      !gateway.availableLocales || gateway.availableLocales.includes(locale),
+  }));
 };

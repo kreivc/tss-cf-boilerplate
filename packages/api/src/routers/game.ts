@@ -1,5 +1,7 @@
 import { db } from "@test-tss/db";
 import { games } from "@test-tss/db/schema/game";
+import { items } from "@test-tss/db/schema/item";
+import { itemDetails } from "@test-tss/db/schema/item-detail";
 import {
   CreateGameInput,
   PaginationInput,
@@ -67,6 +69,60 @@ export const gameRouter = {
         .limit(1);
 
       return result[0] ?? null;
+    }),
+
+  // Get game with items and details (for game detail page)
+  getWithItems: publicProcedure
+    .input(
+      z.object({
+        slug: z.string(),
+        countryCode: z.string().optional(),
+      })
+    )
+    .handler(async ({ input }) => {
+      // Get game by slug
+      const game = await db
+        .select()
+        .from(games)
+        .where(eq(games.slug, input.slug))
+        .limit(1);
+
+      if (!game[0]) {
+        return null;
+      }
+
+      // Get items for this game
+      const gameItems = await db
+        .select()
+        .from(items)
+        .where(and(eq(items.gameId, game[0].id), eq(items.isActive, true)));
+
+      // Get details for each item
+      const itemsWithDetails = await Promise.all(
+        gameItems.map(async (item) => {
+          const detailsQuery = db
+            .select()
+            .from(itemDetails)
+            .where(eq(itemDetails.itemId, item.id));
+
+          const details = await detailsQuery;
+
+          // Filter by country code if provided
+          const filteredDetails = input.countryCode
+            ? details.filter((d) => d.countryCode === input.countryCode)
+            : details;
+
+          return {
+            ...item,
+            details: filteredDetails.length > 0 ? filteredDetails : details,
+          };
+        })
+      );
+
+      return {
+        ...game[0],
+        items: itemsWithDetails,
+      };
     }),
 
   // Create new game (admin only)

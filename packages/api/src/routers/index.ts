@@ -1,9 +1,11 @@
 import type { RouterClient } from "@orpc/server";
 import { v7 } from "uuid";
 import { protectedProcedure, publicProcedure } from "../index";
+import { accountRouter } from "./account";
 import { gameRouter } from "./game";
 import { itemRouter } from "./item";
 import { todoRouter } from "./todo";
+import { transactionRouter } from "./transaction";
 import { uploadRouter } from "./upload";
 
 export const appRouter = {
@@ -21,6 +23,8 @@ export const appRouter = {
   game: gameRouter,
   item: itemRouter,
   upload: uploadRouter,
+  account: accountRouter,
+  transaction: transactionRouter,
 };
 export type AppRouter = typeof appRouter;
 export type AppRouterClient = RouterClient<typeof appRouter>;

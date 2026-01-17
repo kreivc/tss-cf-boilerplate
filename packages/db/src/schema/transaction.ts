@@ -10,6 +10,7 @@ export const transactions = sqliteTable(
   {
     id: text("id").primaryKey(), // Your internal ID
     referenceId: text("reference_id").unique(), // External PG ID
+    gameSlug: text("game_slug").notNull(), // Game identifier
     gameId: text("game_id")
       .notNull()
       .references(() => games.id),
@@ -21,8 +22,11 @@ export const transactions = sqliteTable(
       .references(() => itemDetails.id),
     paymentProvider: text("payment_provider").notNull(),
     totalPrice: real("total_price").notNull(),
-    status: text("status").notNull().default("PENDING"), // PENDING, PAID, SUCCESS, FAILED
+    status: text("status").notNull().default("PENDING"), // PENDING, PROCESSING, SUCCESS, FAILED
+    paymentUrl: text("payment_url"), // URL from payment gateway for customer to pay
     responseString: text("response_string"), // For provider logs/errors
+    inputData: text("input_data"), // Stringified TransactionInputData (game params, email, etc.)
+    email: text("email"), // User email
     ...auditFields,
   },
   (table) => [

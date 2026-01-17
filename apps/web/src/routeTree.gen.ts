@@ -12,9 +12,12 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as YttaRouteImport } from './routes/ytta'
 import { Route as TodosRouteImport } from './routes/todos'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as FindOrderRouteImport } from './routes/find-order'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as YttaIndexRouteImport } from './routes/ytta/index'
+import { Route as YttaReportsRouteImport } from './routes/ytta/reports'
+import { Route as OrderOrderIdRouteImport } from './routes/order.$orderId'
 import { Route as GameSlugRouteImport } from './routes/game.$slug'
 import { Route as YttaGameIndexRouteImport } from './routes/ytta/game/index'
 import { Route as YttaGameCreateRouteImport } from './routes/ytta/game/create'
@@ -38,6 +41,11 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FindOrderRoute = FindOrderRouteImport.update({
+  id: '/find-order',
+  path: '/find-order',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -52,6 +60,16 @@ const YttaIndexRoute = YttaIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => YttaRoute,
+} as any)
+const YttaReportsRoute = YttaReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => YttaRoute,
+} as any)
+const OrderOrderIdRoute = OrderOrderIdRouteImport.update({
+  id: '/order/$orderId',
+  path: '/order/$orderId',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const GameSlugRoute = GameSlugRouteImport.update({
   id: '/game/$slug',
@@ -93,10 +111,13 @@ const YttaGameSlugItemItemSlugRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/find-order': typeof FindOrderRoute
   '/login': typeof LoginRoute
   '/todos': typeof TodosRoute
   '/ytta': typeof YttaRouteWithChildren
   '/game/$slug': typeof GameSlugRoute
+  '/order/$orderId': typeof OrderOrderIdRoute
+  '/ytta/reports': typeof YttaReportsRoute
   '/ytta/': typeof YttaIndexRoute
   '/ytta/game/create': typeof YttaGameCreateRoute
   '/ytta/game': typeof YttaGameIndexRoute
@@ -108,9 +129,12 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/find-order': typeof FindOrderRoute
   '/login': typeof LoginRoute
   '/todos': typeof TodosRoute
   '/game/$slug': typeof GameSlugRoute
+  '/order/$orderId': typeof OrderOrderIdRoute
+  '/ytta/reports': typeof YttaReportsRoute
   '/ytta': typeof YttaIndexRoute
   '/ytta/game/create': typeof YttaGameCreateRoute
   '/ytta/game': typeof YttaGameIndexRoute
@@ -123,10 +147,13 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/find-order': typeof FindOrderRoute
   '/login': typeof LoginRoute
   '/todos': typeof TodosRoute
   '/ytta': typeof YttaRouteWithChildren
   '/game/$slug': typeof GameSlugRoute
+  '/order/$orderId': typeof OrderOrderIdRoute
+  '/ytta/reports': typeof YttaReportsRoute
   '/ytta/': typeof YttaIndexRoute
   '/ytta/game/create': typeof YttaGameCreateRoute
   '/ytta/game/': typeof YttaGameIndexRoute
@@ -140,10 +167,13 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/dashboard'
+    | '/find-order'
     | '/login'
     | '/todos'
     | '/ytta'
     | '/game/$slug'
+    | '/order/$orderId'
+    | '/ytta/reports'
     | '/ytta/'
     | '/ytta/game/create'
     | '/ytta/game'
@@ -155,9 +185,12 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/dashboard'
+    | '/find-order'
     | '/login'
     | '/todos'
     | '/game/$slug'
+    | '/order/$orderId'
+    | '/ytta/reports'
     | '/ytta'
     | '/ytta/game/create'
     | '/ytta/game'
@@ -169,10 +202,13 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/dashboard'
+    | '/find-order'
     | '/login'
     | '/todos'
     | '/ytta'
     | '/game/$slug'
+    | '/order/$orderId'
+    | '/ytta/reports'
     | '/ytta/'
     | '/ytta/game/create'
     | '/ytta/game/'
@@ -185,10 +221,12 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRoute
+  FindOrderRoute: typeof FindOrderRoute
   LoginRoute: typeof LoginRoute
   TodosRoute: typeof TodosRoute
   YttaRoute: typeof YttaRouteWithChildren
   GameSlugRoute: typeof GameSlugRoute
+  OrderOrderIdRoute: typeof OrderOrderIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -214,6 +252,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/find-order': {
+      id: '/find-order'
+      path: '/find-order'
+      fullPath: '/find-order'
+      preLoaderRoute: typeof FindOrderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard': {
       id: '/dashboard'
       path: '/dashboard'
@@ -234,6 +279,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/ytta/'
       preLoaderRoute: typeof YttaIndexRouteImport
       parentRoute: typeof YttaRoute
+    }
+    '/ytta/reports': {
+      id: '/ytta/reports'
+      path: '/reports'
+      fullPath: '/ytta/reports'
+      preLoaderRoute: typeof YttaReportsRouteImport
+      parentRoute: typeof YttaRoute
+    }
+    '/order/$orderId': {
+      id: '/order/$orderId'
+      path: '/order/$orderId'
+      fullPath: '/order/$orderId'
+      preLoaderRoute: typeof OrderOrderIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/game/$slug': {
       id: '/game/$slug'
@@ -288,6 +347,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface YttaRouteChildren {
+  YttaReportsRoute: typeof YttaReportsRoute
   YttaIndexRoute: typeof YttaIndexRoute
   YttaGameCreateRoute: typeof YttaGameCreateRoute
   YttaGameIndexRoute: typeof YttaGameIndexRoute
@@ -298,6 +358,7 @@ interface YttaRouteChildren {
 }
 
 const YttaRouteChildren: YttaRouteChildren = {
+  YttaReportsRoute: YttaReportsRoute,
   YttaIndexRoute: YttaIndexRoute,
   YttaGameCreateRoute: YttaGameCreateRoute,
   YttaGameIndexRoute: YttaGameIndexRoute,
@@ -312,10 +373,12 @@ const YttaRouteWithChildren = YttaRoute._addFileChildren(YttaRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRoute,
+  FindOrderRoute: FindOrderRoute,
   LoginRoute: LoginRoute,
   TodosRoute: TodosRoute,
   YttaRoute: YttaRouteWithChildren,
   GameSlugRoute: GameSlugRoute,
+  OrderOrderIdRoute: OrderOrderIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

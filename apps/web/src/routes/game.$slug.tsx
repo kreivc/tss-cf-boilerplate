@@ -1,20 +1,29 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import {
+  areRequiredParamsFilled,
+  type GameSlug,
+  getEmptyParamsForGame,
+} from "@test-tss/types";
 import {
   CheckCircle2Icon,
   ChevronLeftIcon,
   ClockIcon,
   CreditCardIcon,
+  FlameIcon,
+  GlobeIcon,
   HelpCircleIcon,
-  InfoIcon,
   MailIcon,
   PackageIcon,
   ShieldCheckIcon,
   SparklesIcon,
+  StarIcon,
   UserIcon,
   ZapIcon,
 } from "lucide-react";
-import { useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
+import { GameInputRenderer } from "@/components/game-input-renderer";
 import {
   Accordion,
   AccordionContent,
@@ -27,40 +36,220 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import {
-  getPackagesForGame,
-  getPaymentMethodsByCategory,
-} from "@/data/game-packages";
-import { getGameBySlug } from "@/data/games";
-import { useCurrency } from "@/lib/currency";
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { LOCALE_TO_COUNTRY_CODE } from "@/data/game-constants";
+import { getPaymentGatewaysForLocale } from "@/data/game-packages";
 import { m } from "@/paraglide/messages";
+import { getLocale } from "@/paraglide/runtime";
+import { orpc } from "@/utils/orpc";
 
 export const Route = createFileRoute("/game/$slug")({
   component: GameDetailPage,
+  loader: async ({ context, params }) => {
+    const locale = typeof window !== "undefined" ? getLocale() : "en";
+    const countryCode = LOCALE_TO_COUNTRY_CODE[locale] || "US";
+    await context.queryClient.ensureQueryData(
+      orpc.game.getWithItems.queryOptions({
+        input: { slug: params.slug, countryCode },
+      })
+    );
+  },
 });
+
+// Types for items with details
+interface ItemDetail {
+  id: string;
+  itemId: string;
+  countryCode: string;
+  symbol: string;
+  price: number;
+}
+
+interface ItemWithDetails {
+  id: string;
+  slug: string;
+  gameId: string;
+  name: string;
+  logo: string | null;
+  category: string;
+  isActive: boolean;
+  details: ItemDetail[];
+}
+
+interface VerifiedAccount {
+  username: string;
+  params: Record<string, string>;
+}
 
 // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <we need to use a lot of state and logic for the game detail page>
 function GameDetailPage() {
   const { slug } = Route.useParams();
-  const game = getGameBySlug(slug);
-  const packages = getPackagesForGame(slug);
-  const paymentMethods = getPaymentMethodsByCategory();
-  const { formatPrice } = useCurrency();
+  const navigate = useNavigate();
+  const locale = getLocale();
+  const countryCode = LOCALE_TO_COUNTRY_CODE[locale] || "US";
 
-  // Form state
-  const [accountId, setAccountId] = useState("");
-  const [serverId, setServerId] = useState("");
+  // Section refs for auto-scroll
+  const packageSectionRef = useRef<HTMLDivElement>(null);
+  const paymentSectionRef = useRef<HTMLDivElement>(null);
+  const emailSectionRef = useRef<HTMLDivElement>(null);
+
+  const gameQuery = useSuspenseQuery(
+    orpc.game.getWithItems.queryOptions({
+      input: { slug, countryCode },
+    })
+  );
+
+  const game = gameQuery.data;
+  const items = (game?.items ?? []) as ItemWithDetails[];
+
+  // Get payment gateways with availability for current locale
+  const paymentGateways = useMemo(
+    () => getPaymentGatewaysForLocale(locale),
+    [locale]
+  );
+
+  // Account verification mutation
+  const checkUserMutation = useMutation(
+    orpc.account.checkUser.mutationOptions({
+      onSuccess: (data) => {
+        setVerifiedAccount({
+          username: data.username,
+          params: gameParams,
+        });
+        toast.success("Account verified successfully!");
+        // Auto-scroll to package section
+        setTimeout(() => {
+          packageSectionRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }, 300);
+      },
+      onError: () => {
+        toast.error("Failed to verify account. Please check your ID.");
+      },
+    })
+  );
+
+  // Transaction creation mutation
+  const createTransactionMutation = useMutation(
+    orpc.transaction.create.mutationOptions({
+      onSuccess: (data) => {
+        toast.success(m.orderPlaced?.() ?? "Order placed successfully!");
+        navigate({
+          to: "/order/$orderId",
+          params: { orderId: data.transactionId },
+        });
+      },
+      onError: () => {
+        toast.error("Failed to create transaction. Please try again.");
+      },
+    })
+  );
+
+  // Group items by category
+  const groupedItems = useMemo(() => {
+    const recommended: ItemWithDetails[] = [];
+    const hot: ItemWithDetails[] = [];
+    const all: ItemWithDetails[] = [];
+
+    for (const item of items) {
+      const category = item.category.toLowerCase();
+      if (category === "recomended" || category === "recommended") {
+        recommended.push(item);
+      } else if (category === "hot") {
+        hot.push(item);
+      } else {
+        all.push(item);
+      }
+    }
+
+    return { recommended, hot, all };
+  }, [items]);
+
+  // Form state - use game-specific params
+  const [gameParams, setGameParams] = useState<Record<string, string>>(() =>
+    getEmptyParamsForGame(slug as GameSlug)
+  );
+  const [verifiedAccount, setVerifiedAccount] =
+    useState<VerifiedAccount | null>(null);
   const [selectedPackage, setSelectedPackage] = useState<string | null>(null);
   const [selectedPayment, setSelectedPayment] = useState<string | null>(null);
   const [email, setEmail] = useState("");
 
-  const selectedPkg = packages.find((p) => p.id === selectedPackage);
+  const selectedItem = items.find((item) => item.id === selectedPackage);
 
-  const handleSubmit = () => {
-    if (!accountId) {
-      toast.error(m.accountDataRequired?.() ?? "Please enter your account ID");
+  // Get price for selected item
+  const getItemPrice = (item: ItemWithDetails): string => {
+    const detail = item.details[0];
+    if (!detail) {
+      return "N/A";
+    }
+    return `${detail.symbol}${detail.price.toLocaleString()}`;
+  };
+
+  // Handle account check
+  const handleCheckAccount = useCallback(() => {
+    if (!areRequiredParamsFilled(slug as GameSlug, gameParams)) {
+      toast.error("Please fill in all required fields");
       return;
     }
-    if (!selectedPackage) {
+    // For API, we send the first available ID field
+    const accountId =
+      gameParams.userId ||
+      gameParams.uid ||
+      gameParams.playerId ||
+      gameParams.riotId ||
+      gameParams.steamId ||
+      "";
+    checkUserMutation.mutate({
+      accountId,
+      gameSlug: slug,
+      serverId: gameParams.serverId || undefined,
+    });
+  }, [gameParams, slug, checkUserMutation]);
+
+  // Handle reset account
+  const handleResetAccount = useCallback(() => {
+    setVerifiedAccount(null);
+    setGameParams(getEmptyParamsForGame(slug as GameSlug));
+  }, [slug]);
+
+  // Handle package selection with auto-scroll
+  const handleSelectPackage = useCallback((itemId: string) => {
+    setSelectedPackage(itemId);
+    setTimeout(() => {
+      paymentSectionRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 300);
+  }, []);
+
+  // Handle payment selection with auto-scroll
+  const handleSelectPayment = useCallback((paymentId: string) => {
+    setSelectedPayment(paymentId);
+    setTimeout(() => {
+      emailSectionRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 300);
+  }, []);
+
+  const handleSubmit = () => {
+    if (!verifiedAccount) {
+      toast.error("Please verify your account first");
+      return;
+    }
+    if (!game) {
+      toast.error("Game not found");
+      return;
+    }
+    if (!(selectedPackage && selectedItem)) {
       toast.error(m.selectPackageRequired?.() ?? "Please select a package");
       return;
     }
@@ -75,8 +264,21 @@ function GameDetailPage() {
       return;
     }
 
-    toast.success(m.orderPlaced?.() ?? "Order placed successfully!", {
-      description: `${selectedPkg?.name} for ${game?.name}`,
+    // Get the item detail for the selected item
+    const itemDetail = selectedItem.details[0];
+    if (!itemDetail) {
+      toast.error("Item price not available");
+      return;
+    }
+
+    // Create real transaction via API
+    createTransactionMutation.mutate({
+      gameId: game.id,
+      itemId: selectedItem.id,
+      itemDetailId: itemDetail.id,
+      email,
+      gameParams: verifiedAccount.params,
+      paymentMethod: selectedPayment,
     });
   };
 
@@ -98,7 +300,7 @@ function GameDetailPage() {
       num: 1,
       title: m.accountData?.() ?? "Account Data",
       icon: UserIcon,
-      done: !!accountId,
+      done: !!verifiedAccount,
     },
     {
       num: 2,
@@ -124,17 +326,29 @@ function GameDetailPage() {
     <main className="min-h-screen pb-20 md:pb-0">
       {/* Hero Section */}
       <section className="relative h-64 overflow-hidden md:h-80">
-        {/* Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-muted via-card to-muted">
-          <div
-            className="absolute inset-0 opacity-50"
-            style={{
-              background: `linear-gradient(135deg, 
-                hsl(${Number.parseInt(game.id, 10) * 45}, 70%, 40%) 0%, 
-                transparent 60%
-              )`,
-            }}
-          />
+        {/* Background - Use banner or gradient */}
+        <div className="absolute inset-0">
+          {game.banner ? (
+            <img
+              alt={game.name}
+              className="size-full object-cover"
+              height={320}
+              src={game.banner}
+              width={1280}
+            />
+          ) : (
+            <div className="size-full bg-gradient-to-br from-muted via-card to-muted">
+              <div
+                className="absolute inset-0 opacity-50"
+                style={{
+                  background: `linear-gradient(135deg, 
+                    hsl(${game.name.length * 45}, 70%, 40%) 0%, 
+                    transparent 60%
+                  )`,
+                }}
+              />
+            </div>
+          )}
         </div>
         <div className="gradient-overlay-strong absolute inset-0" />
 
@@ -155,11 +369,21 @@ function GameDetailPage() {
 
             {/* Game Info */}
             <div className="flex items-end gap-4">
-              {/* Game Icon */}
+              {/* Game Icon/Logo */}
               <div className="shrink-0">
                 <div className="glow-primary h-20 w-20 rounded-2xl bg-gradient-to-br from-gaming-primary to-gaming-secondary p-0.5 md:h-24 md:w-24">
                   <div className="flex h-full w-full items-center justify-center rounded-2xl bg-card">
-                    <span className="text-3xl md:text-4xl">🎮</span>
+                    {game.logo ? (
+                      <img
+                        alt={game.name}
+                        className="size-16 object-contain md:size-20"
+                        height={80}
+                        src={game.logo}
+                        width={80}
+                      />
+                    ) : (
+                      <span className="text-3xl md:text-4xl">🎮</span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -172,9 +396,6 @@ function GameDetailPage() {
                 <h1 className="mb-1 line-clamp-1 font-bold text-2xl md:text-3xl">
                   {game.name}
                 </h1>
-                <p className="text-muted-foreground text-sm">
-                  {game.publisher}
-                </p>
               </div>
             </div>
           </div>
@@ -234,43 +455,20 @@ function GameDetailPage() {
                   </h2>
                 </div>
 
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label htmlFor="accountId">
-                      {m.userId?.() ?? "User ID"}
-                    </Label>
-                    <Input
-                      className="h-12 border-glass-border bg-background/50 focus:border-gaming-primary"
-                      id="accountId"
-                      onChange={(e) => setAccountId(e.target.value)}
-                      placeholder={m.enterUserId?.() ?? "Enter your User ID"}
-                      value={accountId}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="serverId">
-                      {m.serverId?.() ?? "Server ID"} (
-                      {m.optional?.() ?? "Optional"})
-                    </Label>
-                    <Input
-                      className="h-12 border-glass-border bg-background/50 focus:border-gaming-primary"
-                      id="serverId"
-                      onChange={(e) => setServerId(e.target.value)}
-                      placeholder={m.enterServerId?.() ?? "Enter Server ID"}
-                      value={serverId}
-                    />
-                  </div>
-                </div>
-
-                <p className="mt-3 flex items-center gap-1 text-muted-foreground text-xs">
-                  <InfoIcon className="size-3" />
-                  {m.findIdInfo?.() ??
-                    "Find your ID in game settings or profile"}
-                </p>
+                <GameInputRenderer
+                  disabled={!!verifiedAccount}
+                  gameSlug={slug as GameSlug}
+                  isChecking={checkUserMutation.isPending}
+                  onChange={setGameParams}
+                  onCheck={handleCheckAccount}
+                  onReset={handleResetAccount}
+                  values={gameParams}
+                  verifiedAccount={verifiedAccount}
+                />
               </div>
 
               {/* Step 2: Select Package */}
-              <div className="gaming-card p-6">
+              <div className="gaming-card p-6" ref={packageSectionRef}>
                 <div className="mb-4 flex items-center gap-3">
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gaming-primary/20">
                     <span className="font-bold text-gaming-primary text-sm">
@@ -282,42 +480,151 @@ function GameDetailPage() {
                   </h2>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                  {packages.map((pkg) => (
-                    <button
-                      className={`relative rounded-xl border-2 p-4 text-left transition-all ${
-                        selectedPackage === pkg.id
-                          ? "glow-primary border-gaming-primary bg-gaming-primary/10"
-                          : "border-glass-border bg-background/50 hover:border-gaming-primary/50"
-                      }`}
-                      key={pkg.id}
-                      onClick={() => setSelectedPackage(pkg.id)}
-                      type="button"
-                    >
-                      {pkg.popular && (
-                        <Badge className="absolute -top-2 -right-2 bg-gaming-accent text-black text-xs">
-                          Popular
-                        </Badge>
-                      )}
-                      {pkg.bonus && (
-                        <Badge
-                          className="absolute -top-2 left-2 text-xs"
-                          variant="destructive"
+                {/* Recommended Section */}
+                {groupedItems.recommended.length > 0 && (
+                  <div className="mb-6">
+                    <div className="mb-3 flex items-center gap-2">
+                      <StarIcon className="size-4 text-gaming-accent" />
+                      <h3 className="font-medium text-gaming-accent">
+                        Recommended
+                      </h3>
+                    </div>
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                      {groupedItems.recommended.map((item) => (
+                        <button
+                          className={`relative overflow-hidden rounded-xl border-2 p-4 text-left transition-all ${
+                            selectedPackage === item.id
+                              ? "glow-primary border-gaming-accent bg-gaming-accent/20"
+                              : "border-gaming-accent/30 bg-gradient-to-br from-gaming-accent/10 to-transparent hover:border-gaming-accent/50"
+                          }`}
+                          key={item.id}
+                          onClick={() => handleSelectPackage(item.id)}
+                          type="button"
                         >
-                          +{pkg.bonus}
-                        </Badge>
-                      )}
-                      <p className="mb-1 font-semibold text-sm">{pkg.name}</p>
-                      <p className="font-bold text-gaming-primary">
-                        {formatPrice(pkg.price)}
-                      </p>
-                    </button>
-                  ))}
-                </div>
+                          <Badge className="absolute -top-1 -right-1 bg-gaming-accent text-black text-xs">
+                            ⭐ Best Value
+                          </Badge>
+                          <div className="flex items-center gap-3">
+                            {item.logo && (
+                              <img
+                                alt={item.name}
+                                className="size-10 rounded-lg object-contain"
+                                height={40}
+                                src={item.logo}
+                                width={40}
+                              />
+                            )}
+                            <div className="flex-1">
+                              <p className="font-semibold">{item.name}</p>
+                              <p className="font-bold text-gaming-accent text-lg">
+                                {getItemPrice(item)}
+                              </p>
+                            </div>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Hot Section */}
+                {groupedItems.hot.length > 0 && (
+                  <div className="mb-6">
+                    <div className="mb-3 flex items-center gap-2">
+                      <FlameIcon className="size-4 text-orange-500" />
+                      <h3 className="font-medium text-orange-500">Hot</h3>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                      {groupedItems.hot.map((item) => (
+                        <button
+                          className={`relative overflow-hidden rounded-xl border-2 p-3 text-left transition-all ${
+                            selectedPackage === item.id
+                              ? "glow-primary border-orange-500 bg-orange-500/20"
+                              : "border-orange-500/30 bg-gradient-to-br from-orange-500/10 to-transparent hover:border-orange-500/50"
+                          }`}
+                          key={item.id}
+                          onClick={() => handleSelectPackage(item.id)}
+                          type="button"
+                        >
+                          <Badge className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs">
+                            🔥
+                          </Badge>
+                          <div className="flex flex-col items-center gap-2 text-center">
+                            {item.logo && (
+                              <img
+                                alt={item.name}
+                                className="size-8 rounded object-contain"
+                                height={32}
+                                src={item.logo}
+                                width={32}
+                              />
+                            )}
+                            <p className="line-clamp-1 font-medium text-sm">
+                              {item.name}
+                            </p>
+                            <p className="font-bold text-orange-500">
+                              {getItemPrice(item)}
+                            </p>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* All Items Section */}
+                {groupedItems.all.length > 0 && (
+                  <div>
+                    <div className="mb-3 flex items-center gap-2">
+                      <PackageIcon className="size-4 text-muted-foreground" />
+                      <h3 className="font-medium text-muted-foreground">
+                        All Packages
+                      </h3>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                      {groupedItems.all.map((item) => (
+                        <button
+                          className={`relative rounded-xl border-2 p-4 text-left transition-all ${
+                            selectedPackage === item.id
+                              ? "glow-primary border-gaming-primary bg-gaming-primary/10"
+                              : "border-glass-border bg-background/50 hover:border-gaming-primary/50"
+                          }`}
+                          key={item.id}
+                          onClick={() => handleSelectPackage(item.id)}
+                          type="button"
+                        >
+                          <div className="flex items-center gap-2">
+                            {item.logo && (
+                              <img
+                                alt={item.name}
+                                className="size-6 rounded object-contain"
+                                height={24}
+                                src={item.logo}
+                                width={24}
+                              />
+                            )}
+                            <p className="mb-1 line-clamp-1 font-semibold text-sm">
+                              {item.name}
+                            </p>
+                          </div>
+                          <p className="font-bold text-gaming-primary">
+                            {getItemPrice(item)}
+                          </p>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {items.length === 0 && (
+                  <p className="py-8 text-center text-muted-foreground">
+                    No packages available for this game
+                  </p>
+                )}
               </div>
 
               {/* Step 3: Payment Method */}
-              <div className="gaming-card p-6">
+              <div className="gaming-card p-6" ref={paymentSectionRef}>
                 <div className="mb-4 flex items-center gap-3">
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gaming-primary/20">
                     <span className="font-bold text-gaming-primary text-sm">
@@ -329,87 +636,74 @@ function GameDetailPage() {
                   </h2>
                 </div>
 
-                {/* E-Wallets */}
+                {/* Payment Gateways */}
                 <div className="mb-4">
                   <h3 className="mb-3 font-medium text-muted-foreground text-sm">
-                    E-Wallet
+                    Payment Gateway
                   </h3>
-                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-5">
-                    {paymentMethods.ewallet.map((method) => (
-                      <button
-                        className={`flex items-center gap-2 rounded-xl border-2 p-3 transition-all ${
-                          selectedPayment === method.id
-                            ? "border-gaming-primary bg-gaming-primary/10"
-                            : "border-glass-border bg-background/50 hover:border-gaming-primary/50"
-                        }`}
-                        key={method.id}
-                        onClick={() => setSelectedPayment(method.id)}
-                        type="button"
-                      >
-                        <span className="text-lg">{method.icon}</span>
-                        <span className="font-medium text-sm">
-                          {method.name}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                    {paymentGateways.map((gateway) => {
+                      const isDisabled = !gateway.isAvailable;
+                      const getPaymentButtonClass = () => {
+                        if (selectedPayment === gateway.id) {
+                          return "border-gaming-primary bg-gaming-primary/10";
+                        }
+                        if (isDisabled) {
+                          return "cursor-not-allowed border-glass-border bg-background/30 opacity-50";
+                        }
+                        return "border-glass-border bg-background/50 hover:border-gaming-primary/50";
+                      };
+                      const button = (
+                        <button
+                          className={`flex items-center gap-3 rounded-xl border-2 p-4 transition-all ${getPaymentButtonClass()}`}
+                          disabled={isDisabled}
+                          key={gateway.id}
+                          onClick={() =>
+                            !isDisabled && handleSelectPayment(gateway.id)
+                          }
+                          type="button"
+                        >
+                          <span className="text-2xl">{gateway.icon}</span>
+                          <div className="flex-1 text-left">
+                            <span className="font-semibold">
+                              {gateway.name}
+                            </span>
+                            {isDisabled && (
+                              <p className="flex items-center gap-1 text-muted-foreground text-xs">
+                                <GlobeIcon className="size-3" />
+                                Indonesia only
+                              </p>
+                            )}
+                          </div>
+                          {selectedPayment === gateway.id && (
+                            <CheckCircle2Icon className="size-5 text-gaming-primary" />
+                          )}
+                        </button>
+                      );
 
-                {/* Banks */}
-                <div className="mb-4">
-                  <h3 className="mb-3 font-medium text-muted-foreground text-sm">
-                    Bank Transfer
-                  </h3>
-                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                    {paymentMethods.bank.map((method) => (
-                      <button
-                        className={`flex items-center gap-2 rounded-xl border-2 p-3 transition-all ${
-                          selectedPayment === method.id
-                            ? "border-gaming-primary bg-gaming-primary/10"
-                            : "border-glass-border bg-background/50 hover:border-gaming-primary/50"
-                        }`}
-                        key={method.id}
-                        onClick={() => setSelectedPayment(method.id)}
-                        type="button"
-                      >
-                        <span className="text-lg">{method.icon}</span>
-                        <span className="font-medium text-sm">
-                          {method.name}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                      if (isDisabled) {
+                        return (
+                          <Tooltip key={gateway.id}>
+                            <TooltipTrigger render={<div className="w-full" />}>
+                              {button}
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              This payment method is only available in
+                              Indonesia. Please change your language to
+                              Indonesian to use {gateway.name}.
+                            </TooltipContent>
+                          </Tooltip>
+                        );
+                      }
 
-                {/* Other */}
-                <div>
-                  <h3 className="mb-3 font-medium text-muted-foreground text-sm">
-                    Other
-                  </h3>
-                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                    {paymentMethods.other.map((method) => (
-                      <button
-                        className={`flex items-center gap-2 rounded-xl border-2 p-3 transition-all ${
-                          selectedPayment === method.id
-                            ? "border-gaming-primary bg-gaming-primary/10"
-                            : "border-glass-border bg-background/50 hover:border-gaming-primary/50"
-                        }`}
-                        key={method.id}
-                        onClick={() => setSelectedPayment(method.id)}
-                        type="button"
-                      >
-                        <span className="text-lg">{method.icon}</span>
-                        <span className="font-medium text-sm">
-                          {method.name}
-                        </span>
-                      </button>
-                    ))}
+                      return button;
+                    })}
                   </div>
                 </div>
               </div>
 
               {/* Step 4: Email */}
-              <div className="gaming-card p-6">
+              <div className="gaming-card p-6" ref={emailSectionRef}>
                 <div className="mb-4 flex items-center gap-3">
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gaming-primary/20">
                     <span className="font-bold text-gaming-primary text-sm">
@@ -445,13 +739,18 @@ function GameDetailPage() {
                 <Button
                   className="btn-gaming h-14 w-full font-bold text-lg"
                   disabled={
-                    !(accountId && selectedPackage && selectedPayment && email)
+                    !(
+                      verifiedAccount &&
+                      selectedPackage &&
+                      selectedPayment &&
+                      email
+                    )
                   }
                   onClick={handleSubmit}
                 >
                   <SparklesIcon className="mr-2 size-5" />
                   {m.buyNow?.() ?? "Buy Now"}{" "}
-                  {selectedPkg && `- ${formatPrice(selectedPkg.price)}`}
+                  {selectedItem && `- ${getItemPrice(selectedItem)}`}
                 </Button>
               </div>
             </div>
@@ -466,12 +765,7 @@ function GameDetailPage() {
 
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Publisher</span>
-                    <span className="font-medium">{game.publisher}</span>
-                  </div>
-                  <Separator className="bg-border/50" />
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Platform</span>
+                    <span className="text-muted-foreground">Category</span>
                     <Badge className="capitalize" variant="secondary">
                       {game.category}
                     </Badge>
@@ -481,27 +775,30 @@ function GameDetailPage() {
                     <span className="text-muted-foreground">Type</span>
                     <span className="font-medium">In-Game Currency</span>
                   </div>
-                  {game.trending && (
-                    <>
-                      <Separator className="bg-border/50" />
-                      <div className="flex items-center justify-between">
-                        <span className="text-muted-foreground">Trending</span>
-                        <Badge className="bg-gaming-accent text-black">
-                          🔥 Hot
-                        </Badge>
-                      </div>
-                    </>
-                  )}
+                  <Separator className="bg-border/50" />
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Status</span>
+                    <Badge
+                      className={
+                        game.isActive
+                          ? "bg-gaming-accent/20 text-gaming-accent"
+                          : ""
+                      }
+                      variant={game.isActive ? "default" : "secondary"}
+                    >
+                      {game.isActive ? "Active" : "Inactive"}
+                    </Badge>
+                  </div>
                 </div>
 
                 {/* Order Summary */}
-                {selectedPkg && (
+                {selectedItem && (
                   <div className="mt-6 rounded-xl border border-gaming-primary/30 bg-gaming-primary/10 p-4">
                     <h4 className="mb-2 font-medium text-sm">Order Summary</h4>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm">{selectedPkg.name}</span>
+                      <span className="text-sm">{selectedItem.name}</span>
                       <span className="font-bold text-gaming-primary">
-                        {formatPrice(selectedPkg.price)}
+                        {getItemPrice(selectedItem)}
                       </span>
                     </div>
                   </div>
@@ -513,7 +810,7 @@ function GameDetailPage() {
                     className="btn-gaming h-12 w-full font-bold"
                     disabled={
                       !(
-                        accountId &&
+                        verifiedAccount &&
                         selectedPackage &&
                         selectedPayment &&
                         email
@@ -564,7 +861,7 @@ function GameDetailPage() {
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {/* Steps */}
             <div className="gaming-card p-6">
-              <Accordion collapsible defaultValue="step-1" type="single">
+              <Accordion>
                 <AccordionItem className="border-glass-border" value="step-1">
                   <AccordionTrigger className="hover:text-gaming-primary">
                     <span className="flex items-center gap-2">
@@ -618,7 +915,7 @@ function GameDetailPage() {
                 {m.faqTitle?.() ?? "Frequently Asked Questions"}
               </h3>
 
-              <Accordion collapsible type="single">
+              <Accordion>
                 <AccordionItem className="border-glass-border" value="faq-1">
                   <AccordionTrigger className="text-sm hover:text-gaming-primary">
                     {m.faq1Question?.() ?? "How long does delivery take?"}

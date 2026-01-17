@@ -16,7 +16,7 @@
     "db:studio:prod": "drizzle-kit studio",
     "db:seed:local": "tsx src/seed/index.ts",
     "db:seed:prod": "tsx src/seed/index.ts --remote",
-    "db:reset:local": "rm -f ../../.alchemy/miniflare/v3/d1/miniflare-D1DatabaseObject/*.sqlite && pnpm db:push:local"
+    "db:reset:local": "rm -f ../../.alchemy/miniflare/v3/d1/miniflare-D1DatabaseObject/*.sqlite"
   },
   "dependencies": {
     "@libsql/client": "catalog:",

@@ -1,3 +1,5 @@
+import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import {
   FlameIcon,
   Gamepad2,
@@ -5,8 +7,7 @@ import {
   Sparkles,
   Ticket,
 } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
-import { toast } from "sonner";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import {
   Command,
@@ -17,10 +18,9 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { GAMES, searchGames } from "@/data/games";
-import { useCurrency } from "@/lib/currency";
+import { TRENDING_SLUGS } from "@/data/game-constants";
 import { m } from "@/paraglide/messages";
-import type { Game } from "@/types/game";
+import { orpc } from "@/utils/orpc";
 
 interface SearchCommandProps {
   open?: boolean;
@@ -33,10 +33,17 @@ export function SearchCommand({
 }: SearchCommandProps) {
   const [internalOpen, setInternalOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const { formatPrice } = useCurrency();
+  const navigate = useNavigate();
 
   const open = controlledOpen ?? internalOpen;
   const setOpen = onOpenChange ?? setInternalOpen;
+
+  // Fetch games for search
+  const gamesQuery = useQuery(
+    orpc.game.getAll.queryOptions({ input: { activeOnly: true } })
+  );
+
+  const games = gamesQuery.data?.data ?? [];
 
   // Keyboard shortcut
   useEffect(() => {
@@ -51,34 +58,58 @@ export function SearchCommand({
     return () => document.removeEventListener("keydown", down);
   }, [open, setOpen]);
 
-  const results = query.length > 0 ? searchGames(query) : [];
+  // Search results
+  const results = useMemo(() => {
+    if (query.length === 0) {
+      return [];
+    }
+    const lowerQuery = query.toLowerCase();
+    return games.filter(
+      (game) =>
+        game.name.toLowerCase().includes(lowerQuery) ||
+        game.category.toLowerCase().includes(lowerQuery)
+    );
+  }, [games, query]);
 
-  const groupedResults = results.reduce(
-    (acc, game) => {
-      if (!acc[game.category]) {
-        acc[game.category] = [];
-      }
-      acc[game.category].push(game);
-      return acc;
-    },
-    {} as Record<string, Game[]>
-  );
+  // Group results by category
+  const groupedResults = useMemo(() => {
+    return results.reduce(
+      (acc, game) => {
+        const category = game.category.toLowerCase();
+        if (!acc[category]) {
+          acc[category] = [];
+        }
+        acc[category].push(game);
+        return acc;
+      },
+      {} as Record<string, typeof games>
+    );
+  }, [results]);
+
+  // Trending games for default view
+  const trendingGames = useMemo(() => {
+    return TRENDING_SLUGS.map((slug) =>
+      games.find((game) => game.slug === slug)
+    ).filter((game) => game !== undefined);
+  }, [games]);
 
   const handleSelect = useCallback(
-    (game: Game) => {
+    (slug: string) => {
       setOpen(false);
       setQuery("");
-      toast.success(m.gameSelected?.() ?? `Selected: ${game.name}`, {
-        description: game.publisher,
-      });
+      navigate({ to: "/game/$slug", params: { slug } });
     },
-    [setOpen]
+    [setOpen, navigate]
   );
 
   const categoryLabels: Record<string, string> = {
     mobile: m.categoryMobile?.() ?? "Mobile Games",
     pc: m.categoryPc?.() ?? "PC Games",
     console: m.categoryConsole?.() ?? "Console",
+    moba: "MOBA Games",
+    rpg: "RPG Games",
+    fps: "FPS Games",
+    "battle royale": "Battle Royale",
   };
 
   const categoryIcons: Record<string, React.ReactNode> = {
@@ -98,69 +129,69 @@ export function SearchCommand({
         <CommandList className="max-h-[400px]">
           <CommandEmpty>{m.noResults?.() ?? "No games found."}</CommandEmpty>
 
-          {query.length === 0 && (
+          {query.length === 0 && trendingGames.length > 0 && (
             <CommandGroup heading={m.trending?.() ?? "Trending"}>
-              {GAMES.filter((g) => g.trending)
-                .slice(0, 5)
-                .map((game) => (
-                  <CommandItem
-                    className="flex items-center gap-3 py-3"
-                    key={game.id}
-                    onSelect={() => handleSelect(game)}
-                    value={game.name}
-                  >
-                    <FlameIcon className="size-4 text-orange-500" />
-                    <div className="flex-1">
-                      <span className="font-medium">{game.name}</span>
-                      <span className="ml-2 text-muted-foreground text-xs">
-                        {game.publisher}
-                      </span>
-                    </div>
-                    <span className="font-semibold text-gaming-primary text-sm">
-                      {formatPrice(game.price)}
+              {trendingGames.map((game) => (
+                <CommandItem
+                  className="flex items-center gap-3 py-3"
+                  key={game.id}
+                  onSelect={() => handleSelect(game.slug)}
+                  value={game.name}
+                >
+                  <FlameIcon className="size-4 text-orange-500" />
+                  <div className="flex-1">
+                    <span className="font-medium">{game.name}</span>
+                    <span className="ml-2 text-muted-foreground text-xs capitalize">
+                      {game.category}
                     </span>
-                  </CommandItem>
-                ))}
+                  </div>
+                  {game.logo && (
+                    <img
+                      alt={game.name}
+                      className="size-6 rounded object-contain"
+                      height={24}
+                      src={game.logo}
+                      width={24}
+                    />
+                  )}
+                </CommandItem>
+              ))}
             </CommandGroup>
           )}
 
-          {Object.entries(groupedResults).map(([category, games]) => (
+          {Object.entries(groupedResults).map(([category, categoryGames]) => (
             <CommandGroup
               heading={
                 <span className="flex items-center gap-2">
-                  {categoryIcons[category]}
-                  {categoryLabels[category]}
+                  {categoryIcons[category] ?? <Gamepad2 className="size-4" />}
+                  {categoryLabels[category] ?? category}
                 </span>
               }
               key={category}
             >
-              {games.map((game) => (
+              {categoryGames.map((game) => (
                 <CommandItem
                   className="flex items-center gap-3 py-3"
                   key={game.id}
-                  onSelect={() => handleSelect(game)}
+                  onSelect={() => handleSelect(game.slug)}
                   value={game.name}
                 >
                   <div className="flex-1">
                     <span className="font-medium">{game.name}</span>
-                    <span className="ml-2 text-muted-foreground text-xs">
-                      {game.publisher}
-                    </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    {game.hotDeal && (
-                      <Badge className="text-xs" variant="destructive">
-                        {game.discount}% OFF
-                      </Badge>
+                    <Badge className="text-xs capitalize" variant="secondary">
+                      {category}
+                    </Badge>
+                    {game.logo && (
+                      <img
+                        alt={game.name}
+                        className="size-6 rounded object-contain"
+                        height={24}
+                        src={game.logo}
+                        width={24}
+                      />
                     )}
-                    {game.newRelease && (
-                      <Badge className="bg-gaming-accent text-black text-xs">
-                        NEW
-                      </Badge>
-                    )}
-                    <span className="font-semibold text-gaming-primary text-sm">
-                      {formatPrice(game.price)}
-                    </span>
                   </div>
                 </CommandItem>
               ))}
