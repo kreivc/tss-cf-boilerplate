@@ -4,7 +4,7 @@ import {
   areRequiredParamsFilled,
   type GameSlug,
   getEmptyParamsForGame,
-} from "@test-tss/types";
+} from "@test-tss/game-provider/client";
 import {
   CheckCircle2Icon,
   ChevronLeftIcon,

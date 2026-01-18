@@ -82,7 +82,7 @@ export function MobileNav({ className }: MobileNavProps) {
         <SheetHeader className="p-6 pb-4">
           <SheetTitle className="flex items-center gap-2 text-left">
             <span className="font-bold text-2xl text-gradient-gaming">
-              GameTop
+              FlazBit
             </span>
           </SheetTitle>
         </SheetHeader>

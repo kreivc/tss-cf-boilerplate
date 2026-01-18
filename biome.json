@@ -20,7 +20,8 @@
       "!**/wrangler.jsonc",
       "!**/.source",
       "!**/convex/_generated",
-      "!apps/web/src/components/ui"
+      "!apps/web/src/components/ui",
+      "!.agent"
     ]
   },
   "extends": ["ultracite/biome/core", "ultracite/biome/react"],

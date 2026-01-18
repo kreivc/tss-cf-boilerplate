@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Gamepad2Icon, SparklesIcon } from "lucide-react";
-import { useCallback, useMemo, useState } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -24,7 +24,7 @@ interface GameCardProps {
   game: Game;
 }
 
-function GameCard({ game }: GameCardProps) {
+const GameCard = memo(function GameCard({ game }: GameCardProps) {
   const publisher = getGamePublisher(game.slug);
 
   return (
@@ -100,7 +100,7 @@ function GameCard({ game }: GameCardProps) {
       <div className="absolute bottom-0 left-0 h-0.5 w-0 bg-gradient-to-r from-gaming-primary to-gaming-secondary transition-all duration-300 group-hover:w-full" />
     </Link>
   );
-}
+});
 
 interface CategoryGridProps {
   games: Game[];
@@ -127,12 +127,19 @@ export function CategoryGrid({ games }: CategoryGridProps) {
     );
   }, []);
 
-  const tabs = [
-    { value: "all", label: m.categoryAll?.() ?? "All", icon: "🎮" },
-    { value: "mobile", label: m.categoryMobile?.() ?? "Mobile", icon: "📱" },
-    { value: "pc", label: m.categoryPc?.() ?? "PC", icon: "💻" },
-    { value: "console", label: m.categoryConsole?.() ?? "Console", icon: "🎯" },
-  ];
+  const tabs = useMemo(
+    () => [
+      { value: "all", label: m.categoryAll?.() ?? "All", icon: "🎮" },
+      { value: "mobile", label: m.categoryMobile?.() ?? "Mobile", icon: "📱" },
+      { value: "pc", label: m.categoryPc?.() ?? "PC", icon: "💻" },
+      {
+        value: "console",
+        label: m.categoryConsole?.() ?? "Console",
+        icon: "🎯",
+      },
+    ],
+    []
+  );
 
   return (
     <section className="py-12" id="categories">

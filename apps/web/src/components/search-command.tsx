@@ -38,10 +38,11 @@ export function SearchCommand({
   const open = controlledOpen ?? internalOpen;
   const setOpen = onOpenChange ?? setInternalOpen;
 
-  // Fetch games for search
-  const gamesQuery = useQuery(
-    orpc.game.getAll.queryOptions({ input: { activeOnly: true } })
-  );
+  // Fetch games for search - only when dialog is open
+  const gamesQuery = useQuery({
+    ...orpc.game.getAll.queryOptions({ input: { activeOnly: true } }),
+    enabled: open,
+  });
 
   const games = gamesQuery.data?.data ?? [];
 

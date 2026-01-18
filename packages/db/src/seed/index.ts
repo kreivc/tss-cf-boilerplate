@@ -124,6 +124,7 @@ async function main() {
     const db = await createDatabaseConnection(isRemote);
 
     // Run all seed functions
+    // NOTE: on production seed sometimes the data sent to large, so batch it manually
     await seedGames(db);
     await seedItems(db);
     await seedItemDetails(db);

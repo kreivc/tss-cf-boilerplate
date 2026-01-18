@@ -1,5 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
+import { useMemo } from "react";
 import { CategoryGrid } from "@/components/category-grid";
 import { HeroSlider } from "@/components/hero-slider";
 import { QuickAccess } from "@/components/quick-access";
@@ -21,7 +22,8 @@ function HomeComponent() {
     orpc.game.getAll.queryOptions({ input: { activeOnly: true } })
   );
 
-  const games = gamesQuery.data.data;
+  // Memoize games to prevent unnecessary re-renders of child components
+  const games = useMemo(() => gamesQuery.data.data, [gamesQuery.data.data]);
 
   return (
     <main className="min-h-screen pb-20 md:pb-0">

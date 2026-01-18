@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { GameCategory, ItemCategory, SupportedCountry } from "./game";
+import { GameCategory, ItemCategory, SupportedCountry } from "./schema";
 
 export const CreateGameInput = z.object({
   name: z.string().min(1, "Name is required"),

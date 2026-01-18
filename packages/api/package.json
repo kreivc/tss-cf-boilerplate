@@ -20,6 +20,8 @@
     "@test-tss/auth": "workspace:*",
     "@test-tss/db": "workspace:*",
     "@test-tss/env": "workspace:*",
+    "@test-tss/game-provider": "workspace:*",
+    "@test-tss/payment-gateway": "workspace:*",
     "@test-tss/types": "workspace:*",
     "dotenv": "catalog:",
     "drizzle-orm": "catalog:",

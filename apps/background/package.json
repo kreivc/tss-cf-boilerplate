@@ -11,9 +11,12 @@
     "@test-tss/auth": "workspace:*",
     "@test-tss/db": "workspace:*",
     "@test-tss/env": "workspace:*",
+    "@test-tss/game-provider": "workspace:*",
     "@test-tss/infra": "workspace:*",
     "@test-tss/email": "workspace:*",
+    "@test-tss/payment-gateway": "workspace:*",
     "@test-tss/types": "workspace:*",
+    "drizzle-orm": "catalog:",
     "dotenv": "catalog:",
     "zod": "catalog:"
   },

@@ -1,4 +1,4 @@
-import type { GameSlug } from "@test-tss/types";
+import type { GameSlug } from "@test-tss/game-provider/client";
 import type { ComponentType } from "react";
 
 // Individual renderers

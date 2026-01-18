@@ -39,7 +39,7 @@ export const uploadRouter = {
         expiresIn: 3600,
       });
 
-      const baseUrl = env.R2_PUBLIC_BASE_URL;
+      const baseUrl = env.R2_CDN_URL;
       const url = baseUrl ? `${baseUrl}/${key}` : key;
 
       return {

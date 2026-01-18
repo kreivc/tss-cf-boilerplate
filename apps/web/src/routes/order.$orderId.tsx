@@ -4,7 +4,7 @@ import {
   GAME_PARAM_FIELDS,
   type GameSlug,
   parseGameParams,
-} from "@test-tss/types";
+} from "@test-tss/game-provider/client";
 import {
   AlertTriangleIcon,
   ArrowLeftIcon,
@@ -402,16 +402,14 @@ function OrderPage() {
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Reference ID</span>
+                  <span className="text-muted-foreground">Transaction ID</span>
                   <div className="flex items-center gap-2">
-                    <span className="font-mono text-xs">
-                      {transaction.referenceId}
+                    <span className="max-w-[150px] truncate font-mono text-xs sm:max-w-none">
+                      {transaction.id}
                     </span>
                     <Button
                       className="h-6 w-6"
-                      onClick={() =>
-                        copyToClipboard(transaction.referenceId ?? "")
-                      }
+                      onClick={() => copyToClipboard(transaction.id)}
                       size="icon"
                       title="Copy"
                       variant="ghost"

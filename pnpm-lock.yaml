@@ -102,15 +102,24 @@ importers:
       '@test-tss/env':
         specifier: workspace:*
         version: link:../../packages/env
+      '@test-tss/game-provider':
+        specifier: workspace:*
+        version: link:../../packages/game-provider
       '@test-tss/infra':
         specifier: workspace:*
         version: link:../../packages/infra
+      '@test-tss/payment-gateway':
+        specifier: workspace:*
+        version: link:../../packages/payment-gateway
       '@test-tss/types':
         specifier: workspace:*
         version: link:../../packages/types
       dotenv:
         specifier: 'catalog:'
         version: 17.2.3
+      drizzle-orm:
+        specifier: 'catalog:'
+        version: 0.45.1(@cloudflare/workers-types@4.20260108.0)(@libsql/client@0.15.15)(kysely@0.28.9)
       zod:
         specifier: 'catalog:'
         version: 4.3.5
@@ -251,6 +260,9 @@ importers:
       '@test-tss/env':
         specifier: workspace:*
         version: link:../../packages/env
+      '@test-tss/game-provider':
+        specifier: workspace:*
+        version: link:../../packages/game-provider
       '@test-tss/types':
         specifier: workspace:*
         version: link:../../packages/types
@@ -269,9 +281,6 @@ importers:
       date-fns:
         specifier: ^4.1.0
         version: 4.1.0
-      dotenv:
-        specifier: 'catalog:'
-        version: 17.2.3
       embla-carousel-react:
         specifier: ^8.6.0
         version: 8.6.0(react@19.2.3)
@@ -408,6 +417,12 @@ importers:
       '@test-tss/env':
         specifier: workspace:*
         version: link:../env
+      '@test-tss/game-provider':
+        specifier: workspace:*
+        version: link:../game-provider
+      '@test-tss/payment-gateway':
+        specifier: workspace:*
+        version: link:../payment-gateway
       '@test-tss/types':
         specifier: workspace:*
         version: link:../types
@@ -548,6 +563,25 @@ importers:
         specifier: 'catalog:'
         version: 5.9.3
 
+  packages/game-provider:
+    dependencies:
+      '@test-tss/env':
+        specifier: workspace:*
+        version: link:../env
+      zod:
+        specifier: 'catalog:'
+        version: 4.3.5
+    devDependencies:
+      '@cloudflare/workers-types':
+        specifier: 'catalog:'
+        version: 4.20260108.0
+      '@test-tss/config':
+        specifier: workspace:*
+        version: link:../config
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+
   packages/infra:
     dependencies:
       dotenv:
@@ -567,11 +601,33 @@ importers:
         specifier: 'catalog:'
         version: 5.9.3
 
+  packages/payment-gateway:
+    dependencies:
+      '@test-tss/env':
+        specifier: workspace:*
+        version: link:../env
+      zod:
+        specifier: 'catalog:'
+        version: 4.3.5
+    devDependencies:
+      '@cloudflare/workers-types':
+        specifier: 'catalog:'
+        version: 4.20260108.0
+      '@test-tss/config':
+        specifier: workspace:*
+        version: link:../config
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+
   packages/types:
     dependencies:
       '@test-tss/env':
         specifier: workspace:*
         version: link:../env
+      '@test-tss/payment-gateway':
+        specifier: workspace:*
+        version: link:../payment-gateway
       dotenv:
         specifier: 'catalog:'
         version: 17.2.3

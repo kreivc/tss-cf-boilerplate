@@ -1,4 +1,4 @@
-import { GAME_PARAM_FIELDS } from "@test-tss/types";
+import { GAME_PARAM_FIELDS } from "@test-tss/game-provider/client";
 import { InfoIcon, Loader2Icon, UserCheckIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

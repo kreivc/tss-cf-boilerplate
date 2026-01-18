@@ -31,7 +31,7 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
         content: "width=device-width, initial-scale=1",
       },
       {
-        title: "GameTop - Premium Gaming Top-Up",
+        title: "FlazBit - Premium Gaming Top-Up",
       },
       {
         name: "description",

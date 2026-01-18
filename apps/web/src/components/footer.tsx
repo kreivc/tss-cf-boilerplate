@@ -139,7 +139,7 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="flex flex-col items-center justify-between gap-4 text-muted-foreground text-sm sm:flex-row">
           <p>
-            © {currentYear} GameTop.{" "}
+            © {currentYear} FlazBit.{" "}
             {m.allRightsReserved?.() ?? "All rights reserved."}
           </p>
           <div className="flex items-center gap-4">

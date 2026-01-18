@@ -1,6 +1,7 @@
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { GameCategory, GameSlug } from "@test-tss/types";
+import { GameSlug } from "@test-tss/game-provider/client";
+import { GameCategory } from "@test-tss/types";
 import {
   ArrowLeftIcon,
   Gamepad2Icon,

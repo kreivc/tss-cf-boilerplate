@@ -1,0 +1,25 @@
+{
+  "name": "@test-tss/payment-gateway",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./client": {
+      "default": "./src/client.ts"
+    },
+    "./*": {
+      "default": "./src/*.ts"
+    }
+  },
+  "scripts": {},
+  "dependencies": {
+    "@test-tss/env": "workspace:*",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@test-tss/config": "workspace:*",
+    "@cloudflare/workers-types": "catalog:",
+    "typescript": "catalog:"
+  }
+}

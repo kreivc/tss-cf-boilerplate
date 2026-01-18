@@ -1,8 +1,8 @@
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import type { GameSlug } from "@test-tss/game-provider/client";
 import {
   CurrencyByCountry,
-  type GameSlug,
   getItemSlugsByGame,
   ItemCategory,
   type ItemDetailInput,

@@ -15,7 +15,7 @@ export default defineConfig({
       outputStructure: "message-modules",
       cookieName: "LANG",
       localStorageKey: "LANG",
-      strategy: ["cookie", "localStorage", "preferredLanguage", "baseLocale"],
+      strategy: ["cookie"],
       emitTsDeclarations: true,
       disableAsyncLocalStorage: true,
     }),

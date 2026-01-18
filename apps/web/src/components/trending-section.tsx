@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRightIcon, FlameIcon, TrendingUpIcon } from "lucide-react";
-import { useMemo } from "react";
+import { memo, useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getGamePublisher, TRENDING_SLUGS } from "@/data/game-constants";
@@ -22,7 +22,10 @@ interface TrendingCardProps {
   rank: number;
 }
 
-function TrendingCard({ game, rank }: TrendingCardProps) {
+const TrendingCard = memo(function TrendingCard({
+  game,
+  rank,
+}: TrendingCardProps) {
   const publisher = getGamePublisher(game.slug);
 
   const getRankBadge = (rank: number) => {
@@ -137,7 +140,7 @@ function TrendingCard({ game, rank }: TrendingCardProps) {
       <div className="absolute bottom-0 left-0 h-0.5 w-0 bg-gradient-to-r from-gaming-primary via-gaming-secondary to-gaming-accent transition-all duration-500 group-hover:w-full" />
     </Link>
   );
-}
+});
 
 interface TrendingSectionProps {
   games: Game[];

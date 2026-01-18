@@ -4,18 +4,21 @@ import { games } from "@test-tss/db/schema/game";
 import { items } from "@test-tss/db/schema/item";
 import { itemDetails } from "@test-tss/db/schema/item-detail";
 import { transactions } from "@test-tss/db/schema/transaction";
+import { stringifyGameParams } from "@test-tss/game-provider";
+import {
+  getCallbackUrl,
+  getPaymentGateway,
+  TransactionStatus,
+} from "@test-tss/payment-gateway";
 import {
   CreateTransactionInput,
   GetTransactionInput,
-  stringifyGameParams,
-  TransactionStatus,
   UpdateTransactionStatusInput,
 } from "@test-tss/types";
 import { and, count, desc, eq, gte, lte, type SQL } from "drizzle-orm";
 import { v7 } from "uuid";
 import z from "zod";
 import { protectedProcedure, publicProcedure } from "../index";
-import { createPaymentGateway } from "../payment-gateway";
 
 // Input schema for listing transactions with filters
 const ListTransactionsInput = z.object({
@@ -47,22 +50,38 @@ export const transactionRouter = {
         conditions.push(gte(transactions.createdAt, startDate));
       }
       if (endDate) {
-        // Add a day to include the end date fully
-        const endDatePlusOne = new Date(endDate);
-        endDatePlusOne.setDate(endDatePlusOne.getDate() + 1);
-        conditions.push(
-          lte(transactions.createdAt, endDatePlusOne.toISOString())
-        );
+        conditions.push(lte(transactions.createdAt, endDate));
       }
 
       const whereClause =
         conditions.length > 0 ? and(...conditions) : undefined;
 
-      // Get transactions with pagination
-      const [data, totalResult] = await Promise.all([
+      const [transactionList, totalResult] = await Promise.all([
         db
-          .select()
+          .select({
+            id: transactions.id,
+            referenceId: transactions.referenceId,
+            gameId: transactions.gameId,
+            itemId: transactions.itemId,
+            totalPrice: transactions.totalPrice,
+            status: transactions.status,
+            paymentUrl: transactions.paymentUrl,
+            paymentProvider: transactions.paymentProvider,
+            createdAt: transactions.createdAt,
+            updatedAt: transactions.updatedAt,
+            game: {
+              id: games.id,
+              name: games.name,
+              slug: games.slug,
+            },
+            item: {
+              id: items.id,
+              name: items.name,
+            },
+          })
           .from(transactions)
+          .leftJoin(games, eq(transactions.gameId, games.id))
+          .leftJoin(items, eq(transactions.itemId, items.id))
           .where(whereClause)
           .orderBy(desc(transactions.createdAt))
           .limit(limit)
@@ -70,50 +89,87 @@ export const transactionRouter = {
         db.select({ count: count() }).from(transactions).where(whereClause),
       ]);
 
-      // Get related game and item data for each transaction
-      const transactionsWithRelations = await Promise.all(
-        data.map(async (txn) => {
-          const [game, item] = await Promise.all([
-            db.select().from(games).where(eq(games.id, txn.gameId)).limit(1),
-            db.select().from(items).where(eq(items.id, txn.itemId)).limit(1),
-          ]);
-          return {
-            ...txn,
-            game: game[0] || null,
-            item: item[0] || null,
-          };
-        })
-      );
-
       return {
-        data: transactionsWithRelations,
-        total: totalResult[0]?.count ?? 0,
-        page,
-        limit,
-        totalPages: Math.ceil((totalResult[0]?.count ?? 0) / limit),
+        transactions: transactionList,
+        pagination: {
+          page,
+          limit,
+          total: totalResult[0]?.count ?? 0,
+          totalPages: Math.ceil((totalResult[0]?.count ?? 0) / limit),
+        },
       };
+    }),
+
+  // Get transaction status and details by ID
+  getById: publicProcedure
+    .input(GetTransactionInput)
+    .handler(async ({ input }) => {
+      const result = await db
+        .select({
+          id: transactions.id,
+          referenceId: transactions.referenceId,
+          gameId: transactions.gameId,
+          itemId: transactions.itemId,
+          itemDetailId: transactions.itemDetailId,
+          inputData: transactions.inputData,
+          email: transactions.email,
+          totalPrice: transactions.totalPrice,
+          status: transactions.status,
+          paymentUrl: transactions.paymentUrl,
+          paymentProvider: transactions.paymentProvider,
+          createdAt: transactions.createdAt,
+          updatedAt: transactions.updatedAt,
+          game: {
+            id: games.id,
+            name: games.name,
+            slug: games.slug,
+            logo: games.logo,
+          },
+          item: {
+            id: items.id,
+            name: items.name,
+            logo: items.logo,
+          },
+          itemDetail: {
+            id: itemDetails.id,
+            symbol: itemDetails.symbol,
+            price: itemDetails.price,
+          },
+        })
+        .from(transactions)
+        .leftJoin(games, eq(transactions.gameId, games.id))
+        .leftJoin(items, eq(transactions.itemId, items.id))
+        .leftJoin(itemDetails, eq(transactions.itemDetailId, itemDetails.id))
+        .where(eq(transactions.id, input.transactionId))
+        .limit(1);
+
+      if (!result[0]) {
+        throw new Error("Transaction not found");
+      }
+
+      return result[0];
     }),
 
   // Create a new transaction
   create: publicProcedure
     .input(CreateTransactionInput)
     .handler(async ({ input }) => {
+      // Generate transaction ID
       const transactionId = v7();
-      const now = new Date().toISOString();
 
-      // Get item detail, item, and game to fetch price, item name, and game slug
-      const [itemDetail, item, game] = await Promise.all([
+      // Get game, item, and pricing info in parallel
+      const [game, item, itemDetail] = await Promise.all([
+        db.select().from(games).where(eq(games.id, input.gameId)).limit(1),
+        db.select().from(items).where(eq(items.id, input.itemId)).limit(1),
         db
           .select()
           .from(itemDetails)
           .where(eq(itemDetails.id, input.itemDetailId))
           .limit(1),
-        db.select().from(items).where(eq(items.id, input.itemId)).limit(1),
-        db.select().from(games).where(eq(games.id, input.gameId)).limit(1),
       ]);
 
       if (!itemDetail[0]) {
-        throw new Error("Item detail not found");
+        throw new Error("Item pricing not found");
       }
 
       if (!item[0]) {
@@ -124,18 +180,18 @@ export const transactionRouter = {
         throw new Error("Game not found");
       }
 
-      // Stringify input data for storage (to be used in callbacks and order display)
+      // Stringify input data for storage
       // biome-ignore lint/suspicious/noExplicitAny: trust input for storage relative to game slug
       const inputData = stringifyGameParams(input.gameParams as any);
 
-      // Generate reference ID for tracking
-      const referenceId = `TOPUP-${transactionId.slice(0, 13).toUpperCase()}`;
+      // Use transaction ID as reference ID
+      const referenceId = transactionId;
 
-      // Initialize payment gateway and create payment
-      const paymentGateway = createPaymentGateway();
-
+      // Get payment gateway - clean one-liner! 🎉
+      const paymentProvider = input.paymentMethod.toUpperCase() as "IPAYMU";
+      const paymentGateway = getPaymentGateway(paymentProvider);
+      const callbackUrl = getCallbackUrl(paymentProvider);
       const baseFEUrl = env.BASE_FRONTEND_URL;
-      const callbackUrl = env.IPAYMU_CALLBACK_URL;
 
       const paymentResult = await paymentGateway.createPayment({
         referenceId,
@@ -146,7 +202,7 @@ export const transactionRouter = {
         buyerEmail: input.email,
         returnUrl: `${baseFEUrl}/order/${transactionId}`,
         cancelUrl: `${baseFEUrl}/order/${transactionId}`,
-        notifyUrl: `${callbackUrl}/api/webhook/payment`, // Webhook for payment notifications
+        notifyUrl: `${callbackUrl}/api/webhook/payment`,
       });
 
       if (!paymentResult.success) {
@@ -159,92 +215,39 @@ export const transactionRouter = {
       await db.insert(transactions).values({
         id: transactionId,
         referenceId,
+        gameSlug: game[0].slug,
         gameId: input.gameId,
         itemId: input.itemId,
         itemDetailId: input.itemDetailId,
-        paymentProvider: paymentGateway.name,
+        inputData,
+        email: input.email,
         totalPrice: itemDetail[0].price,
         status: "PENDING",
         paymentUrl: paymentResult.paymentUrl,
-        inputData,
-        email: input.email,
-        gameSlug: game[0].slug,
-        createdAt: now,
-        createdBy: "guest", // Could be user ID if authenticated
-        updatedAt: now,
-        updatedBy: "guest",
+        paymentProvider: input.paymentMethod.toUpperCase(),
+        createdAt: new Date().toISOString(),
+        createdBy: "system",
+        updatedAt: new Date().toISOString(),
+        updatedBy: "system",
       });
 
       return {
         transactionId,
-        referenceId,
         paymentUrl: paymentResult.paymentUrl,
-        sessionId: paymentResult.sessionId,
-        status: "PENDING" as const,
+        referenceId,
       };
     }),
 
-  // Get transaction by ID with related data
-  getById: publicProcedure
-    .input(GetTransactionInput)
-    .handler(async ({ input }) => {
-      const transaction = await db
-        .select()
-        .from(transactions)
-        .where(eq(transactions.id, input.transactionId))
-        .limit(1);
-
-      if (!transaction[0]) {
-        return null;
-      }
-
-      // Get related game
-      const game = await db
-        .select()
-        .from(games)
-        .where(eq(games.id, transaction[0].gameId))
-        .limit(1);
-
-      // Get related item
-      const item = await db
-        .select()
-        .from(items)
-        .where(eq(items.id, transaction[0].itemId))
-        .limit(1);
-
-      // Get related item detail
-      const itemDetail = await db
-        .select()
-        .from(itemDetails)
-        .where(eq(itemDetails.id, transaction[0].itemDetailId))
-        .limit(1);
-
-      // Payment URL is stored in the transaction record
-      const paymentUrl =
-        transaction[0].status === "PENDING" ? transaction[0].paymentUrl : null;
-
-      return {
-        ...transaction[0],
-        game: game[0] || null,
-        item: item[0] || null,
-        itemDetail: itemDetail[0] || null,
-        paymentUrl,
-      };
-    }),
-
-  // Update transaction status (for testing)
-  updateStatus: protectedProcedure
+  // Update transaction status (for webhooks)
+  updateStatus: publicProcedure
     .input(UpdateTransactionStatusInput)
-    .handler(async ({ input, context }) => {
-      const now = new Date().toISOString();
-      const userId = context.session?.user?.id ?? "system";
-
+    .handler(async ({ input }) => {
       await db
         .update(transactions)
         .set({
           status: input.status,
-          updatedAt: now,
-          updatedBy: userId,
+          updatedAt: new Date().toISOString(),
+          updatedBy: "webhook",
         })
         .where(eq(transactions.id, input.transactionId));
 
