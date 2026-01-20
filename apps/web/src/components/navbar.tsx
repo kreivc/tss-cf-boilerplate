@@ -14,8 +14,6 @@ export function Navbar() {
   const navLinks = [
     { to: "/", label: m.home?.() ?? "Home" },
     { to: "/find-order", label: "Find Order" },
-    { to: "/dashboard", label: m.dashboard?.() ?? "Dashboard" },
-    { to: "/todos", label: m.todos?.() ?? "Todos" },
   ] as const;
 
   return (

@@ -4,11 +4,7 @@ import { LocaleSwitcher } from "./locale-switcher";
 import UserMenu from "./user-menu";
 
 export default function Header() {
-  const links = [
-    { to: "/", label: m.home() },
-    { to: "/dashboard", label: m.dashboard() },
-    { to: "/todos", label: m.todos() },
-  ] as const;
+  const links = [{ to: "/", label: m.home() }] as const;
 
   return (
     <div>

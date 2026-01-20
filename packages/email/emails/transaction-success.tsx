@@ -1,13 +1,9 @@
 import {
   Body,
-  Container,
   Head,
   Heading,
-  Hr,
   Html,
   Preview,
-  Section,
-  Tailwind,
   Text,
 } from "@react-email/components";
 
@@ -48,162 +44,308 @@ export const TransactionSuccessEmail = ({
     <Html>
       <Head />
       <Preview>{previewText}</Preview>
-      <Tailwind>
-        <Body className="mx-auto my-auto bg-[#f5f5f5] font-sans">
-          <Container className="mx-auto my-[40px] w-[465px] rounded-lg border border-[#e0e0e0] border-solid bg-white p-[32px] shadow-sm">
-            {/* Header */}
-            <Section className="text-center">
-              <Text className="m-0 font-bold text-[24px] text-emerald-500">
-                ✓
-              </Text>
-              <Heading className="mx-0 mt-[8px] mb-[24px] p-0 text-center font-semibold text-[22px] text-gray-900">
-                Top-up Successful!
-              </Heading>
-            </Section>
+      <Body
+        style={{
+          backgroundColor: "#f4f4f5",
+          fontFamily:
+            '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+          margin: 0,
+          padding: 0,
+        }}
+      >
+        {/* Outer wrapper table for centering */}
+        <table
+          align="center"
+          cellPadding={0}
+          cellSpacing={0}
+          role="presentation"
+          style={{
+            backgroundColor: "#f4f4f5",
+            margin: 0,
+            padding: 0,
+          }}
+          width="100%"
+        >
+          <tbody>
+            <tr>
+              <td align="center" style={{ padding: "40px 20px" }}>
+                {/* Main content container */}
+                <table
+                  align="center"
+                  cellPadding={0}
+                  cellSpacing={0}
+                  role="presentation"
+                  style={{
+                    backgroundColor: "#ffffff",
+                    borderRadius: "12px",
+                    border: "1px solid #e4e4e7",
+                    maxWidth: "480px",
+                  }}
+                  width="480"
+                >
+                  <tbody>
+                    <tr>
+                      <td style={{ padding: "32px 32px 24px 32px" }}>
+                        {/* Header - Check Icon */}
+                        <table
+                          cellPadding={0}
+                          cellSpacing={0}
+                          role="presentation"
+                          width="100%"
+                        >
+                          <tbody>
+                            <tr>
+                              <td align="center">
+                                <div
+                                  style={{
+                                    width: "48px",
+                                    height: "48px",
+                                    backgroundColor: "#ecfdf5",
+                                    borderRadius: "50%",
+                                    display: "inline-block",
+                                    lineHeight: "48px",
+                                    textAlign: "center",
+                                    fontSize: "24px",
+                                  }}
+                                >
+                                  ✓
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                align="center"
+                                style={{
+                                  paddingTop: "16px",
+                                  paddingBottom: "8px",
+                                }}
+                              >
+                                <Heading
+                                  as="h1"
+                                  style={{
+                                    margin: 0,
+                                    fontSize: "24px",
+                                    fontWeight: 600,
+                                    color: "#18181b",
+                                    textAlign: "center",
+                                  }}
+                                >
+                                  Top-up Successful!
+                                </Heading>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
 
-            {/* Greeting */}
-            <Text className="m-0 mb-[16px] text-[14px] text-gray-700 leading-[24px]">
-              Hi {customerName},
-            </Text>
-            <Text className="m-0 mb-[24px] text-[14px] text-gray-700 leading-[24px]">
-              Your top-up has been completed successfully. Here are your
-              transaction details:
-            </Text>
+                        {/* Greeting */}
+                        <Text
+                          style={{
+                            margin: "24px 0 8px 0",
+                            fontSize: "15px",
+                            color: "#3f3f46",
+                            lineHeight: "24px",
+                          }}
+                        >
+                          Hi {customerName},
+                        </Text>
+                        <Text
+                          style={{
+                            margin: "0 0 24px 0",
+                            fontSize: "15px",
+                            color: "#3f3f46",
+                            lineHeight: "24px",
+                          }}
+                        >
+                          Your top-up has been completed successfully. Here are
+                          your transaction details:
+                        </Text>
 
-            {/* Transaction Details */}
-            <Section className="rounded-lg bg-gray-50 p-[20px]">
-              <table
-                cellPadding={0}
-                cellSpacing={0}
-                style={{ width: "100%", borderCollapse: "collapse" }}
-              >
-                <tbody>
-                  <tr>
-                    <td
-                      style={{
-                        padding: "8px 0",
-                        fontSize: "13px",
-                        color: "#6b7280",
-                      }}
-                    >
-                      Transaction ID
-                    </td>
-                    <td
-                      style={{
-                        padding: "8px 0",
-                        fontSize: "13px",
-                        color: "#111827",
-                        fontWeight: 500,
-                        textAlign: "right",
-                      }}
-                    >
-                      {transactionId}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td
-                      style={{
-                        padding: "8px 0",
-                        fontSize: "13px",
-                        color: "#6b7280",
-                      }}
-                    >
-                      Game
-                    </td>
-                    <td
-                      style={{
-                        padding: "8px 0",
-                        fontSize: "13px",
-                        color: "#111827",
-                        fontWeight: 500,
-                        textAlign: "right",
-                      }}
-                    >
-                      {gameName}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td
-                      style={{
-                        padding: "8px 0",
-                        fontSize: "13px",
-                        color: "#6b7280",
-                      }}
-                    >
-                      Item
-                    </td>
-                    <td
-                      style={{
-                        padding: "8px 0",
-                        fontSize: "13px",
-                        color: "#111827",
-                        fontWeight: 500,
-                        textAlign: "right",
-                      }}
-                    >
-                      {itemName}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td
-                      style={{
-                        padding: "8px 0",
-                        fontSize: "13px",
-                        color: "#6b7280",
-                      }}
-                    >
-                      Amount
-                    </td>
-                    <td
-                      style={{
-                        padding: "8px 0",
-                        fontSize: "14px",
-                        color: "#10b981",
-                        fontWeight: 600,
-                        textAlign: "right",
-                      }}
-                    >
-                      {formatCurrency(amount)}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td
-                      style={{
-                        padding: "8px 0",
-                        fontSize: "13px",
-                        color: "#6b7280",
-                      }}
-                    >
-                      Date
-                    </td>
-                    <td
-                      style={{
-                        padding: "8px 0",
-                        fontSize: "13px",
-                        color: "#111827",
-                        fontWeight: 500,
-                        textAlign: "right",
-                      }}
-                    >
-                      {date}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </Section>
+                        {/* Transaction Details Box */}
+                        <table
+                          bgcolor="#fafafa"
+                          cellPadding={0}
+                          cellSpacing={0}
+                          role="presentation"
+                          style={{
+                            backgroundColor: "#fafafa",
+                            borderRadius: "8px",
+                            border: "1px solid #e4e4e7",
+                          }}
+                          width="100%"
+                        >
+                          <tbody>
+                            <tr>
+                              <td style={{ padding: "20px" }}>
+                                {/* Transaction ID Row */}
+                                <table
+                                  cellPadding={0}
+                                  cellSpacing={0}
+                                  role="presentation"
+                                  width="100%"
+                                >
+                                  <tbody>
+                                    <tr>
+                                      <td
+                                        style={{
+                                          padding: "8px 0",
+                                          fontSize: "14px",
+                                          color: "#71717a",
+                                          verticalAlign: "top",
+                                        }}
+                                      >
+                                        Transaction ID
+                                      </td>
+                                      <td
+                                        align="right"
+                                        style={{
+                                          padding: "8px 0",
+                                          fontSize: "14px",
+                                          color: "#18181b",
+                                          fontWeight: 500,
+                                          verticalAlign: "top",
+                                          wordBreak: "break-all",
+                                        }}
+                                      >
+                                        {transactionId}
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td
+                                        style={{
+                                          padding: "8px 0",
+                                          fontSize: "14px",
+                                          color: "#71717a",
+                                        }}
+                                      >
+                                        Game
+                                      </td>
+                                      <td
+                                        align="right"
+                                        style={{
+                                          padding: "8px 0",
+                                          fontSize: "14px",
+                                          color: "#18181b",
+                                          fontWeight: 500,
+                                        }}
+                                      >
+                                        {gameName}
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td
+                                        style={{
+                                          padding: "8px 0",
+                                          fontSize: "14px",
+                                          color: "#71717a",
+                                        }}
+                                      >
+                                        Item
+                                      </td>
+                                      <td
+                                        align="right"
+                                        style={{
+                                          padding: "8px 0",
+                                          fontSize: "14px",
+                                          color: "#18181b",
+                                          fontWeight: 500,
+                                        }}
+                                      >
+                                        {itemName}
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td
+                                        style={{
+                                          padding: "8px 0",
+                                          fontSize: "14px",
+                                          color: "#71717a",
+                                        }}
+                                      >
+                                        Amount
+                                      </td>
+                                      <td
+                                        align="right"
+                                        style={{
+                                          padding: "8px 0",
+                                          fontSize: "15px",
+                                          color: "#10b981",
+                                          fontWeight: 600,
+                                        }}
+                                      >
+                                        {formatCurrency(amount)}
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td
+                                        style={{
+                                          padding: "8px 0",
+                                          fontSize: "14px",
+                                          color: "#71717a",
+                                        }}
+                                      >
+                                        Date
+                                      </td>
+                                      <td
+                                        align="right"
+                                        style={{
+                                          padding: "8px 0",
+                                          fontSize: "14px",
+                                          color: "#18181b",
+                                          fontWeight: 500,
+                                        }}
+                                      >
+                                        {date}
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
 
-            <Hr className="mx-0 my-[24px] w-full border border-[#e5e7eb] border-solid" />
-
-            {/* Footer */}
-            <Text className="m-0 text-center text-[12px] text-gray-500 leading-[20px]">
-              Thank you for using FlazBit!
-            </Text>
-            <Text className="m-0 mt-[4px] text-center text-[12px] text-gray-400 leading-[20px]">
-              If you have any questions, please contact our support team.
-            </Text>
-          </Container>
-        </Body>
-      </Tailwind>
+                    {/* Footer */}
+                    <tr>
+                      <td
+                        style={{
+                          padding: "24px 32px 32px 32px",
+                          borderTop: "1px solid #e4e4e7",
+                        }}
+                      >
+                        <Text
+                          style={{
+                            margin: 0,
+                            textAlign: "center",
+                            fontSize: "13px",
+                            color: "#71717a",
+                            lineHeight: "20px",
+                          }}
+                        >
+                          Thank you for using FlazBit!
+                        </Text>
+                        <Text
+                          style={{
+                            margin: "4px 0 0 0",
+                            textAlign: "center",
+                            fontSize: "13px",
+                            color: "#a1a1aa",
+                            lineHeight: "20px",
+                          }}
+                        >
+                          If you have any questions, please contact our support
+                          team.
+                        </Text>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </Body>
     </Html>
   );
 };

@@ -13,6 +13,7 @@ import {
   FlameIcon,
   GlobeIcon,
   HelpCircleIcon,
+  Loader2Icon,
   MailIcon,
   PackageIcon,
   ShieldCheckIcon,
@@ -92,6 +93,7 @@ function GameDetailPage() {
   const countryCode = LOCALE_TO_COUNTRY_CODE[locale] || "US";
 
   // Section refs for auto-scroll
+  const accountSectionRef = useRef<HTMLDivElement>(null);
   const packageSectionRef = useRef<HTMLDivElement>(null);
   const paymentSectionRef = useRef<HTMLDivElement>(null);
   const emailSectionRef = useRef<HTMLDivElement>(null);
@@ -120,12 +122,24 @@ function GameDetailPage() {
           params: gameParams,
         });
         toast.success("Account verified successfully!");
-        // Auto-scroll to package section
+        // Smart auto-scroll to next incomplete step
         setTimeout(() => {
-          packageSectionRef.current?.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-          });
+          if (!selectedPackage) {
+            packageSectionRef.current?.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+          } else if (!selectedPayment) {
+            paymentSectionRef.current?.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+          } else if (!email) {
+            emailSectionRef.current?.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+          }
         }, 300);
       },
       onError: () => {
@@ -177,8 +191,16 @@ function GameDetailPage() {
   const [verifiedAccount, setVerifiedAccount] =
     useState<VerifiedAccount | null>(null);
   const [selectedPackage, setSelectedPackage] = useState<string | null>(null);
-  const [selectedPayment, setSelectedPayment] = useState<string | null>(null);
+  // Default to first available payment gateway for supported countries
+  const [selectedPayment, setSelectedPayment] = useState<string | null>(() => {
+    const firstAvailable = paymentGateways.find((g) => g.isAvailable);
+    return firstAvailable?.id ?? null;
+  });
   const [email, setEmail] = useState("");
+  // State for pulsing animation on incomplete steps
+  const [pulsingSection, setPulsingSection] = useState<
+    "account" | "package" | "payment" | "email" | null
+  >(null);
 
   const selectedItem = items.find((item) => item.id === selectedPackage);
 
@@ -218,27 +240,86 @@ function GameDetailPage() {
     setGameParams(getEmptyParamsForGame(slug as GameSlug));
   }, [slug]);
 
-  // Handle package selection with auto-scroll
-  const handleSelectPackage = useCallback((itemId: string) => {
-    setSelectedPackage(itemId);
-    setTimeout(() => {
-      paymentSectionRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }, 300);
-  }, []);
+  // Smart auto-scroll after completing a step
+  const scrollToNextIncompleteStep = useCallback(
+    (afterStep: "account" | "package" | "payment") => {
+      setTimeout(() => {
+        const sequence = ["account", "package", "payment", "email"];
+        const startIndex = sequence.indexOf(afterStep) + 1;
 
-  // Handle payment selection with auto-scroll
-  const handleSelectPayment = useCallback((paymentId: string) => {
-    setSelectedPayment(paymentId);
-    setTimeout(() => {
-      emailSectionRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }, 300);
-  }, []);
+        for (let i = startIndex; i < sequence.length; i++) {
+          const step = sequence[i];
+          if (step === "package" && !selectedPackage) {
+            packageSectionRef.current?.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+            return;
+          }
+          if (step === "payment" && !selectedPayment) {
+            paymentSectionRef.current?.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+            return;
+          }
+          if (step === "email" && !email) {
+            emailSectionRef.current?.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+            return;
+          }
+        }
+      }, 300);
+    },
+    [selectedPackage, selectedPayment, email]
+  );
+
+  // Handle package selection - allow selection but scroll to incomplete step if needed
+  const handleSelectPackage = useCallback(
+    (itemId: string) => {
+      setSelectedPackage(itemId);
+      // If account not verified, scroll to it with pulse (non-blocking)
+      if (verifiedAccount) {
+        scrollToNextIncompleteStep("package");
+      } else {
+        accountSectionRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+        setPulsingSection("account");
+        setTimeout(() => setPulsingSection(null), 3000);
+      }
+    },
+    [verifiedAccount, scrollToNextIncompleteStep]
+  );
+
+  // Handle payment selection - allow selection but scroll to incomplete step if needed
+  const handleSelectPayment = useCallback(
+    (paymentId: string) => {
+      setSelectedPayment(paymentId);
+      // Check if previous steps are incomplete and scroll (non-blocking)
+      if (!verifiedAccount) {
+        accountSectionRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+        setPulsingSection("account");
+        setTimeout(() => setPulsingSection(null), 3000);
+      } else if (selectedPackage) {
+        scrollToNextIncompleteStep("payment");
+      } else {
+        packageSectionRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+        setPulsingSection("package");
+        setTimeout(() => setPulsingSection(null), 3000);
+      }
+    },
+    [verifiedAccount, selectedPackage, scrollToNextIncompleteStep]
+  );
 
   const handleSubmit = () => {
     if (!verifiedAccount) {
@@ -282,6 +363,41 @@ function GameDetailPage() {
     });
   };
 
+  const steps = useMemo(
+    () => [
+      {
+        num: 1,
+        title: m.accountData?.() ?? "Account Data",
+        icon: UserIcon,
+        done: !!verifiedAccount,
+      },
+      {
+        num: 2,
+        title: m.selectPackage?.() ?? "Select Package",
+        icon: PackageIcon,
+        done: !!selectedPackage,
+      },
+      {
+        num: 3,
+        title: m.paymentMethod?.() ?? "Payment Method",
+        icon: CreditCardIcon,
+        done: !!selectedPayment,
+      },
+      {
+        num: 4,
+        title: m.emailReceipt?.() ?? "Email for Receipt",
+        icon: MailIcon,
+        done: !!email,
+      },
+    ],
+    [verifiedAccount, selectedPackage, selectedPayment, email]
+  );
+
+  // Get list of unfinished steps for tooltip
+  const unfinishedSteps = useMemo(() => {
+    return steps.filter((step) => !step.done).map((step) => step.title);
+  }, [steps]);
+
   if (!game) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -294,33 +410,6 @@ function GameDetailPage() {
       </div>
     );
   }
-
-  const steps = [
-    {
-      num: 1,
-      title: m.accountData?.() ?? "Account Data",
-      icon: UserIcon,
-      done: !!verifiedAccount,
-    },
-    {
-      num: 2,
-      title: m.selectPackage?.() ?? "Select Package",
-      icon: PackageIcon,
-      done: !!selectedPackage,
-    },
-    {
-      num: 3,
-      title: m.paymentMethod?.() ?? "Payment Method",
-      icon: CreditCardIcon,
-      done: !!selectedPayment,
-    },
-    {
-      num: 4,
-      title: m.emailReceipt?.() ?? "Email for Receipt",
-      icon: MailIcon,
-      done: !!email,
-    },
-  ];
 
   return (
     <main className="min-h-screen pb-20 md:pb-0">
@@ -443,7 +532,10 @@ function GameDetailPage() {
             {/* Main Steps Section (Left - Larger) */}
             <div className="space-y-6 lg:col-span-2">
               {/* Step 1: Account Data */}
-              <div className="gaming-card p-6">
+              <div
+                className={`gaming-card p-6 transition-all ${pulsingSection === "account" ? "animate-pulse ring-2 ring-gaming-primary" : ""}`}
+                ref={accountSectionRef}
+              >
                 <div className="mb-4 flex items-center gap-3">
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gaming-primary/20">
                     <span className="font-bold text-gaming-primary text-sm">
@@ -468,7 +560,10 @@ function GameDetailPage() {
               </div>
 
               {/* Step 2: Select Package */}
-              <div className="gaming-card p-6" ref={packageSectionRef}>
+              <div
+                className={`gaming-card p-6 transition-all ${pulsingSection === "package" ? "animate-pulse ring-2 ring-gaming-primary" : ""}`}
+                ref={packageSectionRef}
+              >
                 <div className="mb-4 flex items-center gap-3">
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gaming-primary/20">
                     <span className="font-bold text-gaming-primary text-sm">
@@ -534,7 +629,7 @@ function GameDetailPage() {
                       <FlameIcon className="size-4 text-orange-500" />
                       <h3 className="font-medium text-orange-500">Hot</h3>
                     </div>
-                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                       {groupedItems.hot.map((item) => (
                         <button
                           className={`relative overflow-hidden rounded-xl border-2 p-3 text-left transition-all ${
@@ -581,7 +676,7 @@ function GameDetailPage() {
                         All Packages
                       </h3>
                     </div>
-                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                       {groupedItems.all.map((item) => (
                         <button
                           className={`relative rounded-xl border-2 p-4 text-left transition-all ${
@@ -624,7 +719,10 @@ function GameDetailPage() {
               </div>
 
               {/* Step 3: Payment Method */}
-              <div className="gaming-card p-6" ref={paymentSectionRef}>
+              <div
+                className={`gaming-card p-6 transition-all ${pulsingSection === "payment" ? "animate-pulse ring-2 ring-gaming-primary" : ""}`}
+                ref={paymentSectionRef}
+              >
                 <div className="mb-4 flex items-center gap-3">
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gaming-primary/20">
                     <span className="font-bold text-gaming-primary text-sm">
@@ -703,7 +801,10 @@ function GameDetailPage() {
               </div>
 
               {/* Step 4: Email */}
-              <div className="gaming-card p-6" ref={emailSectionRef}>
+              <div
+                className={`gaming-card p-6 transition-all ${pulsingSection === "email" ? "animate-pulse ring-2 ring-gaming-primary" : ""}`}
+                ref={emailSectionRef}
+              >
                 <div className="mb-4 flex items-center gap-3">
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gaming-primary/20">
                     <span className="font-bold text-gaming-primary text-sm">
@@ -736,22 +837,45 @@ function GameDetailPage() {
 
               {/* Submit Button - Mobile */}
               <div className="lg:hidden">
-                <Button
-                  className="btn-gaming h-14 w-full font-bold text-lg"
-                  disabled={
-                    !(
-                      verifiedAccount &&
-                      selectedPackage &&
-                      selectedPayment &&
-                      email
-                    )
-                  }
-                  onClick={handleSubmit}
-                >
-                  <SparklesIcon className="mr-2 size-5" />
-                  {m.buyNow?.() ?? "Buy Now"}{" "}
-                  {selectedItem && `- ${getItemPrice(selectedItem)}`}
-                </Button>
+                <Tooltip>
+                  <TooltipTrigger
+                    render={
+                      <Button
+                        className="btn-gaming h-14 w-full font-bold text-lg"
+                        disabled={
+                          createTransactionMutation.isPending ||
+                          !(
+                            verifiedAccount &&
+                            selectedPackage &&
+                            selectedPayment &&
+                            email
+                          )
+                        }
+                        onClick={handleSubmit}
+                      >
+                        {createTransactionMutation.isPending ? (
+                          <Loader2Icon className="mr-2 size-5 animate-spin" />
+                        ) : (
+                          <SparklesIcon className="mr-2 size-5" />
+                        )}
+                        {m.buyNow?.() ?? "Buy Now"}{" "}
+                        {selectedItem && `- ${getItemPrice(selectedItem)}`}
+                      </Button>
+                    }
+                  />
+                  {unfinishedSteps.length > 0 && (
+                    <TooltipContent side="top">
+                      <div className="space-y-1">
+                        <p className="font-medium">Complete these steps:</p>
+                        <ul className="list-disc pl-4 text-xs">
+                          {unfinishedSteps.map((step) => (
+                            <li key={step}>{step}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </TooltipContent>
+                  )}
+                </Tooltip>
               </div>
             </div>
 
@@ -791,6 +915,13 @@ function GameDetailPage() {
                   </div>
                 </div>
 
+                {/* Price Seed Info Notice */}
+                <p className="mt-4 flex items-start gap-2 rounded-lg bg-muted/50 px-3 py-2 text-muted-foreground text-xs">
+                  <HelpCircleIcon className="mt-0.5 size-3 shrink-0" />
+                  {m.priceSeedInfo?.() ??
+                    "A unique code will be added to the final price for payment verification."}
+                </p>
+
                 {/* Order Summary */}
                 {selectedItem && (
                   <div className="mt-6 rounded-xl border border-gaming-primary/30 bg-gaming-primary/10 p-4">
@@ -806,21 +937,44 @@ function GameDetailPage() {
 
                 {/* Submit Button - Desktop */}
                 <div className="mt-6 hidden lg:block">
-                  <Button
-                    className="btn-gaming h-12 w-full font-bold"
-                    disabled={
-                      !(
-                        verifiedAccount &&
-                        selectedPackage &&
-                        selectedPayment &&
-                        email
-                      )
-                    }
-                    onClick={handleSubmit}
-                  >
-                    <SparklesIcon className="mr-2 size-4" />
-                    {m.buyNow?.() ?? "Buy Now"}
-                  </Button>
+                  <Tooltip>
+                    <TooltipTrigger
+                      render={
+                        <Button
+                          className="btn-gaming h-12 w-full font-bold"
+                          disabled={
+                            createTransactionMutation.isPending ||
+                            !(
+                              verifiedAccount &&
+                              selectedPackage &&
+                              selectedPayment &&
+                              email
+                            )
+                          }
+                          onClick={handleSubmit}
+                        >
+                          {createTransactionMutation.isPending ? (
+                            <Loader2Icon className="mr-2 size-4 animate-spin" />
+                          ) : (
+                            <SparklesIcon className="mr-2 size-4" />
+                          )}
+                          {m.buyNow?.() ?? "Buy Now"}
+                        </Button>
+                      }
+                    />
+                    {unfinishedSteps.length > 0 && (
+                      <TooltipContent side="top">
+                        <div className="space-y-1">
+                          <p className="font-medium">Complete these steps:</p>
+                          <ul className="list-disc pl-4 text-xs">
+                            {unfinishedSteps.map((step) => (
+                              <li key={step}>{step}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      </TooltipContent>
+                    )}
+                  </Tooltip>
                 </div>
 
                 {/* Trust Badges */}

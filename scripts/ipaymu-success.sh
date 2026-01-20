@@ -4,7 +4,7 @@
 # Usage: ./scripts/ipaymu-success.sh [REFERENCE_ID] [PORT]
 # Example: ./scripts/ipaymu-success.sh 73F2euRiU59yRHaVtm8P 3007
 
-REFERENCE_ID=${1:-"019bdc0b-52c8-7099-802a-b7029115a250"}
+REFERENCE_ID=${1:-"019bdc7d-3174-73d8-9f5f-3eb34c8662a0"}
 PORT=${2:-3007}
 
 # iPaymu Webhook Fields

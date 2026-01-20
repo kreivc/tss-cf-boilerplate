@@ -34,25 +34,22 @@ const GameCard = memo(function GameCard({ game }: GameCardProps) {
       to="/game/$slug"
     >
       {/* Image/Logo Area */}
-      <div className="relative aspect-square overflow-hidden bg-muted/30">
-        {game.logo ? (
-          <div className="flex size-full items-center justify-center p-6">
-            <img
-              alt={game.name}
-              className="max-h-full max-w-full object-contain drop-shadow-lg transition-transform duration-300 group-hover:scale-110"
-              height={96}
-              src={game.logo}
-              width={96}
-            />
-          </div>
-        ) : (
-          <div className="flex size-full items-center justify-center">
-            <Gamepad2Icon className="size-16 text-muted-foreground/50" />
+      <div className="relative flex items-center justify-center bg-gradient-to-b from-muted/20 to-transparent px-4 pt-14 pb-4">
+        {/* Active indicator */}
+        {game.isActive && (
+          <div className="absolute top-3 left-3 z-10">
+            <div className="flex items-center gap-1 rounded-full bg-emerald-500/90 px-2 py-0.5 text-white text-xs backdrop-blur-sm">
+              <span className="relative flex size-2">
+                <span className="absolute inline-flex size-full animate-ping rounded-full bg-white opacity-75" />
+                <span className="relative inline-flex size-2 rounded-full bg-white" />
+              </span>
+              Live
+            </div>
           </div>
         )}
 
         {/* Category floating badge */}
-        <div className="absolute top-3 right-3">
+        <div className="absolute top-3 right-3 z-10">
           <Badge
             className="border-none bg-background/80 text-xs capitalize backdrop-blur-md"
             variant="secondary"
@@ -61,16 +58,17 @@ const GameCard = memo(function GameCard({ game }: GameCardProps) {
           </Badge>
         </div>
 
-        {/* Active indicator */}
-        {game.isActive && (
-          <div className="absolute top-3 left-3">
-            <div className="flex items-center gap-1 rounded-full bg-emerald-500/90 px-2 py-0.5 text-white text-xs backdrop-blur-sm">
-              <span className="relative flex size-2">
-                <span className="absolute inline-flex size-full animate-ping rounded-full bg-white opacity-75" />
-                <span className="relative inline-flex size-2 rounded-full bg-white" />
-              </span>
-              Live
-            </div>
+        {game.logo ? (
+          <img
+            alt={game.name}
+            className="size-32 rounded-2xl object-cover shadow-lg ring-2 ring-white/10 transition-all duration-300 group-hover:scale-105 group-hover:shadow-gaming-primary/20 group-hover:shadow-xl group-hover:ring-gaming-primary/30 sm:size-36 md:size-40"
+            height={160}
+            src={game.logo}
+            width={160}
+          />
+        ) : (
+          <div className="flex size-32 items-center justify-center rounded-2xl bg-muted/50 ring-2 ring-white/10 sm:size-36 md:size-40">
+            <Gamepad2Icon className="size-14 text-muted-foreground/50" />
           </div>
         )}
       </div>
@@ -179,7 +177,7 @@ export function CategoryGrid({ games }: CategoryGridProps) {
         </div>
 
         {/* Grid */}
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+        <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
           {filteredGames.map((game) => (
             <GameCard game={game} key={game.id} />
           ))}

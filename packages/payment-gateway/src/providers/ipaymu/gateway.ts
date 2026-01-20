@@ -66,6 +66,14 @@ export class IpaymuGateway extends PaymentGateway {
     this.va = config.va ?? "";
   }
 
+  /**
+   * Get a random seed value between 1-999
+   * This is added to transaction amounts for unique payment identification
+   */
+  getSeed(): number {
+    return Math.floor(Math.random() * 999) + 1;
+  }
+
   async createPayment(
     request: CreatePaymentRequest
   ): Promise<CreatePaymentResponse> {

@@ -23,6 +23,14 @@ export abstract class PaymentGateway {
   abstract readonly displayName: string;
 
   /**
+   * Get a random seed value to add to the transaction amount.
+   * This helps with payment verification and unique amount identification.
+   *
+   * @returns A random seed value (provider-specific range)
+   */
+  abstract getSeed(): number;
+
+  /**
    * Create a new payment session with the payment provider
    *
    * @param request - Payment details including amount, product, and URLs

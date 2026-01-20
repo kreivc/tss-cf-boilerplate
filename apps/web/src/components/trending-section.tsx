@@ -64,7 +64,7 @@ const TrendingCard = memo(function TrendingCard({
 
   return (
     <Link
-      className={`group relative block aspect-[3/4] w-full overflow-hidden rounded-2xl border border-border/50 bg-card/80 backdrop-blur-sm transition-all duration-500 hover:-translate-y-2 hover:border-gaming-primary/60 hover:shadow-2xl hover:shadow-gaming-primary/20 ${rankConfig.glow}`}
+      className={`group relative block w-full overflow-hidden rounded-2xl border border-border/50 bg-card/80 backdrop-blur-sm transition-all duration-500 hover:-translate-y-2 hover:border-gaming-primary/60 hover:shadow-2xl hover:shadow-gaming-primary/20 ${rankConfig.glow}`}
       params={{ slug: game.slug }}
       to="/game/$slug"
     >
@@ -77,18 +77,18 @@ const TrendingCard = memo(function TrendingCard({
       <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/5 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
 
       {/* Logo/Image section with floating effect */}
-      <div className="relative flex h-[55%] items-center justify-center p-4">
+      <div className="relative flex items-center justify-center px-4 pt-14 pb-4">
         {game.logo ? (
           <img
             alt={game.name}
-            className="max-h-[85%] max-w-[85%] object-contain drop-shadow-2xl transition-all duration-500 group-hover:scale-110 group-hover:drop-shadow-[0_20px_30px_rgba(168,85,247,0.3)]"
-            height={128}
+            className="size-32 rounded-2xl object-cover shadow-xl ring-2 ring-white/10 transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl group-hover:shadow-gaming-primary/30 group-hover:ring-gaming-primary/40 sm:size-36 md:size-40"
+            height={160}
             src={game.logo}
-            width={128}
+            width={160}
           />
         ) : (
-          <div className="flex size-20 items-center justify-center rounded-xl bg-muted/50">
-            <span className="text-4xl">🎮</span>
+          <div className="flex size-32 items-center justify-center rounded-2xl bg-muted/50 ring-2 ring-white/10 sm:size-36 md:size-40">
+            <span className="text-5xl">🎮</span>
           </div>
         )}
       </div>
@@ -110,12 +110,12 @@ const TrendingCard = memo(function TrendingCard({
         </div>
       )}
 
-      {/* Content with gradient overlay */}
-      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-background via-background/95 to-transparent p-4 pt-10">
-        <h3 className="mb-1 line-clamp-1 font-bold text-lg transition-colors group-hover:text-gaming-primary">
+      {/* Content section */}
+      <div className="p-4 pt-3">
+        <h3 className="mb-1.5 line-clamp-1 font-bold text-base transition-colors group-hover:text-gaming-primary sm:text-lg">
           {game.name}
         </h3>
-        <div className="flex flex-col gap-1.5">
+        <div className="flex flex-col gap-2">
           {publisher && (
             <span className="font-medium text-muted-foreground text-xs">
               {publisher}
@@ -123,7 +123,7 @@ const TrendingCard = memo(function TrendingCard({
           )}
           <div className="flex items-center justify-between">
             <Badge
-              className="w-fit border-none bg-muted/60 text-xs capitalize backdrop-blur-sm"
+              className="w-fit border-none bg-gaming-primary/20 text-gaming-primary text-xs capitalize backdrop-blur-sm"
               variant="secondary"
             >
               {game.category}
@@ -186,7 +186,7 @@ export function TrendingSection({ games }: TrendingSectionProps) {
         </div>
 
         {/* Grid */}
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+        <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
           {trendingGames.map((game, index) => (
             <TrendingCard game={game} key={game.id} rank={index + 1} />
           ))}

@@ -5,6 +5,7 @@ import {
   type GameSlug,
   parseGameParams,
 } from "@test-tss/game-provider/client";
+import { jsPDF } from "jspdf";
 import {
   AlertTriangleIcon,
   ArrowLeftIcon,
@@ -231,6 +232,194 @@ function GameParamsDisplay({
       </div>
     </div>
   );
+}
+
+// Transaction type from the API response
+interface Transaction {
+  id: string;
+  referenceId: string | null;
+  gameId: string | null;
+  itemId: string | null;
+  itemDetailId: string | null;
+  inputData: string | null;
+  email: string | null;
+  totalPrice: number;
+  status: string;
+  paymentUrl: string | null;
+  paymentProvider: string;
+  createdAt: string | null;
+  updatedAt: string | null;
+  game: { id: string; name: string; slug: string; logo: string | null } | null;
+  item: { id: string; name: string; logo: string | null } | null;
+  itemDetail: { id: string; symbol: string; price: number } | null;
+}
+
+function generateReceipt(transaction: Transaction) {
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.getWidth();
+
+  // Colors
+  const primaryColor: [number, number, number] = [16, 185, 129]; // emerald-500
+  const textDark: [number, number, number] = [31, 41, 55]; // gray-800
+  const textMuted: [number, number, number] = [107, 114, 128]; // gray-500
+
+  let y = 20;
+
+  // Header
+  doc.setFillColor(...primaryColor);
+  doc.rect(0, 0, pageWidth, 40, "F");
+
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(24);
+  doc.setFont("helvetica", "bold");
+  doc.text("FlazBit", 20, 25);
+
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "normal");
+  doc.text("Transaction Receipt", 20, 33);
+
+  // Success badge
+  doc.setFillColor(255, 255, 255);
+  const badgeX = pageWidth - 60;
+  const badgeWidth = 45;
+  doc.roundedRect(badgeX, 15, badgeWidth, 12, 3, 3, "F");
+  doc.setTextColor(...primaryColor);
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "bold");
+  doc.text("SUCCESS", badgeX + badgeWidth / 2, 22.5, { align: "center" });
+
+  y = 55;
+
+  // Transaction Info Section
+  doc.setTextColor(...textDark);
+  doc.setFontSize(12);
+  doc.setFont("helvetica", "bold");
+  doc.text("Transaction Details", 20, y);
+  y += 8;
+
+  doc.setDrawColor(229, 231, 235);
+  doc.line(20, y, pageWidth - 20, y);
+  y += 10;
+
+  // Transaction ID
+  doc.setFontSize(10);
+  doc.setTextColor(...textMuted);
+  doc.setFont("helvetica", "normal");
+  doc.text("Transaction ID", 20, y);
+  doc.setTextColor(...textDark);
+  doc.setFont("helvetica", "bold");
+  doc.text(transaction.id, pageWidth - 20, y, { align: "right" });
+  y += 8;
+
+  // Date
+  doc.setTextColor(...textMuted);
+  doc.setFont("helvetica", "normal");
+  doc.text("Date", 20, y);
+  doc.setTextColor(...textDark);
+  doc.text(
+    new Date(transaction.createdAt ?? "").toLocaleString(),
+    pageWidth - 20,
+    y,
+    { align: "right" }
+  );
+  y += 8;
+
+  // Payment Method
+  doc.setTextColor(...textMuted);
+  doc.text("Payment Method", 20, y);
+  doc.setTextColor(...textDark);
+  doc.text(transaction.paymentProvider, pageWidth - 20, y, { align: "right" });
+  y += 15;
+
+  // Game & Item Section
+  doc.setFillColor(249, 250, 251);
+  doc.roundedRect(20, y, pageWidth - 40, 35, 3, 3, "F");
+  y += 10;
+
+  doc.setTextColor(...textDark);
+  doc.setFontSize(11);
+  doc.setFont("helvetica", "bold");
+  doc.text(transaction.game?.name ?? "Unknown Game", 30, y);
+  y += 7;
+
+  doc.setFontSize(10);
+  doc.setTextColor(...textMuted);
+  doc.setFont("helvetica", "normal");
+  doc.text(transaction.item?.name ?? "Unknown Item", 30, y);
+  y += 12;
+
+  doc.setTextColor(...primaryColor);
+  doc.setFontSize(14);
+  doc.setFont("helvetica", "bold");
+  const symbol = transaction.itemDetail?.symbol ?? "$";
+  doc.text(
+    `${symbol}${transaction.totalPrice.toLocaleString()}`,
+    pageWidth - 30,
+    y - 5,
+    { align: "right" }
+  );
+  y += 15;
+
+  // Account Information
+  if (transaction.inputData) {
+    const gameParams = parseGameParams(transaction.inputData);
+    const gameSlug = transaction.game?.slug ?? "";
+    const fields = GAME_PARAM_FIELDS[gameSlug as GameSlug] || [];
+
+    if (gameParams && fields.length > 0) {
+      doc.setTextColor(...textDark);
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "bold");
+      doc.text("Account Information", 20, y);
+      y += 8;
+
+      doc.setDrawColor(229, 231, 235);
+      doc.line(20, y, pageWidth - 20, y);
+      y += 10;
+
+      doc.setFontSize(10);
+      for (const field of fields) {
+        doc.setTextColor(...textMuted);
+        doc.setFont("helvetica", "normal");
+        doc.text(field.label, 20, y);
+        doc.setTextColor(...textDark);
+        // biome-ignore lint/suspicious/noExplicitAny: generic type casting for game params
+        const value = String((gameParams as any)[field.key] || "-");
+        doc.text(value, pageWidth - 20, y, { align: "right" });
+        y += 8;
+      }
+
+      // Email
+      if (transaction.email) {
+        doc.setTextColor(...textMuted);
+        doc.text("Email", 20, y);
+        doc.setTextColor(...textDark);
+        doc.text(transaction.email, pageWidth - 20, y, { align: "right" });
+        y += 8;
+      }
+      y += 7;
+    }
+  }
+
+  // Footer
+  y = doc.internal.pageSize.getHeight() - 30;
+  doc.setDrawColor(229, 231, 235);
+  doc.line(20, y, pageWidth - 20, y);
+  y += 10;
+
+  doc.setTextColor(...textMuted);
+  doc.setFontSize(8);
+  doc.setFont("helvetica", "normal");
+  doc.text("Thank you for your purchase!", pageWidth / 2, y, {
+    align: "center",
+  });
+  y += 5;
+  doc.text("FlazBit - Instant Game Top-Up", pageWidth / 2, y, {
+    align: "center",
+  });
+
+  // Download the PDF
+  doc.save(`FlazBit-Receipt-${transaction.id}.pdf`);
 }
 
 function OrderPage() {
@@ -473,7 +662,11 @@ function OrderPage() {
             </Button>
           )}
           {status === "SUCCESS" && (
-            <Button className="flex-1" variant="outline">
+            <Button
+              className="flex-1"
+              onClick={() => generateReceipt(transaction)}
+              variant="outline"
+            >
               <DownloadIcon className="mr-2 size-4" />
               Download Receipt
             </Button>

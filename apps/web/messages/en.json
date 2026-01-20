@@ -127,5 +127,7 @@
   "faq2Question": "Is it safe to use this service?",
   "faq2Answer": "100% safe! We are an authorized reseller with secure payment processing. Your account and data are protected.",
   "faq3Question": "What if I enter the wrong ID?",
-  "faq3Answer": "Please double-check your ID before purchasing. If you make a mistake, contact our support team immediately."
+  "faq3Answer": "Please double-check your ID before purchasing. If you make a mistake, contact our support team immediately.",
+
+  "priceSeedInfo": "A unique code will be added to the final price for payment verification."
 }

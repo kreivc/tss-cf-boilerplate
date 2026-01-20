@@ -2,6 +2,11 @@ import { InfoIcon, Loader2Icon, UserCheckIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import type { GameInputRendererProps } from "./types";
 
 /**
@@ -68,23 +73,34 @@ export function GenshinImpactRenderer({
             Find in Paimon menu → Settings
           </p>
           {onCheck && (
-            <Button
-              className="btn-gaming"
-              disabled={!values.uid || isChecking}
-              onClick={onCheck}
-            >
-              {isChecking ? (
-                <>
-                  <Loader2Icon className="mr-2 size-4 animate-spin" />
-                  Checking...
-                </>
-              ) : (
-                <>
-                  <UserCheckIcon className="mr-2 size-4" />
-                  Check User
-                </>
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <Button
+                    className={`btn-gaming ${values.uid && !isChecking ? "animate-pulse" : ""}`}
+                    disabled={!values.uid || isChecking}
+                    onClick={onCheck}
+                  >
+                    {isChecking ? (
+                      <>
+                        <Loader2Icon className="mr-2 size-4 animate-spin" />
+                        Checking...
+                      </>
+                    ) : (
+                      <>
+                        <UserCheckIcon className="mr-2 size-4" />
+                        Check User
+                      </>
+                    )}
+                  </Button>
+                }
+              />
+              {values.uid && !isChecking && (
+                <TooltipContent side="top">
+                  <p>Click to verify your account before purchasing</p>
+                </TooltipContent>
               )}
-            </Button>
+            </Tooltip>
           )}
         </div>
       )}

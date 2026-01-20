@@ -193,9 +193,13 @@ export const transactionRouter = {
       const callbackUrl = getCallbackUrl(paymentProvider);
       const baseFEUrl = env.BASE_FRONTEND_URL;
 
+      // Get seed from payment gateway and add to amount
+      const seed = paymentGateway.getSeed();
+      const totalAmount = itemDetail[0].price + seed;
+
       const paymentResult = await paymentGateway.createPayment({
         referenceId,
-        amount: itemDetail[0].price,
+        amount: totalAmount,
         currencySymbol: itemDetail[0].symbol,
         productName: item[0].name,
         quantity: 1,
@@ -221,7 +225,7 @@ export const transactionRouter = {
         itemDetailId: input.itemDetailId,
         inputData,
         email: input.email,
-        totalPrice: itemDetail[0].price,
+        totalPrice: totalAmount,
         status: "PENDING",
         paymentUrl: paymentResult.paymentUrl,
         paymentProvider: input.paymentMethod.toUpperCase(),

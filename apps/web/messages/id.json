@@ -127,5 +127,7 @@
   "faq2Question": "Apakah aman menggunakan layanan ini?",
   "faq2Answer": "100% aman! Kami adalah reseller resmi dengan pemrosesan pembayaran yang aman. Akun dan data Anda dilindungi.",
   "faq3Question": "Bagaimana jika saya salah memasukkan ID?",
-  "faq3Answer": "Silakan periksa kembali ID Anda sebelum membeli. Jika Anda melakukan kesalahan, hubungi tim dukungan kami segera."
+  "faq3Answer": "Silakan periksa kembali ID Anda sebelum membeli. Jika Anda melakukan kesalahan, hubungi tim dukungan kami segera.",
+
+  "priceSeedInfo": "Kode unik akan ditambahkan ke harga akhir untuk verifikasi pembayaran."
 }

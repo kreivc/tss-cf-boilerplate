@@ -10,10 +10,8 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as YttaRouteImport } from './routes/ytta'
-import { Route as TodosRouteImport } from './routes/todos'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as FindOrderRouteImport } from './routes/find-order'
-import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as YttaIndexRouteImport } from './routes/ytta/index'
 import { Route as YttaReportsRouteImport } from './routes/ytta/reports'
@@ -32,11 +30,6 @@ const YttaRoute = YttaRouteImport.update({
   path: '/ytta',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TodosRoute = TodosRouteImport.update({
-  id: '/todos',
-  path: '/todos',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -45,11 +38,6 @@ const LoginRoute = LoginRouteImport.update({
 const FindOrderRoute = FindOrderRouteImport.update({
   id: '/find-order',
   path: '/find-order',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -116,10 +104,8 @@ const YttaGameSlugItemItemSlugRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRoute
   '/find-order': typeof FindOrderRoute
   '/login': typeof LoginRoute
-  '/todos': typeof TodosRoute
   '/ytta': typeof YttaRouteWithChildren
   '/game/$slug': typeof GameSlugRoute
   '/order/$orderId': typeof OrderOrderIdRoute
@@ -135,10 +121,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRoute
   '/find-order': typeof FindOrderRoute
   '/login': typeof LoginRoute
-  '/todos': typeof TodosRoute
   '/game/$slug': typeof GameSlugRoute
   '/order/$orderId': typeof OrderOrderIdRoute
   '/ytta/media': typeof YttaMediaRoute
@@ -154,10 +138,8 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRoute
   '/find-order': typeof FindOrderRoute
   '/login': typeof LoginRoute
-  '/todos': typeof TodosRoute
   '/ytta': typeof YttaRouteWithChildren
   '/game/$slug': typeof GameSlugRoute
   '/order/$orderId': typeof OrderOrderIdRoute
@@ -175,10 +157,8 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/dashboard'
     | '/find-order'
     | '/login'
-    | '/todos'
     | '/ytta'
     | '/game/$slug'
     | '/order/$orderId'
@@ -194,10 +174,8 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/dashboard'
     | '/find-order'
     | '/login'
-    | '/todos'
     | '/game/$slug'
     | '/order/$orderId'
     | '/ytta/media'
@@ -212,10 +190,8 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/dashboard'
     | '/find-order'
     | '/login'
-    | '/todos'
     | '/ytta'
     | '/game/$slug'
     | '/order/$orderId'
@@ -232,10 +208,8 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  DashboardRoute: typeof DashboardRoute
   FindOrderRoute: typeof FindOrderRoute
   LoginRoute: typeof LoginRoute
-  TodosRoute: typeof TodosRoute
   YttaRoute: typeof YttaRouteWithChildren
   GameSlugRoute: typeof GameSlugRoute
   OrderOrderIdRoute: typeof OrderOrderIdRoute
@@ -250,13 +224,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof YttaRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/todos': {
-      id: '/todos'
-      path: '/todos'
-      fullPath: '/todos'
-      preLoaderRoute: typeof TodosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -269,13 +236,6 @@ declare module '@tanstack/react-router' {
       path: '/find-order'
       fullPath: '/find-order'
       preLoaderRoute: typeof FindOrderRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -393,10 +353,8 @@ const YttaRouteWithChildren = YttaRoute._addFileChildren(YttaRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  DashboardRoute: DashboardRoute,
   FindOrderRoute: FindOrderRoute,
   LoginRoute: LoginRoute,
-  TodosRoute: TodosRoute,
   YttaRoute: YttaRouteWithChildren,
   GameSlugRoute: GameSlugRoute,
   OrderOrderIdRoute: OrderOrderIdRoute,
