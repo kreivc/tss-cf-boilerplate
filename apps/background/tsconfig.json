@@ -1,5 +1,7 @@
 {
   "extends": "@test-tss/config/tsconfig.base.json",
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "../../packages/email/**/*.tsx"],
   "compilerOptions": {
     "composite": true,
     "outDir": "dist",
@@ -9,6 +11,7 @@
     },
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx",
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "skipLibCheck": true
   }
 }

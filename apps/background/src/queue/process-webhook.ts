@@ -22,8 +22,8 @@ import {
   IpaymuWebhookDataSchema,
   type TransactionStatus,
 } from "@test-tss/payment-gateway";
-import type { ReceivedWebhookData, SendEmailData } from "@test-tss/types";
 import { eq } from "drizzle-orm";
+import type { ReceivedWebhookData, SendEmailData } from "../types";
 
 /**
  * Parse iPaymu webhook data directly
@@ -114,6 +114,15 @@ export async function processWebhook(data: ReceivedWebhookData): Promise<void> {
     newStatus: webhookResult.status,
   });
 
+  // Idempotency check: Skip if already in terminal state
+  const terminalStates: TransactionStatus[] = ["SUCCESS", "FAILED", "EXPIRED"];
+  if (terminalStates.includes(transaction.status as TransactionStatus)) {
+    console.log(
+      `[processWebhook] Transaction already in terminal state: ${transaction.status}. Skipping.`
+    );
+    return;
+  }
+
   // Update transaction status
   const now = new Date().toISOString();
   await db
@@ -185,11 +194,27 @@ export async function processWebhook(data: ReceivedWebhookData): Promise<void> {
     transaction.email &&
     isValidEmail(transaction.email)
   ) {
+    const gameName = game[0]?.name ?? "Game";
+    const itemName = item[0]?.name ?? "Item";
+
     const emailData: SendEmailData = {
       name: "Customer",
       email: transaction.email,
-      subject: `Top-up Successful - ${game[0]?.name ?? "Game"}`,
-      text: `Your top-up for ${item[0]?.name ?? "item"} completed.\n\nTransaction: ${transaction.id}\nAmount: ${transaction.totalPrice}`,
+      subject: `Top-up Successful - ${gameName}`,
+      text: `Your top-up for ${itemName} completed.\n\nTransaction: ${transaction.id}\nAmount: ${transaction.totalPrice}`,
+      transactionDetails: {
+        transactionId: transaction.id,
+        gameName,
+        itemName,
+        amount: transaction.totalPrice,
+        date: new Date().toLocaleDateString("id-ID", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      },
     };
 
     await env.QUEUE.send({ type: "sendEmail", data: emailData });

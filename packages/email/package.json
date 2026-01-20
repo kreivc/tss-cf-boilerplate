@@ -5,6 +5,10 @@
     ".": {
       "default": "./index.tsx"
     },
+    "./render": {
+      "types": "./render.d.ts",
+      "default": "./render.ts"
+    },
     "./*": {
       "default": "./*.tsx"
     }

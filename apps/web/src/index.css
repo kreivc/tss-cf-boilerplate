@@ -354,3 +354,7 @@
 ::-webkit-scrollbar-thumb:hover {
   background: var(--gaming-secondary);
 }
+
+button {
+  cursor: pointer;
+}

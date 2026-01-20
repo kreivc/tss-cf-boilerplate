@@ -32,8 +32,8 @@ export function Navbar() {
                 </div>
               </div>
               <span className="hidden font-bold text-xl tracking-gaming sm:inline">
-                <span className="text-gradient-gaming">Game</span>
-                <span className="text-foreground">Top</span>
+                <span className="text-gradient-gaming">Flaz</span>
+                <span className="text-foreground">Bit</span>
               </span>
             </Link>
 

@@ -68,11 +68,13 @@ interface TransactionData {
 }
 
 interface TransactionsQueryResult {
-  data: TransactionData[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
+  transactions: TransactionData[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
 }
 
 // Helper function to render transactions content with early returns
@@ -134,7 +136,7 @@ function renderTransactionsContent({
   }
 
   // Empty state
-  if (transactionsQuery.data?.data.length === 0) {
+  if (transactionsQuery.data?.transactions.length === 0) {
     return (
       <div className="py-12 text-center">
         <SearchIcon className="mx-auto size-12 text-muted-foreground/50" />
@@ -169,7 +171,7 @@ function renderTransactionsContent({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {transactionsQuery.data?.data.map((txn) => (
+              {transactionsQuery.data?.transactions.map((txn) => (
                 <TableRow className="border-glass-border" key={txn.id}>
                   <TableCell className="font-mono text-sm">
                     {txn.referenceId}
@@ -208,7 +210,7 @@ function renderTransactionsContent({
 
       {/* Mobile Cards */}
       <div className="space-y-3 md:hidden">
-        {transactionsQuery.data?.data.map((txn) => (
+        {transactionsQuery.data?.transactions.map((txn) => (
           <div
             className="rounded-xl border border-glass-border bg-background/50 p-4"
             key={txn.id}
@@ -249,10 +251,10 @@ function renderTransactionsContent({
       </div>
 
       {/* Pagination */}
-      {(transactionsQuery.data?.totalPages ?? 0) > 1 && (
+      {(transactionsQuery.data?.pagination.totalPages ?? 0) > 1 && (
         <div className="mt-6 flex flex-col items-center justify-between gap-4 sm:flex-row">
           <div className="text-muted-foreground text-sm">
-            Page {page} of {transactionsQuery.data?.totalPages}
+            Page {page} of {transactionsQuery.data?.pagination.totalPages}
           </div>
           <div className="flex gap-2">
             <Button
@@ -265,7 +267,9 @@ function renderTransactionsContent({
               Previous
             </Button>
             <Button
-              disabled={page >= (transactionsQuery.data?.totalPages ?? 1)}
+              disabled={
+                page >= (transactionsQuery.data?.pagination.totalPages ?? 1)
+              }
               onClick={() => setPage(page + 1)}
               size="sm"
               variant="outline"
@@ -422,7 +426,7 @@ function ReportsPage() {
                 value={gameId}
               >
                 <option value="all">All Games</option>
-                {gamesQuery.data.data.map((game) => (
+                {gamesQuery.data?.data?.map((game) => (
                   <option key={game.id} value={game.id}>
                     {game.name}
                   </option>
@@ -467,7 +471,7 @@ function ReportsPage() {
                 Clear Filters
               </Button>
               <span className="text-muted-foreground text-sm">
-                {transactionsQuery.data?.total ?? 0} results found
+                {transactionsQuery.data?.pagination.total ?? 0} results found
               </span>
             </div>
           )}
@@ -483,8 +487,8 @@ function ReportsPage() {
               Transactions
             </CardTitle>
             <span className="text-muted-foreground text-sm">
-              Showing {transactionsQuery.data?.data.length ?? 0} of{" "}
-              {transactionsQuery.data?.total ?? 0} transactions
+              Showing {transactionsQuery.data?.transactions.length ?? 0} of{" "}
+              {transactionsQuery.data?.pagination.total ?? 0} transactions
             </span>
           </div>
         </CardHeader>

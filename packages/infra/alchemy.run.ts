@@ -111,7 +111,7 @@ export const backgroundWorker = await Worker("background-jobs", {
     },
   ],
   // crons: ["* * * * *", "0 0 * * *", "0 */6 * * *", "0 12 * * MON"],
-  crons: ["0 */6 * * *"],
+  crons: ["*/5 * * * *"], // Every 5 minutes for transaction expiration
   dev: {
     port: 3007,
   },
@@ -153,11 +153,11 @@ if (isDev) {
   console.log(`Web    -> ${web.url}`);
   console.log(`Server -> ${server.url}`);
   console.log(`Background Worker -> ${backgroundWorker.url}`);
-  console.log(`Bucket URL -> https://${bucket.devDomain}`);
+  console.log(`Bucket URL -> https://${bucket.domains?.[0]}`);
 } else {
-  console.log(`Web    -> https://${web.domains?.[0]}`);
-  console.log(`Server -> https://${server.domains?.[0]}`);
-  console.log(`Background Worker -> https://${backgroundWorker.domains?.[0]}`);
+  console.log(`Web    -> https://${web.baseUrl}`);
+  console.log(`Server -> https://${server.baseUrl}`);
+  console.log(`Background Worker -> https://${backgroundWorker.baseUrl}`);
   console.log(`Bucket URL -> https://${bucket.domains?.[0]}`);
 }
 

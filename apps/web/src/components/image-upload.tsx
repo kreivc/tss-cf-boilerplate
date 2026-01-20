@@ -1,7 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
-import { Loader2, UploadCloud, X } from "lucide-react";
+import { ImageIcon, Loader2, UploadCloud, X } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { MediaSelectorModalWrapper } from "@/components/media-selector-modal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,7 +12,8 @@ interface ImageUploadProps {
   value?: string;
   onChange: (value: string) => void;
   label: string;
-  folder?: "games" | "items";
+  folder?: "games" | "items" | "media";
+  aspectRatio?: "landscape" | "square";
   className?: string;
 }
 
@@ -20,10 +22,12 @@ export function ImageUpload({
   onChange,
   label,
   folder = "games",
+  aspectRatio = "landscape",
   className,
 }: ImageUploadProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [preview, setPreview] = useState<string | undefined>(value);
+  const [mediaModalOpen, setMediaModalOpen] = useState(false);
 
   // Update preview when value changes externally (e.g. from parent or initial load)
   if (value && value !== preview) {
@@ -79,11 +83,24 @@ export function ImageUpload({
     setPreview(undefined);
   };
 
+  const handleMediaSelect = (url: string) => {
+    onChange(url);
+    setPreview(url);
+  };
+
+  // Aspect ratio classes
+  const aspectClasses =
+    aspectRatio === "square"
+      ? "aspect-square w-32 md:w-40"
+      : "aspect-video w-full md:w-64";
+  const dropzoneClasses =
+    aspectRatio === "square" ? "h-32 w-32 md:w-40" : "h-32 w-full md:w-64";
+
   return (
     <div className={className}>
       <Label>{label}</Label>
       <div className="mt-2 flex flex-col gap-4">
-        {/* URL Input and Upload Trigger Row */}
+        {/* URL Input and Media Button Row */}
         <div className="flex gap-2">
           <Input
             className="flex-1 border-glass-border bg-background/50"
@@ -95,18 +112,29 @@ export function ImageUpload({
             placeholder="https://example.com/image.png"
             value={value || ""}
           />
+          <Button
+            onClick={() => setMediaModalOpen(true)}
+            size="icon"
+            title="Select from Media Library"
+            type="button"
+            variant="outline"
+          >
+            <ImageIcon className="size-4" />
+          </Button>
         </div>
 
         {/* Preview or Upload Zone */}
         {preview ? (
-          <div className="relative aspect-video w-full overflow-hidden rounded-lg border border-border bg-background/50 md:w-64">
+          <div
+            className={`relative overflow-hidden rounded-lg border border-border bg-background/50 ${aspectClasses}`}
+          >
             <img
               alt="Preview"
               className="h-full w-full object-cover"
-              height={150}
+              height={aspectRatio === "square" ? 150 : 150}
               onError={() => setPreview(undefined)}
               src={preview}
-              width={300}
+              width={aspectRatio === "square" ? 150 : 300}
             />
             <Button
               className="absolute top-2 right-2 h-6 w-6"
@@ -119,7 +147,9 @@ export function ImageUpload({
             </Button>
           </div>
         ) : (
-          <div className="relative flex h-32 w-full flex-col items-center justify-center rounded-lg border-2 border-muted-foreground/25 border-dashed bg-background/50 p-4 transition-colors hover:bg-accent/50 md:w-64">
+          <div
+            className={`relative flex flex-col items-center justify-center rounded-lg border-2 border-muted-foreground/25 border-dashed bg-background/50 p-4 transition-colors hover:bg-accent/50 ${dropzoneClasses}`}
+          >
             <div className="pointer-events-none flex flex-col items-center justify-center gap-2 text-center text-muted-foreground text-sm">
               {isUploading ? (
                 <>
@@ -145,6 +175,13 @@ export function ImageUpload({
           </div>
         )}
       </div>
+
+      {/* Media Selector Modal */}
+      <MediaSelectorModalWrapper
+        onOpenChange={setMediaModalOpen}
+        onSelect={handleMediaSelect}
+        open={mediaModalOpen}
+      />
     </div>
   );
 }

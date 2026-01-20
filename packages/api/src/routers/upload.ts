@@ -22,7 +22,7 @@ export const uploadRouter = {
       z.object({
         filename: z.string(),
         contentType: z.string(),
-        folder: z.enum(["games", "items"]).default("games"),
+        folder: z.enum(["games", "items", "media"]).default("games"),
       })
     )
     .handler(async ({ input }) => {

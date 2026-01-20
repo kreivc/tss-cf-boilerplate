@@ -17,6 +17,7 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as YttaIndexRouteImport } from './routes/ytta/index'
 import { Route as YttaReportsRouteImport } from './routes/ytta/reports'
+import { Route as YttaMediaRouteImport } from './routes/ytta/media'
 import { Route as OrderOrderIdRouteImport } from './routes/order.$orderId'
 import { Route as GameSlugRouteImport } from './routes/game.$slug'
 import { Route as YttaGameIndexRouteImport } from './routes/ytta/game/index'
@@ -64,6 +65,11 @@ const YttaIndexRoute = YttaIndexRouteImport.update({
 const YttaReportsRoute = YttaReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
+  getParentRoute: () => YttaRoute,
+} as any)
+const YttaMediaRoute = YttaMediaRouteImport.update({
+  id: '/media',
+  path: '/media',
   getParentRoute: () => YttaRoute,
 } as any)
 const OrderOrderIdRoute = OrderOrderIdRouteImport.update({
@@ -117,6 +123,7 @@ export interface FileRoutesByFullPath {
   '/ytta': typeof YttaRouteWithChildren
   '/game/$slug': typeof GameSlugRoute
   '/order/$orderId': typeof OrderOrderIdRoute
+  '/ytta/media': typeof YttaMediaRoute
   '/ytta/reports': typeof YttaReportsRoute
   '/ytta/': typeof YttaIndexRoute
   '/ytta/game/create': typeof YttaGameCreateRoute
@@ -134,6 +141,7 @@ export interface FileRoutesByTo {
   '/todos': typeof TodosRoute
   '/game/$slug': typeof GameSlugRoute
   '/order/$orderId': typeof OrderOrderIdRoute
+  '/ytta/media': typeof YttaMediaRoute
   '/ytta/reports': typeof YttaReportsRoute
   '/ytta': typeof YttaIndexRoute
   '/ytta/game/create': typeof YttaGameCreateRoute
@@ -153,6 +161,7 @@ export interface FileRoutesById {
   '/ytta': typeof YttaRouteWithChildren
   '/game/$slug': typeof GameSlugRoute
   '/order/$orderId': typeof OrderOrderIdRoute
+  '/ytta/media': typeof YttaMediaRoute
   '/ytta/reports': typeof YttaReportsRoute
   '/ytta/': typeof YttaIndexRoute
   '/ytta/game/create': typeof YttaGameCreateRoute
@@ -173,6 +182,7 @@ export interface FileRouteTypes {
     | '/ytta'
     | '/game/$slug'
     | '/order/$orderId'
+    | '/ytta/media'
     | '/ytta/reports'
     | '/ytta/'
     | '/ytta/game/create'
@@ -190,6 +200,7 @@ export interface FileRouteTypes {
     | '/todos'
     | '/game/$slug'
     | '/order/$orderId'
+    | '/ytta/media'
     | '/ytta/reports'
     | '/ytta'
     | '/ytta/game/create'
@@ -208,6 +219,7 @@ export interface FileRouteTypes {
     | '/ytta'
     | '/game/$slug'
     | '/order/$orderId'
+    | '/ytta/media'
     | '/ytta/reports'
     | '/ytta/'
     | '/ytta/game/create'
@@ -287,6 +299,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof YttaReportsRouteImport
       parentRoute: typeof YttaRoute
     }
+    '/ytta/media': {
+      id: '/ytta/media'
+      path: '/media'
+      fullPath: '/ytta/media'
+      preLoaderRoute: typeof YttaMediaRouteImport
+      parentRoute: typeof YttaRoute
+    }
     '/order/$orderId': {
       id: '/order/$orderId'
       path: '/order/$orderId'
@@ -347,6 +366,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface YttaRouteChildren {
+  YttaMediaRoute: typeof YttaMediaRoute
   YttaReportsRoute: typeof YttaReportsRoute
   YttaIndexRoute: typeof YttaIndexRoute
   YttaGameCreateRoute: typeof YttaGameCreateRoute
@@ -358,6 +378,7 @@ interface YttaRouteChildren {
 }
 
 const YttaRouteChildren: YttaRouteChildren = {
+  YttaMediaRoute: YttaMediaRoute,
   YttaReportsRoute: YttaReportsRoute,
   YttaIndexRoute: YttaIndexRoute,
   YttaGameCreateRoute: YttaGameCreateRoute,

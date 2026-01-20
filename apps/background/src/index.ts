@@ -1,13 +1,13 @@
 import { env } from "cloudflare:workers";
 import { env as backgroundEnv } from "@test-tss/env/background";
+import { processWebhook } from "./queue/process-webhook";
+import { sendEmail } from "./queue/send-email";
+import { expireTransaction } from "./schedule/expire-transaction";
 import type {
   BaseQueueData,
   ReceivedWebhookData,
   SendEmailData,
-} from "@test-tss/types";
-import { processWebhook } from "./queue/process-webhook";
-import { sendEmail } from "./queue/send-email";
-import { expireTransaction } from "./schedule/expire-transaction";
+} from "./types";
 
 if (backgroundEnv.IS_DEV === "true") {
   console.log(
@@ -129,13 +129,11 @@ export default {
     ctx.waitUntil(
       (async () => {
         switch (event.cron) {
-          case "* * * * *":
-          case "0 0 * * *":
-          case "0 */6 * * *":
-          case "0 12 * * MON":
+          case "*/5 * * * *": // Every 5 minutes
             await expireTransaction();
             break;
           default:
+            console.warn(`[scheduled] Unknown cron: ${event.cron}`);
             break;
         }
       })()

@@ -181,18 +181,64 @@ export const itemRouter = {
 
       // Update pricing if provided
       if (details) {
-        // Delete existing pricing
-        await db.delete(itemDetails).where(eq(itemDetails.itemId, id));
+        // Get existing item details
+        const existingDetails = await db
+          .select()
+          .from(itemDetails)
+          .where(eq(itemDetails.itemId, id));
 
-        // Insert new pricing
+        // Create a map of existing details by countryCode
+        const existingByCountry = new Map(
+          existingDetails.map((d) => [d.countryCode, d])
+        );
+
+        // Track which country codes are in the new details
+        const newCountryCodes = new Set(details.map((d) => d.countryCode));
+
+        // Update or insert each detail
         for (const detail of details) {
-          await db.insert(itemDetails).values({
-            id: v7(),
-            itemId: id,
-            countryCode: detail.countryCode,
-            symbol: detail.symbol,
-            price: detail.price,
-          });
+          const existing = existingByCountry.get(detail.countryCode);
+          if (existing) {
+            // Update existing detail - only price changes, symbol is coupled with countryCode
+            await db
+              .update(itemDetails)
+              .set({
+                price: detail.price,
+              })
+              .where(eq(itemDetails.id, existing.id));
+          } else {
+            // Insert new detail
+            await db.insert(itemDetails).values({
+              id: v7(),
+              itemId: id,
+              countryCode: detail.countryCode,
+              symbol: detail.symbol,
+              price: detail.price,
+            });
+          }
+        }
+
+        // Delete old details that are no longer needed
+        // Only delete if the countryCode is not in the new details
+        for (const existing of existingDetails) {
+          if (
+            !newCountryCodes.has(
+              existing.countryCode as (typeof details)[number]["countryCode"]
+            )
+          ) {
+            // Try to delete - if it fails due to FK constraint, just skip
+            try {
+              await db
+                .delete(itemDetails)
+                .where(eq(itemDetails.id, existing.id));
+            } catch {
+              // If deletion fails (FK constraint from transactions), just leave it
+              // The item detail is still valid, just not actively used
+              console.warn(
+                `Could not delete itemDetail ${existing.id} - likely referenced by transactions`
+              );
+            }
+          }
         }
       }
 

@@ -18,10 +18,12 @@
     "@test-tss/types": "workspace:*",
     "drizzle-orm": "catalog:",
     "dotenv": "catalog:",
+    "resend": "^4.0.0",
     "zod": "catalog:"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "catalog:",
+    "@react-email/components": "1.0.1",
     "@test-tss/config": "workspace:*",
     "@types/node": "catalog:",
     "alchemy": "catalog:",

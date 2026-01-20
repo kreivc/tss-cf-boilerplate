@@ -33,6 +33,7 @@ export const TransactionStatus = z.enum([
   "PROCESSING",
   "SUCCESS",
   "FAILED",
+  "EXPIRED",
 ]);
 export type TransactionStatus = z.infer<typeof TransactionStatus>;
 

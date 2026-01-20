@@ -39,14 +39,21 @@ export const Route = createFileRoute("/order/$orderId")({
 });
 
 // Helper function to get status badge class
-function getStatusBadgeClass(
-  status: "PENDING" | "PROCESSING" | "SUCCESS" | "FAILED"
-): string {
+type TransactionStatus =
+  | "PENDING"
+  | "PROCESSING"
+  | "SUCCESS"
+  | "FAILED"
+  | "EXPIRED";
+
+function getStatusBadgeClass(status: TransactionStatus): string {
   switch (status) {
     case "SUCCESS":
       return "bg-emerald-500/20 text-emerald-500";
     case "FAILED":
       return "bg-red-500/20 text-red-500";
+    case "EXPIRED":
+      return "bg-gray-500/20 text-gray-500";
     case "PROCESSING":
       return "bg-blue-500/20 text-blue-500";
     default:
@@ -55,14 +62,14 @@ function getStatusBadgeClass(
 }
 
 // Helper function to get status badge text
-function getStatusBadgeText(
-  status: "PENDING" | "PROCESSING" | "SUCCESS" | "FAILED"
-): string {
+function getStatusBadgeText(status: TransactionStatus): string {
   switch (status) {
     case "SUCCESS":
       return "✓ Completed";
     case "FAILED":
       return "✗ Failed";
+    case "EXPIRED":
+      return "⏱ Expired";
     case "PROCESSING":
       return "⟳ Processing";
     default:
@@ -143,11 +150,26 @@ function FailedBanner() {
   );
 }
 
-function StatusBanner({
-  status,
-}: {
-  status: "PENDING" | "PROCESSING" | "SUCCESS" | "FAILED";
-}) {
+function ExpiredBanner() {
+  return (
+    <div className="mb-8 overflow-hidden rounded-2xl bg-gradient-to-r from-gray-500 to-slate-500 p-6 text-white shadow-gray-500/20 shadow-xl">
+      <div className="flex items-center gap-4">
+        <div className="flex size-16 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
+          <ClockIcon className="size-10 text-white" />
+        </div>
+        <div>
+          <h1 className="font-bold text-2xl">Order Expired</h1>
+          <p className="text-white/80">
+            This order has expired due to unpaid status. Please create a new
+            order.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function StatusBanner({ status }: { status: TransactionStatus }) {
   switch (status) {
     case "PENDING":
       return <PendingBanner />;
@@ -157,6 +179,8 @@ function StatusBanner({
       return <SuccessBanner />;
     case "FAILED":
       return <FailedBanner />;
+    case "EXPIRED":
+      return <ExpiredBanner />;
     default:
       return <PendingBanner />;
   }
@@ -223,8 +247,12 @@ function OrderPage() {
       input: { transactionId: orderId },
       refetchInterval: (query) => {
         const status = query.state.data?.status;
-        // Stop polling when status is terminal (SUCCESS or FAILED)
-        if (status === "SUCCESS" || status === "FAILED") {
+        // Stop polling when status is terminal (SUCCESS, FAILED, or EXPIRED)
+        if (
+          status === "SUCCESS" ||
+          status === "FAILED" ||
+          status === "EXPIRED"
+        ) {
           return false;
         }
         // Poll every 3 seconds for PENDING or PROCESSING
@@ -269,11 +297,7 @@ function OrderPage() {
     );
   }
 
-  const status = transaction.status as
-    | "PENDING"
-    | "PROCESSING"
-    | "SUCCESS"
-    | "FAILED";
+  const status = transaction.status as TransactionStatus;
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-background to-muted/30 py-8">
@@ -454,7 +478,7 @@ function OrderPage() {
               Download Receipt
             </Button>
           )}
-          {status === "FAILED" && (
+          {(status === "FAILED" || status === "EXPIRED") && (
             <Link className="flex-1" to="/">
               <Button className="w-full" variant="outline">
                 <RefreshCwIcon className="mr-2 size-4" />

@@ -152,6 +152,7 @@ function CreateGamePage() {
             {/* Logo URL */}
             <div className="space-y-2">
               <ImageUpload
+                aspectRatio="square"
                 folder="games"
                 label="Logo"
                 onChange={setLogo}
@@ -162,6 +163,7 @@ function CreateGamePage() {
             {/* Banner URL */}
             <div className="space-y-2">
               <ImageUpload
+                aspectRatio="landscape"
                 folder="games"
                 label="Banner"
                 onChange={setBanner}

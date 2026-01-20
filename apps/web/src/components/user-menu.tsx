@@ -40,25 +40,36 @@ export default function UserMenu() {
           <DropdownMenuLabel>{m.myAccount()}</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem>{session.user.email}</DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => {
-              authClient.signOut({
-                fetchOptions: {
-                  credentials: "include",
-                  onSuccess: () => {
-                    navigate({
-                      to: "/",
-                    });
-                    toast.success(m.signOutSuccess());
-                  },
-                },
-              });
-            }}
-            variant="destructive"
-          >
-            {m.signOut()}
-          </DropdownMenuItem>
+          {session.user.role?.toLowerCase() === "admin" && (
+            <DropdownMenuItem
+              onClick={() => {
+                navigate({
+                  to: "/ytta",
+                });
+              }}
+            >
+              Admin
+            </DropdownMenuItem>
+          )}
         </DropdownMenuGroup>
+        <DropdownMenuItem
+          onClick={() => {
+            authClient.signOut({
+              fetchOptions: {
+                credentials: "include",
+                onSuccess: () => {
+                  navigate({
+                    to: "/",
+                  });
+                  toast.success(m.signOutSuccess());
+                },
+              },
+            });
+          }}
+          variant="destructive"
+        >
+          {m.signOut()}
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

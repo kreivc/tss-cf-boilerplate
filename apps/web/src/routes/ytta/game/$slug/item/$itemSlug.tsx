@@ -341,6 +341,7 @@ function EditItemPage() {
               {/* Logo URL */}
               <div className="space-y-2">
                 <ImageUpload
+                  aspectRatio="square"
                   folder="items"
                   label="Logo"
                   onChange={setLogo}

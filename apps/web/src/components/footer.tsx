@@ -51,8 +51,8 @@ export function Footer() {
                 <Gamepad2Icon className="size-5 text-white" />
               </div>
               <span className="font-bold text-xl tracking-gaming">
-                <span className="text-gradient-gaming">Game</span>
-                <span className="text-foreground">Top</span>
+                <span className="text-gradient-gaming">Flaz</span>
+                <span className="text-foreground">Bit</span>
               </span>
             </Link>
             <p className="mb-6 max-w-xs text-muted-foreground text-sm">

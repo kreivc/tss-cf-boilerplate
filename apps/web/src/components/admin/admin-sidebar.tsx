@@ -3,8 +3,8 @@ import {
   FileTextIcon,
   Gamepad2Icon,
   HomeIcon,
+  ImageIcon,
   type LucideIcon,
-  PackageIcon,
 } from "lucide-react";
 
 import {
@@ -40,13 +40,15 @@ const mainNavItems: NavItem[] = [
     href: "/ytta/reports",
     icon: FileTextIcon,
   },
-];
-
-const productNavItems: NavItem[] = [
   {
     title: "Games",
     href: "/ytta/game",
     icon: Gamepad2Icon,
+  },
+  {
+    title: "Media",
+    href: "/ytta/media",
+    icon: ImageIcon,
   },
 ];
 
@@ -72,8 +74,8 @@ export function AdminSidebar() {
           </div>
           <div className="flex flex-col group-data-[collapsible=icon]:hidden">
             <span className="font-bold text-sm">
-              <span className="text-gradient-gaming">Game</span>
-              <span className="text-sidebar-foreground">Top</span>
+              <span className="text-gradient-gaming">Flaz</span>
+              <span className="text-sidebar-foreground">Bit</span>
             </span>
             <span className="text-muted-foreground text-xs">Admin Panel</span>
           </div>
@@ -114,7 +116,7 @@ export function AdminSidebar() {
         <SidebarSeparator />
 
         {/* Products Section */}
-        <SidebarGroup>
+        {/* <SidebarGroup>
           <SidebarGroupLabel>
             <PackageIcon className="mr-2 size-4" />
             Products
@@ -139,7 +141,7 @@ export function AdminSidebar() {
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
-        </SidebarGroup>
+        </SidebarGroup> */}
       </SidebarContent>
 
       <SidebarFooter className="border-sidebar-border border-t">
