@@ -261,16 +261,40 @@ function GameDetailPage() {
   const handleSelectPackage = useCallback(
     (itemId: string) => {
       setSelectedPackage(itemId);
-      scrollToNextIncompleteStep("package");
+      // If account data is filled (verified or required fields filled), scroll to next step
+      const accountDataFilled =
+        verifiedAccount ||
+        areRequiredParamsFilled(slug as GameSlug, gameParams);
+      if (accountDataFilled) {
+        scrollToNextIncompleteStep("package");
+      } else {
+        accountSectionRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+        setPulsingSection("account");
+        setTimeout(() => setPulsingSection(null), 3000);
+      }
     },
-    [scrollToNextIncompleteStep]
+    [verifiedAccount, gameParams, slug, scrollToNextIncompleteStep]
   );
 
   // Handle payment selection - allow selection but scroll to incomplete step if needed
   const handleSelectPayment = useCallback(
     (paymentId: string) => {
       setSelectedPayment(paymentId);
-      if (selectedPackage) {
+      // Check if previous steps are incomplete and scroll (non-blocking)
+      const accountDataFilled =
+        verifiedAccount ||
+        areRequiredParamsFilled(slug as GameSlug, gameParams);
+      if (!accountDataFilled) {
+        accountSectionRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+        setPulsingSection("account");
+        setTimeout(() => setPulsingSection(null), 3000);
+      } else if (selectedPackage) {
         scrollToNextIncompleteStep("payment");
       } else {
         packageSectionRef.current?.scrollIntoView({
@@ -281,7 +305,13 @@ function GameDetailPage() {
         setTimeout(() => setPulsingSection(null), 3000);
       }
     },
-    [selectedPackage, scrollToNextIncompleteStep]
+    [
+      verifiedAccount,
+      gameParams,
+      slug,
+      selectedPackage,
+      scrollToNextIncompleteStep,
+    ]
   );
 
   const handleSubmit = () => {

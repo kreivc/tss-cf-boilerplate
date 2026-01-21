@@ -431,24 +431,29 @@ function OrderPage() {
     isLoading,
     error,
     refetch,
-  } = useQuery(
-    orpc.transaction.getById.queryOptions({
+  } = useQuery({
+    ...orpc.transaction.getById.queryOptions({
       input: { transactionId: orderId },
-      refetchInterval: (query) => {
-        const status = query.state.data?.status;
-        // Stop polling when status is terminal (SUCCESS, FAILED, or EXPIRED)
-        if (
-          status === "SUCCESS" ||
-          status === "FAILED" ||
-          status === "EXPIRED"
-        ) {
-          return false;
-        }
-        // Poll every 3 seconds for PENDING or PROCESSING
-        return 3000;
-      },
-    })
-  );
+    }),
+    retry: false, // Don't retry on error
+    refetchInterval: (query) => {
+      // Stop polling if there's an error (e.g., order not found)
+      if (query.state.error) {
+        return false;
+      }
+      // Don't poll if there's no data yet (still loading)
+      if (!query.state.data) {
+        return false;
+      }
+      const status = query.state.data?.status;
+      // Stop polling when status is terminal (SUCCESS, FAILED, or EXPIRED)
+      if (status === "SUCCESS" || status === "FAILED" || status === "EXPIRED") {
+        return false;
+      }
+      // Poll every 3 seconds for PENDING or PROCESSING
+      return 3000;
+    },
+  });
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
