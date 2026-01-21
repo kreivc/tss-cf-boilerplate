@@ -26,6 +26,38 @@ import { eq } from "drizzle-orm";
 import type { ReceivedWebhookData, SendEmailData } from "../types";
 
 /**
+ * Parse URL-encoded webhook data and convert types
+ * Note: trx_id and status_code must remain as strings per schema
+ */
+function parseUrlEncodedData(rawData: string): Record<string, unknown> {
+  const params = new URLSearchParams(rawData);
+  const obj = Object.fromEntries(params.entries()) as Record<string, string>;
+
+  for (const key in obj) {
+    if (!Object.hasOwn(obj, key)) {
+      continue;
+    }
+
+    // Convert boolean fields
+    if (key === "is_escrow") {
+      (obj as Record<string, unknown>)[key] =
+        obj[key] === "true" || obj[key] === "1";
+    }
+    // Parse additional_info if it's a JSON string
+    if (key === "additional_info" && typeof obj[key] === "string") {
+      try {
+        (obj as Record<string, unknown>)[key] = JSON.parse(obj[key]);
+      } catch {
+        (obj as Record<string, unknown>)[key] = [];
+      }
+    }
+    // Note: trx_id and status_code are kept as strings per IpaymuWebhookDataSchema
+  }
+
+  return obj as Record<string, unknown>;
+}
+
+/**
  * Parse iPaymu webhook data directly
  */
 function parseIpaymuWebhook(rawData: string): {
@@ -36,7 +68,14 @@ function parseIpaymuWebhook(rawData: string): {
   providerTransactionId: string;
 } | null {
   try {
-    const parsed = JSON.parse(rawData);
+    // Parse URL-encoded data (application/x-www-form-urlencoded)
+    // or JSON data (application/json)
+    const isUrlEncoded =
+      rawData.includes("=") && !rawData.trim().startsWith("{");
+    const parsed = isUrlEncoded
+      ? parseUrlEncodedData(rawData)
+      : JSON.parse(rawData);
+
     const result = IpaymuWebhookDataSchema.safeParse(parsed);
 
     if (!result.success) {

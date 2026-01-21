@@ -122,25 +122,6 @@ function GameDetailPage() {
           params: gameParams,
         });
         toast.success("Account verified successfully!");
-        // Smart auto-scroll to next incomplete step
-        setTimeout(() => {
-          if (!selectedPackage) {
-            packageSectionRef.current?.scrollIntoView({
-              behavior: "smooth",
-              block: "start",
-            });
-          } else if (!selectedPayment) {
-            paymentSectionRef.current?.scrollIntoView({
-              behavior: "smooth",
-              block: "start",
-            });
-          } else if (!email) {
-            emailSectionRef.current?.scrollIntoView({
-              behavior: "smooth",
-              block: "start",
-            });
-          }
-        }, 300);
       },
       onError: () => {
         toast.error("Failed to verify account. Please check your ID.");
@@ -280,34 +261,16 @@ function GameDetailPage() {
   const handleSelectPackage = useCallback(
     (itemId: string) => {
       setSelectedPackage(itemId);
-      // If account not verified, scroll to it with pulse (non-blocking)
-      if (verifiedAccount) {
-        scrollToNextIncompleteStep("package");
-      } else {
-        accountSectionRef.current?.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-        setPulsingSection("account");
-        setTimeout(() => setPulsingSection(null), 3000);
-      }
+      scrollToNextIncompleteStep("package");
     },
-    [verifiedAccount, scrollToNextIncompleteStep]
+    [scrollToNextIncompleteStep]
   );
 
   // Handle payment selection - allow selection but scroll to incomplete step if needed
   const handleSelectPayment = useCallback(
     (paymentId: string) => {
       setSelectedPayment(paymentId);
-      // Check if previous steps are incomplete and scroll (non-blocking)
-      if (!verifiedAccount) {
-        accountSectionRef.current?.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-        setPulsingSection("account");
-        setTimeout(() => setPulsingSection(null), 3000);
-      } else if (selectedPackage) {
+      if (selectedPackage) {
         scrollToNextIncompleteStep("payment");
       } else {
         packageSectionRef.current?.scrollIntoView({
@@ -318,14 +281,10 @@ function GameDetailPage() {
         setTimeout(() => setPulsingSection(null), 3000);
       }
     },
-    [verifiedAccount, selectedPackage, scrollToNextIncompleteStep]
+    [selectedPackage, scrollToNextIncompleteStep]
   );
 
   const handleSubmit = () => {
-    if (!verifiedAccount) {
-      toast.error("Please verify your account first");
-      return;
-    }
     if (!game) {
       toast.error("Game not found");
       return;
@@ -358,7 +317,7 @@ function GameDetailPage() {
       itemId: selectedItem.id,
       itemDetailId: itemDetail.id,
       email,
-      gameParams: verifiedAccount.params,
+      gameParams: verifiedAccount?.params ?? gameParams,
       paymentMethod: selectedPayment,
     });
   };
@@ -844,12 +803,7 @@ function GameDetailPage() {
                         className="btn-gaming h-14 w-full font-bold text-lg"
                         disabled={
                           createTransactionMutation.isPending ||
-                          !(
-                            verifiedAccount &&
-                            selectedPackage &&
-                            selectedPayment &&
-                            email
-                          )
+                          !(selectedPackage && selectedPayment && email)
                         }
                         onClick={handleSubmit}
                       >
@@ -944,12 +898,7 @@ function GameDetailPage() {
                           className="btn-gaming h-12 w-full font-bold"
                           disabled={
                             createTransactionMutation.isPending ||
-                            !(
-                              verifiedAccount &&
-                              selectedPackage &&
-                              selectedPayment &&
-                              email
-                            )
+                            !(selectedPackage && selectedPayment && email)
                           }
                           onClick={handleSubmit}
                         >
