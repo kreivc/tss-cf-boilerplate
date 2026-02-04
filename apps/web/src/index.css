@@ -4,6 +4,13 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* View Transition - prevent black flash during navigation */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 150ms;
+  mix-blend-mode: normal;
+}
+
 /* === GAMING THEME === */
 /* Premium Gaming Dark Mode with Glassmorphism */
 

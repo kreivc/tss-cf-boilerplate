@@ -13,7 +13,8 @@
     "dev:web": "turbo -F web dev",
     "dev:server": "turbo -F server dev",
     "biome:check": "biome check",
-    "biome:lint": "biome lint"
+    "biome:lint": "biome lint",
+    "check-all": "turbo check-types && biome check && biome lint"
   },
   "dependencies": {
     "@test-tss/env": "workspace:*",

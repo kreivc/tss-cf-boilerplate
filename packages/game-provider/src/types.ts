@@ -6,12 +6,13 @@ import { z } from "zod";
 
 export const GameSlug = z.enum([
   "mobile-legends",
-  "genshin-impact",
   "pubg-mobile",
   "free-fire",
   "honor-of-kings",
+  "blood-strike",
+  "arena-breakout",
+  "magic-chess-gogo",
   "valorant",
-  "steam-wallet",
 ]);
 export type GameSlug = z.infer<typeof GameSlug>;
 
@@ -26,14 +27,6 @@ export type GameSlug = z.infer<typeof GameSlug>;
 export interface MobileLegendParams {
   userId: string;
   serverId: string;
-}
-
-/**
- * Genshin Impact
- * Requires only UID (9-digit number)
- */
-export interface GenshinImpactParams {
-  uid: string;
 }
 
 /**
@@ -70,11 +63,27 @@ export interface ValorantParams {
 }
 
 /**
- * Steam Wallet
- * Requires Steam ID or email
+ * Blood Strike
+ * Requires Player ID only
  */
-export interface SteamWalletParams {
-  steamId: string;
+export interface BloodStrikeParams {
+  playerId: string;
+}
+
+/**
+ * Arena Breakout
+ * Requires Player ID only
+ */
+export interface ArenaBreakoutParams {
+  playerId: string;
+}
+
+/**
+ * Magic Chess: Go Go
+ * Requires Player ID only
+ */
+export interface MagicChessGogoParams {
+  playerId: string;
 }
 
 // =============================================================================
@@ -86,12 +95,13 @@ export interface SteamWalletParams {
  */
 export interface GameParamsMap {
   "mobile-legends": MobileLegendParams;
-  "genshin-impact": GenshinImpactParams;
   "pubg-mobile": PubgMobileParams;
   "free-fire": FreeFireParams;
   "honor-of-kings": HonorOfKingsParams;
+  "blood-strike": BloodStrikeParams;
+  "arena-breakout": ArenaBreakoutParams;
+  "magic-chess-gogo": MagicChessGogoParams;
   valorant: ValorantParams;
-  "steam-wallet": SteamWalletParams;
 }
 
 /**
@@ -142,15 +152,6 @@ export const GAME_PARAM_FIELDS: Record<GameSlug, GameParamFieldDef[]> = {
       helpText: "The zone number below your User ID",
     },
   ],
-  "genshin-impact": [
-    {
-      key: "uid",
-      label: "UID",
-      placeholder: "Enter your 9-digit UID",
-      required: true,
-      helpText: "Find in Paimon menu > Settings",
-    },
-  ],
   "pubg-mobile": [
     {
       key: "playerId",
@@ -183,6 +184,33 @@ export const GAME_PARAM_FIELDS: Record<GameSlug, GameParamFieldDef[]> = {
       required: true,
     },
   ],
+  "blood-strike": [
+    {
+      key: "playerId",
+      label: "Player ID",
+      placeholder: "Enter your Player ID",
+      required: true,
+      helpText: "Find in game profile",
+    },
+  ],
+  "arena-breakout": [
+    {
+      key: "playerId",
+      label: "Player ID",
+      placeholder: "Enter your Player ID",
+      required: true,
+      helpText: "Find in game profile",
+    },
+  ],
+  "magic-chess-gogo": [
+    {
+      key: "playerId",
+      label: "Player ID",
+      placeholder: "Enter your Player ID",
+      required: true,
+      helpText: "Find in game profile",
+    },
+  ],
   valorant: [
     {
       key: "riotId",
@@ -190,15 +218,6 @@ export const GAME_PARAM_FIELDS: Record<GameSlug, GameParamFieldDef[]> = {
       placeholder: "Username#Tagline",
       required: true,
       helpText: "Format: YourName#1234",
-    },
-  ],
-  "steam-wallet": [
-    {
-      key: "steamId",
-      label: "Steam ID / Email",
-      placeholder: "Enter Steam ID or email",
-      required: true,
-      helpText: "Your Steam login email or Steam ID",
     },
   ],
 };

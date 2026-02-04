@@ -7,8 +7,6 @@ import { DefaultRenderer } from "./default";
 // biome-ignore lint/style/noExportedImports: used internally and exported
 import { FreeFireRenderer } from "./free-fire";
 // biome-ignore lint/style/noExportedImports: used internally and exported
-import { GenshinImpactRenderer } from "./genshin-impact";
-// biome-ignore lint/style/noExportedImports: used internally and exported
 import { MobileLegendRenderer } from "./mobile-legends";
 // biome-ignore lint/style/noExportedImports: used internally and exported
 import { PubgMobileRenderer } from "./pubg-mobile";
@@ -25,7 +23,6 @@ const RENDERER_MAP: Partial<
   Record<GameSlug, ComponentType<GameInputRendererProps>>
 > = {
   "mobile-legends": MobileLegendRenderer,
-  "genshin-impact": GenshinImpactRenderer,
   "pubg-mobile": PubgMobileRenderer,
   "free-fire": FreeFireRenderer,
   // Honor of Kings, Valorant, Steam Wallet use DefaultRenderer
@@ -60,7 +57,6 @@ export function GameInputRenderer(props: GameInputRendererProps) {
 export {
   DefaultRenderer,
   FreeFireRenderer,
-  GenshinImpactRenderer,
   MobileLegendRenderer,
   PubgMobileRenderer,
 };

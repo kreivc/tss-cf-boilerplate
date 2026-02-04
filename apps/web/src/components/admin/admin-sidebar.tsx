@@ -5,6 +5,7 @@ import {
   HomeIcon,
   ImageIcon,
   type LucideIcon,
+  MessageSquareIcon,
 } from "lucide-react";
 
 import {
@@ -49,6 +50,11 @@ const mainNavItems: NavItem[] = [
     title: "Media",
     href: "/ytta/media",
     icon: ImageIcon,
+  },
+  {
+    title: "Contact",
+    href: "/ytta/contact",
+    icon: MessageSquareIcon,
   },
 ];
 

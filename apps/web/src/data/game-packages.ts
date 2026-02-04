@@ -64,48 +64,6 @@ export const GAME_PACKAGES: Record<string, GamePackage[]> = {
       bonus: 250,
     },
   ],
-  "genshin-impact": [
-    {
-      id: "gi-1",
-      name: "60 Genesis Crystals",
-      amount: 60,
-      price: { USD: 0.99, IDR: 16_000 },
-    },
-    {
-      id: "gi-2",
-      name: "300 Genesis Crystals",
-      amount: 300,
-      price: { USD: 4.99, IDR: 79_000 },
-    },
-    {
-      id: "gi-3",
-      name: "980 Genesis Crystals",
-      amount: 980,
-      price: { USD: 14.99, IDR: 249_000 },
-      popular: true,
-    },
-    {
-      id: "gi-4",
-      name: "1980 Genesis Crystals",
-      amount: 1980,
-      price: { USD: 29.99, IDR: 479_000 },
-      bonus: 260,
-    },
-    {
-      id: "gi-5",
-      name: "3280 Genesis Crystals",
-      amount: 3280,
-      price: { USD: 49.99, IDR: 799_000 },
-      bonus: 600,
-    },
-    {
-      id: "gi-6",
-      name: "6480 Genesis Crystals",
-      amount: 6480,
-      price: { USD: 99.99, IDR: 1_599_000 },
-      bonus: 1600,
-    },
-  ],
   default: [
     {
       id: "def-1",

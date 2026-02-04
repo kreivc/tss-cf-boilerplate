@@ -129,5 +129,14 @@
   "faq3Question": "Bagaimana jika saya salah memasukkan ID?",
   "faq3Answer": "Silakan periksa kembali ID Anda sebelum membeli. Jika Anda melakukan kesalahan, hubungi tim dukungan kami segera.",
 
-  "priceSeedInfo": "Kode unik akan ditambahkan ke harga akhir untuk verifikasi pembayaran."
+  "priceSeedInfo": "Kode unik akan ditambahkan ke harga akhir untuk verifikasi pembayaran.",
+
+  "contactPageTitle": "Hubungi Kami",
+  "contactPageDescription": "Punya pertanyaan atau butuh bantuan? Kirim pesan dan kami akan segera membalas.",
+  "yourName": "Nama Anda",
+  "yourEmail": "Email Anda",
+  "yourQuestion": "Pertanyaan Anda",
+  "sendMessage": "Kirim Pesan",
+  "messageSent": "Pesan Terkirim!",
+  "messageSentDescription": "Terima kasih telah menghubungi kami. Kami akan segera membalas."
 }

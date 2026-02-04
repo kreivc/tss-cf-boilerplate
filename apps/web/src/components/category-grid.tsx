@@ -1,10 +1,9 @@
 import { Link } from "@tanstack/react-router";
+import type { GameSlug } from "@test-tss/types";
 import { Gamepad2Icon, SparklesIcon } from "lucide-react";
-import { memo, useCallback, useMemo, useState } from "react";
-import { toast } from "sonner";
+import { memo } from "react";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CATEGORY_SLUGS, getGamePublisher } from "@/data/game-constants";
+import { getGamePublisher } from "@/data/game-constants";
 import { m } from "@/paraglide/messages";
 
 // Game type matching API response
@@ -18,14 +17,12 @@ interface Game {
   isActive: boolean;
 }
 
-type CategoryTab = "all" | "mobile" | "pc" | "console";
-
 interface GameCardProps {
   game: Game;
 }
 
 const GameCard = memo(function GameCard({ game }: GameCardProps) {
-  const publisher = getGamePublisher(game.slug);
+  const publisher = getGamePublisher(game.slug as GameSlug);
 
   return (
     <Link
@@ -105,86 +102,34 @@ interface CategoryGridProps {
 }
 
 export function CategoryGrid({ games }: CategoryGridProps) {
-  const [activeTab, setActiveTab] = useState<CategoryTab>("all");
-
-  const filteredGames = useMemo(() => {
-    if (activeTab === "all") {
-      return games;
-    }
-    const categorySlugs = CATEGORY_SLUGS[activeTab] || [];
-    return games.filter((game) => categorySlugs.includes(game.slug));
-  }, [games, activeTab]);
-
-  const handleTabChange = useCallback((value: string) => {
-    setActiveTab(value as CategoryTab);
-    toast.info(
-      value === "all"
-        ? (m.allGames?.() ?? "All Games")
-        : `${value.charAt(0).toUpperCase()}${value.slice(1)} Games`,
-      { duration: 1500 }
-    );
-  }, []);
-
-  const tabs = useMemo(
-    () => [
-      { value: "all", label: m.categoryAll?.() ?? "All", icon: "🎮" },
-      { value: "mobile", label: m.categoryMobile?.() ?? "Mobile", icon: "📱" },
-      { value: "pc", label: m.categoryPc?.() ?? "PC", icon: "💻" },
-      {
-        value: "console",
-        label: m.categoryConsole?.() ?? "Console",
-        icon: "🎯",
-      },
-    ],
-    []
-  );
-
   return (
     <section className="py-12" id="categories">
       <div className="container mx-auto px-4">
         {/* Header */}
-        <div className="mb-8 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gaming-primary/20">
-              <Gamepad2Icon className="size-5 text-gaming-primary" />
-            </div>
-            <div>
-              <h2 className="font-bold text-2xl tracking-tight sm:text-3xl">
-                {m.browseGames?.() ?? "Browse Games"}
-              </h2>
-              <p className="text-muted-foreground text-sm">
-                {m.browseGamesSubtitle?.() ??
-                  "Find your favorite game and top up instantly"}
-              </p>
-            </div>
+        <div className="mb-8 flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gaming-primary/20">
+            <Gamepad2Icon className="size-5 text-gaming-primary" />
           </div>
-
-          {/* Modern Tabs */}
-          <Tabs onValueChange={handleTabChange} value={activeTab}>
-            <TabsList className="h-auto gap-1 rounded-xl border border-border/50 bg-card/50 p-1.5 backdrop-blur-sm">
-              {tabs.map(({ value, label, icon }) => (
-                <TabsTrigger
-                  className="rounded-lg px-4 py-2 text-sm transition-all data-[state=active]:bg-gaming-primary data-[state=active]:text-white data-[state=active]:shadow-lg"
-                  key={value}
-                  value={value}
-                >
-                  <span className="mr-1.5">{icon}</span>
-                  {label}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-          </Tabs>
+          <div>
+            <h2 className="font-bold text-2xl tracking-tight sm:text-3xl">
+              {m.browseGames?.() ?? "Browse Games"}
+            </h2>
+            <p className="text-muted-foreground text-sm">
+              {m.browseGamesSubtitle?.() ??
+                "Find your favorite game and top up instantly"}
+            </p>
+          </div>
         </div>
 
         {/* Grid */}
         <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-          {filteredGames.map((game) => (
+          {games.map((game) => (
             <GameCard game={game} key={game.id} />
           ))}
         </div>
 
         {/* Empty state */}
-        {filteredGames.length === 0 && (
+        {games.length === 0 && (
           <div className="gaming-card py-16 text-center">
             <Gamepad2Icon className="mx-auto size-12 text-muted-foreground/50" />
             <p className="mt-4 text-muted-foreground">

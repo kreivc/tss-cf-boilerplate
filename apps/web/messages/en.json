@@ -129,5 +129,14 @@
   "faq3Question": "What if I enter the wrong ID?",
   "faq3Answer": "Please double-check your ID before purchasing. If you make a mistake, contact our support team immediately.",
 
-  "priceSeedInfo": "A unique code will be added to the final price for payment verification."
+  "priceSeedInfo": "A unique code will be added to the final price for payment verification.",
+
+  "contactPageTitle": "Contact Us",
+  "contactPageDescription": "Have a question or need help? Send us a message and we'll get back to you as soon as possible.",
+  "yourName": "Your Name",
+  "yourEmail": "Your Email",
+  "yourQuestion": "Your Question",
+  "sendMessage": "Send Message",
+  "messageSent": "Message Sent!",
+  "messageSentDescription": "Thank you for reaching out. We'll get back to you soon."
 }

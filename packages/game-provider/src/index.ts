@@ -13,8 +13,8 @@
 import type { GameProvider } from "./abstract";
 import { DefaultProvider } from "./providers/default";
 import { SmileOneProvider } from "./providers/smile-one";
-import type { GameParamFieldDef, GameSlug } from "./types";
-import { GAME_PARAM_FIELDS } from "./types";
+import type { GameParamFieldDef } from "./types";
+import { GAME_PARAM_FIELDS, GameSlug } from "./types";
 
 export * from "./abstract";
 export { DefaultProvider } from "./providers/default";
@@ -53,10 +53,10 @@ const GAME_PROVIDER_FACTORY: Record<GameSlug, () => GameProvider> = {
   "free-fire": getDefaultProviderInstance,
   "pubg-mobile": getDefaultProviderInstance,
   "honor-of-kings": getDefaultProviderInstance,
-  // Games without specific provider use DefaultProvider
-  "genshin-impact": getDefaultProviderInstance,
+  "blood-strike": getDefaultProviderInstance,
+  "arena-breakout": getDefaultProviderInstance,
+  "magic-chess-gogo": getDefaultProviderInstance,
   valorant: getDefaultProviderInstance,
-  "steam-wallet": getDefaultProviderInstance,
 };
 
 // =============================================================================
@@ -116,15 +116,7 @@ export function getGameParamFields(gameSlug: GameSlug): GameParamFieldDef[] {
 /**
  * List of supported games
  */
-export const SUPPORTED_GAMES = [
-  "mobile-legends",
-  "genshin-impact",
-  "pubg-mobile",
-  "free-fire",
-  "honor-of-kings",
-  "valorant",
-  "steam-wallet",
-] as const;
+export const SUPPORTED_GAMES = GameSlug.options;
 
 /**
  * Check if a game slug is supported

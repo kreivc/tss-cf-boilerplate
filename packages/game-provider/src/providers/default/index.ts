@@ -10,12 +10,12 @@
  */
 
 import { GameProvider } from "../../abstract";
-import type {
-  GameParams,
+import {
+  type GameParams,
   GameSlug,
-  TopUpRequest,
-  TopUpResponse,
-  VerifiedAccountData,
+  type TopUpRequest,
+  type TopUpResponse,
+  type VerifiedAccountData,
 } from "../../types";
 
 /**
@@ -28,15 +28,7 @@ export class DefaultProvider extends GameProvider {
   readonly displayName = "Default Provider";
 
   // Supports all games as fallback
-  readonly supportedGames: GameSlug[] = [
-    "mobile-legends",
-    "genshin-impact",
-    "pubg-mobile",
-    "free-fire",
-    "honor-of-kings",
-    "valorant",
-    "steam-wallet",
-  ];
+  readonly supportedGames: GameSlug[] = [...GameSlug.options];
 
   // biome-ignore lint/suspicious/useAwait: Mock implementation - no async needed
   async checkUsername(
