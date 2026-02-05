@@ -1,5 +1,5 @@
 import { useForm } from "@tanstack/react-form";
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import {
   Gamepad2Icon,
   LockIcon,
@@ -18,11 +18,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 
-export default function SignUpForm({
-  onSwitchToSignIn,
-}: {
-  onSwitchToSignIn: () => void;
-}) {
+export default function SignUpForm() {
   const navigate = useNavigate({
     from: "/",
   });
@@ -44,7 +40,7 @@ export default function SignUpForm({
         {
           onSuccess: () => {
             navigate({
-              to: "/dashboard",
+              to: "/",
             });
             toast.success(m.signUpSuccess());
           },
@@ -239,7 +235,7 @@ export default function SignUpForm({
           <div className="text-center">
             <Button
               className="text-gaming-primary transition-colors hover:text-gaming-secondary"
-              onClick={onSwitchToSignIn}
+              render={<Link to="/login" />}
               variant="link"
             >
               {m.alreadyHaveAccount()}

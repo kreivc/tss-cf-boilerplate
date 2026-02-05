@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as YttaRouteImport } from './routes/ytta'
+import { Route as RegisterRouteImport } from './routes/register'
 import { Route as RefundRouteImport } from './routes/refund'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as LoginRouteImport } from './routes/login'
@@ -33,6 +34,11 @@ import { Route as YttaGameSlugItemItemSlugRouteImport } from './routes/ytta/game
 const YttaRoute = YttaRouteImport.update({
   id: '/ytta',
   path: '/ytta',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RefundRoute = RefundRouteImport.update({
@@ -140,6 +146,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
   '/refund': typeof RefundRoute
+  '/register': typeof RegisterRoute
   '/ytta': typeof YttaRouteWithChildren
   '/game/$slug': typeof GameSlugRoute
   '/order/$orderId': typeof OrderOrderIdRoute
@@ -162,6 +169,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
   '/refund': typeof RefundRoute
+  '/register': typeof RegisterRoute
   '/game/$slug': typeof GameSlugRoute
   '/order/$orderId': typeof OrderOrderIdRoute
   '/ytta/contact': typeof YttaContactRoute
@@ -184,6 +192,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
   '/refund': typeof RefundRoute
+  '/register': typeof RegisterRoute
   '/ytta': typeof YttaRouteWithChildren
   '/game/$slug': typeof GameSlugRoute
   '/order/$orderId': typeof OrderOrderIdRoute
@@ -208,6 +217,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/privacy'
     | '/refund'
+    | '/register'
     | '/ytta'
     | '/game/$slug'
     | '/order/$orderId'
@@ -230,6 +240,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/privacy'
     | '/refund'
+    | '/register'
     | '/game/$slug'
     | '/order/$orderId'
     | '/ytta/contact'
@@ -251,6 +262,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/privacy'
     | '/refund'
+    | '/register'
     | '/ytta'
     | '/game/$slug'
     | '/order/$orderId'
@@ -274,6 +286,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   PrivacyRoute: typeof PrivacyRoute
   RefundRoute: typeof RefundRoute
+  RegisterRoute: typeof RegisterRoute
   YttaRoute: typeof YttaRouteWithChildren
   GameSlugRoute: typeof GameSlugRoute
   OrderOrderIdRoute: typeof OrderOrderIdRoute
@@ -286,6 +299,13 @@ declare module '@tanstack/react-router' {
       path: '/ytta'
       fullPath: '/ytta'
       preLoaderRoute: typeof YttaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/refund': {
@@ -460,6 +480,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   PrivacyRoute: PrivacyRoute,
   RefundRoute: RefundRoute,
+  RegisterRoute: RegisterRoute,
   YttaRoute: YttaRouteWithChildren,
   GameSlugRoute: GameSlugRoute,
   OrderOrderIdRoute: OrderOrderIdRoute,

@@ -7,7 +7,7 @@ import {
   PaginationInput,
   UpdateGameInput,
 } from "@test-tss/types";
-import { and, count, desc, eq, like } from "drizzle-orm";
+import { and, count, desc, eq, isNull, like } from "drizzle-orm";
 import { v7 } from "uuid";
 import z from "zod";
 import { protectedProcedure, publicProcedure } from "../index";
@@ -23,11 +23,13 @@ export const gameRouter = {
     )
     .handler(async ({ input }) => {
       const page = input?.page ?? 1;
-      const limit = input?.limit ?? 20;
+      const limit = input?.limit ?? 100;
       const offset = (page - 1) * limit;
 
       // biome-ignore lint/suspicious/noEvolvingTypes: <we need to use any for the conditions>
       const conditions = [];
+      // Always exclude soft-deleted games
+      conditions.push(isNull(games.deletedAt));
       if (input?.search) {
         conditions.push(like(games.name, `%${input.search}%`));
       }
@@ -65,7 +67,7 @@ export const gameRouter = {
       const result = await db
         .select()
         .from(games)
-        .where(eq(games.slug, input.slug))
+        .where(and(eq(games.slug, input.slug), isNull(games.deletedAt)))
         .limit(1);
 
       return result[0] ?? null;
@@ -84,7 +86,7 @@ export const gameRouter = {
       const game = await db
         .select()
         .from(games)
-        .where(eq(games.slug, input.slug))
+        .where(and(eq(games.slug, input.slug), isNull(games.deletedAt)))
         .limit(1);
 
       if (!game[0]) {

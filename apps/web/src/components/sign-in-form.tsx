@@ -1,26 +1,22 @@
 import { useForm } from "@tanstack/react-form";
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { env } from "@test-tss/env/web";
 import { Gamepad2Icon, LockIcon, MailIcon, SparklesIcon } from "lucide-react";
 import { toast } from "sonner";
 import z from "zod";
-
 import { authClient } from "@/lib/auth-client";
 import { m } from "@/paraglide/messages";
-
 import Loader from "./loader";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 
-export default function SignInForm({
-  onSwitchToSignUp,
-}: {
-  onSwitchToSignUp: () => void;
-}) {
+export default function SignInForm() {
   const navigate = useNavigate({
     from: "/",
   });
   const { isPending } = authClient.useSession();
+  const isRegisterEnabled = env.VITE_DISABLE_REGISTER;
 
   const form = useForm({
     defaultValues: {
@@ -36,7 +32,7 @@ export default function SignInForm({
         {
           onSuccess: () => {
             navigate({
-              to: "/dashboard",
+              to: "/",
             });
             toast.success(m.signInSuccess());
           },
@@ -183,26 +179,28 @@ export default function SignInForm({
             </form.Subscribe>
           </form>
 
-          {/* Divider */}
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-glass-border border-t" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-card px-2 text-muted-foreground">or</span>
-            </div>
-          </div>
-
           {/* Switch to Sign Up */}
-          <div className="text-center">
-            <Button
-              className="text-gaming-primary transition-colors hover:text-gaming-secondary"
-              onClick={onSwitchToSignUp}
-              variant="link"
-            >
-              {m.needAccount()}
-            </Button>
-          </div>
+          {isRegisterEnabled && (
+            <>
+              <div className="relative my-6">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-glass-border border-t" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-card px-2 text-muted-foreground">or</span>
+                </div>
+              </div>
+
+              <div className="text-center">
+                <Button
+                  className="text-gaming-primary transition-colors hover:text-gaming-secondary"
+                  variant="link"
+                >
+                  <Link to="/register">{m.needAccount()}</Link>
+                </Button>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

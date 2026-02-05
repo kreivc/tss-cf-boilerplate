@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import type { GameSlug } from "@test-tss/game-provider/client";
 import { ArrowRightIcon, FlameIcon, TrendingUpIcon } from "lucide-react";
 import { memo, useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -26,7 +27,7 @@ const TrendingCard = memo(function TrendingCard({
   game,
   rank,
 }: TrendingCardProps) {
-  const publisher = getGamePublisher(game.slug);
+  const publisher = getGamePublisher(game.slug as GameSlug);
 
   const getRankBadge = (rank: number) => {
     switch (rank) {
@@ -178,6 +179,11 @@ export function TrendingSection({ games }: TrendingSectionProps) {
           </div>
           <Button
             className="hidden items-center gap-2 hover:text-gaming-primary sm:flex"
+            onClick={() =>
+              document
+                .getElementById("categories")
+                ?.scrollIntoView({ behavior: "smooth" })
+            }
             variant="ghost"
           >
             {m.viewAll?.() ?? "View All"}
@@ -194,7 +200,15 @@ export function TrendingSection({ games }: TrendingSectionProps) {
 
         {/* Mobile View All */}
         <div className="mt-6 flex justify-center sm:hidden">
-          <Button className="gap-2" variant="outline">
+          <Button
+            className="gap-2"
+            onClick={() =>
+              document
+                .getElementById("categories")
+                ?.scrollIntoView({ behavior: "smooth" })
+            }
+            variant="outline"
+          >
             {m.viewAll?.() ?? "View All"}
             <ArrowRightIcon className="size-4" />
           </Button>

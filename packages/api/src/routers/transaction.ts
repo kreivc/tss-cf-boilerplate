@@ -23,7 +23,7 @@ import { protectedProcedure, publicProcedure } from "../index";
 // Input schema for listing transactions with filters
 const ListTransactionsInput = z.object({
   page: z.number().int().positive().default(1),
-  limit: z.number().int().positive().max(100).default(20),
+  limit: z.number().int().positive().max(100).default(100),
   status: TransactionStatus.optional(),
   gameId: z.string().optional(),
   startDate: z.string().optional(), // ISO date string

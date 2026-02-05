@@ -34,8 +34,13 @@ export function MediaSelectorModal({
     })
   );
 
-  const filteredItems = mediaQuery.data.items.filter((item) =>
-    item.key.toLowerCase().includes(search.toLowerCase())
+  const filteredItems = mediaQuery.data.items.filter(
+    (item: {
+      key: string;
+      url: string;
+      size: number;
+      lastModified: string | null;
+    }) => item.key.toLowerCase().includes(search.toLowerCase())
   );
 
   const handleSelect = () => {

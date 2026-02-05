@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import {
   DropdownMenu,
@@ -18,16 +18,12 @@ export default function UserMenu() {
   const navigate = useNavigate();
   const { data: session, isPending } = authClient.useSession();
 
-  if (isPending) {
-    return <Skeleton className="h-9 w-24" />;
+  if (!session) {
+    return null;
   }
 
-  if (!session) {
-    return (
-      <Link to="/login">
-        <Button variant="outline">{m.signIn()}</Button>
-      </Link>
-    );
+  if (isPending) {
+    return <Skeleton className="h-9 w-24" />;
   }
 
   return (

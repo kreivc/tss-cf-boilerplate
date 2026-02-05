@@ -25,7 +25,7 @@ export const contactRouter = {
     .input(PaginationInput.optional())
     .handler(async ({ input }) => {
       const page = input?.page ?? 1;
-      const limit = input?.limit ?? 20;
+      const limit = input?.limit ?? 100;
       const offset = (page - 1) * limit;
 
       const [data, totalResult] = await Promise.all([

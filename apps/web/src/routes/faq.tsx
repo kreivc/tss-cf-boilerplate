@@ -56,7 +56,7 @@ function FaqPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <Accordion className="w-full" collapsible type="single">
+            <Accordion className="w-full">
               {faqs.map((faq, index) => (
                 <AccordionItem key={faq.question} value={`item-${index}`}>
                   <AccordionTrigger className="text-left">

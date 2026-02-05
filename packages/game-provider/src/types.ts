@@ -47,11 +47,10 @@ export interface FreeFireParams {
 
 /**
  * Honor of Kings
- * Requires Player ID + Server ID (similar to ML)
+ * Requires Player ID only
  */
 export interface HonorOfKingsParams {
   playerId: string;
-  serverId: string;
 }
 
 /**
@@ -80,10 +79,11 @@ export interface ArenaBreakoutParams {
 
 /**
  * Magic Chess: Go Go
- * Requires Player ID only
+ * Requires Player ID + Server ID
  */
 export interface MagicChessGogoParams {
   playerId: string;
+  serverId: string;
 }
 
 // =============================================================================
@@ -176,12 +176,7 @@ export const GAME_PARAM_FIELDS: Record<GameSlug, GameParamFieldDef[]> = {
       label: "Player ID",
       placeholder: "Enter your Player ID",
       required: true,
-    },
-    {
-      key: "serverId",
-      label: "Server ID",
-      placeholder: "Enter Server ID",
-      required: true,
+      helpText: "Find in game profile",
     },
   ],
   "blood-strike": [
@@ -209,6 +204,13 @@ export const GAME_PARAM_FIELDS: Record<GameSlug, GameParamFieldDef[]> = {
       placeholder: "Enter your Player ID",
       required: true,
       helpText: "Find in game profile",
+    },
+    {
+      key: "serverId",
+      label: "Server ID (Zone ID)",
+      placeholder: "Enter Server ID",
+      required: true,
+      helpText: "The zone number below your Player ID",
     },
   ],
   valorant: [

@@ -11,7 +11,6 @@ import { Toaster } from "@/components/ui/sonner";
 import { getLocale } from "@/paraglide/runtime";
 import type { orpc } from "@/utils/orpc";
 import { Footer } from "../components/footer";
-import { MobileBottomNav } from "../components/mobile-nav";
 import { Navbar } from "../components/navbar";
 import appCss from "../index.css?url";
 
@@ -79,7 +78,6 @@ function RootDocument() {
           </div>
           <Footer />
         </div>
-        <MobileBottomNav />
         <Toaster position="top-right" richColors />
         <TanStackRouterDevtools position="bottom-left" />
         <ReactQueryDevtools buttonPosition="bottom-right" position="bottom" />

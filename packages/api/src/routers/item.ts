@@ -17,7 +17,7 @@ export const itemRouter = {
         search: z.string().optional(),
         activeOnly: z.boolean().optional(),
         page: z.number().int().positive().default(1),
-        limit: z.number().int().positive().max(100).default(20),
+        limit: z.number().int().positive().max(100).default(500),
       })
     )
     .handler(async ({ input }) => {

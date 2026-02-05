@@ -58,6 +58,6 @@ export type UpdateItemInput = z.infer<typeof UpdateItemInput>;
 // Pagination
 export const PaginationInput = z.object({
   page: z.number().int().positive().default(1),
-  limit: z.number().int().positive().max(100).default(20),
+  limit: z.number().int().positive().max(100).default(100),
 });
 export type PaginationInput = z.infer<typeof PaginationInput>;

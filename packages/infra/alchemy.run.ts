@@ -46,6 +46,7 @@ export const web = await TanStackStart("web", {
   domains: [DOMAIN],
   bindings: {
     VITE_SERVER_URL: alchemy.env.VITE_SERVER_URL ?? "",
+    VITE_DISABLE_REGISTER: alchemy.env.VITE_DISABLE_REGISTER ?? "true",
     DB: db,
     CORS_ORIGIN: alchemy.env.CORS_ORIGIN ?? "",
     BETTER_AUTH_SECRET: alchemy.secret.env.BETTER_AUTH_SECRET ?? "",
