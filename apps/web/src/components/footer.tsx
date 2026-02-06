@@ -1,5 +1,4 @@
 import { Link } from "@tanstack/react-router";
-import { Gamepad2Icon } from "lucide-react";
 import { m } from "@/paraglide/messages";
 
 const gameLinks = [
@@ -30,10 +29,18 @@ export function Footer() {
           {/* Brand */}
           <div>
             <Link className="mb-4 flex items-center gap-2" to="/">
-              <div className="rounded-lg bg-gradient-to-br from-gaming-primary to-gaming-secondary p-2">
-                <Gamepad2Icon className="size-5 text-white" />
+              <div className="relative">
+                <div className="absolute -inset-0.5 rounded-xl bg-gaming-primary/40 blur-md" />
+                <div className="absolute -inset-1.5 rounded-xl bg-gaming-primary/20 blur-lg" />
+                <img
+                  alt="FlazBit"
+                  className="relative size-9 rounded-lg"
+                  height={36}
+                  src="/flazbit_logo_white.png"
+                  width={36}
+                />
               </div>
-              <span className="font-bold text-xl tracking-gaming">
+              <span className="font-extrabold text-xl uppercase tracking-tight">
                 <span className="text-gradient-gaming">Flaz</span>
                 <span className="text-foreground">Bit</span>
               </span>

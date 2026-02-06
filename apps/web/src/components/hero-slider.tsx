@@ -2,16 +2,14 @@
 
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   Carousel,
   type CarouselApi,
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
-import { HERO_SLIDES } from "@/data/games";
-import { m } from "@/paraglide/messages";
+
+const BANNERS = ["/banner_1.jpeg", "/banner_2.jpeg", "/banner_3.jpeg"];
 
 export function HeroSlider() {
   const [api, setApi] = useState<CarouselApi>();
@@ -66,84 +64,50 @@ export function HeroSlider() {
         setApi={setApi}
       >
         <CarouselContent>
-          {HERO_SLIDES.map((slide, index) => (
-            <CarouselItem key={slide.id}>
+          {BANNERS.map((src, index) => (
+            <CarouselItem key={src}>
               <div
-                className={`relative mx-4 h-[300px] overflow-hidden rounded-2xl transition-all duration-500 sm:h-[400px] lg:h-[500px] ${current === index ? "breathing scale-100" : "scale-95 opacity-70"}
-                `}
+                className={`relative mx-4 aspect-[2.75/1] overflow-hidden rounded-2xl transition-all duration-500 ${current === index ? "scale-100" : "scale-95 opacity-70"}`}
               >
-                {/* Background Image Placeholder */}
-                <div className="absolute inset-0 bg-gradient-to-br from-gaming-primary/30 via-background to-gaming-secondary/30">
-                  {/* Animated gradient background as placeholder */}
-                  <div className="absolute inset-0 opacity-50">
-                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--gaming-primary)_0%,_transparent_50%)]" />
-                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--gaming-secondary)_0%,_transparent_50%)]" />
-                  </div>
-                </div>
-
-                {/* Gradient Overlay */}
-                <div className="gradient-overlay-strong absolute inset-0" />
-
-                {/* Content */}
-                <div className="absolute inset-0 flex flex-col justify-end p-6 sm:p-8 lg:p-12">
-                  {slide.badge && (
-                    <Badge className="pulse-glow mb-3 w-fit border-none bg-gaming-primary text-white">
-                      {slide.badge}
-                    </Badge>
-                  )}
-                  <h2 className="mb-2 font-bold text-2xl tracking-tight sm:text-3xl lg:text-5xl">
-                    {slide.title}
-                  </h2>
-                  <p className="mb-4 max-w-md text-muted-foreground text-sm sm:text-base lg:text-lg">
-                    {slide.subtitle}
-                  </p>
-                  <div className="flex gap-3">
-                    <a href={slide.ctaLink}>
-                      <Button className="btn-gaming">{slide.ctaText}</Button>
-                    </a>
-                    <Button
-                      className="glass border-glass-border"
-                      variant="outline"
-                    >
-                      {m.learnMore?.() ?? "Learn More"}
-                    </Button>
-                  </div>
-                </div>
+                <img
+                  alt={`Banner ${index + 1}`}
+                  className="h-full w-full object-cover"
+                  height={1187}
+                  src={src}
+                  width={3264}
+                />
               </div>
             </CarouselItem>
           ))}
         </CarouselContent>
 
         {/* Navigation Arrows */}
-        <Button
-          className="glass absolute top-1/2 left-2 z-10 -translate-y-1/2 rounded-full hover:bg-gaming-primary/20"
+        <button
+          className="absolute top-1/2 left-2 z-10 -translate-y-1/2 rounded-full bg-black/30 p-2 text-white backdrop-blur-sm hover:bg-black/50"
           onClick={scrollPrev}
-          size="icon"
-          variant="ghost"
+          type="button"
         >
           <ChevronLeftIcon className="size-5" />
-        </Button>
-        <Button
-          className="glass absolute top-1/2 right-2 z-10 -translate-y-1/2 rounded-full hover:bg-gaming-primary/20"
+        </button>
+        <button
+          className="absolute top-1/2 right-2 z-10 -translate-y-1/2 rounded-full bg-black/30 p-2 text-white backdrop-blur-sm hover:bg-black/50"
           onClick={scrollNext}
-          size="icon"
-          variant="ghost"
+          type="button"
         >
           <ChevronRightIcon className="size-5" />
-        </Button>
+        </button>
       </Carousel>
 
       {/* Dots */}
       <div className="mt-4 flex items-center justify-center gap-2">
-        {HERO_SLIDES.map((_, index) => (
+        {BANNERS.map((_, index) => (
           <button
             aria-label={`Go to slide ${index + 1}`}
             className={`h-2 rounded-full transition-all duration-300 ${
               current === index
                 ? "w-8 bg-gaming-primary"
                 : "w-2 bg-muted-foreground/30 hover:bg-muted-foreground/50"
-            }
-            `}
+            }`}
             // biome-ignore lint/suspicious/noArrayIndexKey: <we need to use the index for the key>
             key={index}
             onClick={() => scrollTo(index)}

@@ -1,5 +1,4 @@
 import { Link } from "@tanstack/react-router";
-import { Gamepad2Icon } from "lucide-react";
 import { useState } from "react";
 
 import { LocaleCurrencySelector } from "@/components/locale-currency-selector";
@@ -24,12 +23,17 @@ export function Navbar() {
             {/* Logo */}
             <Link className="group flex items-center gap-2" to="/">
               <div className="relative">
-                <div className="absolute inset-0 rounded-lg bg-gaming-primary/30 blur-md transition-all group-hover:blur-lg" />
-                <div className="relative rounded-lg bg-gradient-to-br from-gaming-primary to-gaming-secondary p-2">
-                  <Gamepad2Icon className="size-5 text-white" />
-                </div>
+                <div className="absolute -inset-0.5 rounded-xl bg-gaming-primary/40 blur-md transition-all group-hover:blur-lg" />
+                <div className="absolute -inset-1.5 rounded-xl bg-gaming-primary/20 blur-lg transition-all group-hover:blur-xl" />
+                <img
+                  alt="FlazBit"
+                  className="relative size-9 rounded-lg"
+                  height={36}
+                  src="/flazbit_logo_white.png"
+                  width={36}
+                />
               </div>
-              <span className="hidden font-bold text-xl tracking-gaming sm:inline">
+              <span className="hidden font-extrabold text-xl uppercase tracking-tight sm:inline">
                 <span className="text-gradient-gaming">Flaz</span>
                 <span className="text-foreground">Bit</span>
               </span>
