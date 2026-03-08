@@ -10,13 +10,16 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as YttaRouteImport } from './routes/ytta'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as RefundRouteImport } from './routes/refund'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as FindOrderRouteImport } from './routes/find-order'
 import { Route as FaqRouteImport } from './routes/faq'
+import { Route as DeliveryRouteImport } from './routes/delivery'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as YttaIndexRouteImport } from './routes/ytta/index'
 import { Route as YttaReportsRouteImport } from './routes/ytta/reports'
@@ -34,6 +37,11 @@ import { Route as YttaGameSlugItemItemSlugRouteImport } from './routes/ytta/game
 const YttaRoute = YttaRouteImport.update({
   id: '/ytta',
   path: '/ytta',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RegisterRoute = RegisterRouteImport.update({
@@ -66,9 +74,19 @@ const FaqRoute = FaqRouteImport.update({
   path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DeliveryRoute = DeliveryRouteImport.update({
+  id: '/delivery',
+  path: '/delivery',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -140,13 +158,16 @@ const YttaGameSlugItemItemSlugRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/delivery': typeof DeliveryRoute
   '/faq': typeof FaqRoute
   '/find-order': typeof FindOrderRoute
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
   '/refund': typeof RefundRoute
   '/register': typeof RegisterRoute
+  '/terms': typeof TermsRoute
   '/ytta': typeof YttaRouteWithChildren
   '/game/$slug': typeof GameSlugRoute
   '/order/$orderId': typeof OrderOrderIdRoute
@@ -163,13 +184,16 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/delivery': typeof DeliveryRoute
   '/faq': typeof FaqRoute
   '/find-order': typeof FindOrderRoute
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
   '/refund': typeof RefundRoute
   '/register': typeof RegisterRoute
+  '/terms': typeof TermsRoute
   '/game/$slug': typeof GameSlugRoute
   '/order/$orderId': typeof OrderOrderIdRoute
   '/ytta/contact': typeof YttaContactRoute
@@ -186,13 +210,16 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/delivery': typeof DeliveryRoute
   '/faq': typeof FaqRoute
   '/find-order': typeof FindOrderRoute
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
   '/refund': typeof RefundRoute
   '/register': typeof RegisterRoute
+  '/terms': typeof TermsRoute
   '/ytta': typeof YttaRouteWithChildren
   '/game/$slug': typeof GameSlugRoute
   '/order/$orderId': typeof OrderOrderIdRoute
@@ -211,13 +238,16 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/about'
     | '/contact'
+    | '/delivery'
     | '/faq'
     | '/find-order'
     | '/login'
     | '/privacy'
     | '/refund'
     | '/register'
+    | '/terms'
     | '/ytta'
     | '/game/$slug'
     | '/order/$orderId'
@@ -234,13 +264,16 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/about'
     | '/contact'
+    | '/delivery'
     | '/faq'
     | '/find-order'
     | '/login'
     | '/privacy'
     | '/refund'
     | '/register'
+    | '/terms'
     | '/game/$slug'
     | '/order/$orderId'
     | '/ytta/contact'
@@ -256,13 +289,16 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/about'
     | '/contact'
+    | '/delivery'
     | '/faq'
     | '/find-order'
     | '/login'
     | '/privacy'
     | '/refund'
     | '/register'
+    | '/terms'
     | '/ytta'
     | '/game/$slug'
     | '/order/$orderId'
@@ -280,13 +316,16 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
+  DeliveryRoute: typeof DeliveryRoute
   FaqRoute: typeof FaqRoute
   FindOrderRoute: typeof FindOrderRoute
   LoginRoute: typeof LoginRoute
   PrivacyRoute: typeof PrivacyRoute
   RefundRoute: typeof RefundRoute
   RegisterRoute: typeof RegisterRoute
+  TermsRoute: typeof TermsRoute
   YttaRoute: typeof YttaRouteWithChildren
   GameSlugRoute: typeof GameSlugRoute
   OrderOrderIdRoute: typeof OrderOrderIdRoute
@@ -299,6 +338,13 @@ declare module '@tanstack/react-router' {
       path: '/ytta'
       fullPath: '/ytta'
       preLoaderRoute: typeof YttaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/register': {
@@ -343,11 +389,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FaqRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/delivery': {
+      id: '/delivery'
+      path: '/delivery'
+      fullPath: '/delivery'
+      preLoaderRoute: typeof DeliveryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/contact': {
       id: '/contact'
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -474,13 +534,16 @@ const YttaRouteWithChildren = YttaRoute._addFileChildren(YttaRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
+  DeliveryRoute: DeliveryRoute,
   FaqRoute: FaqRoute,
   FindOrderRoute: FindOrderRoute,
   LoginRoute: LoginRoute,
   PrivacyRoute: PrivacyRoute,
   RefundRoute: RefundRoute,
   RegisterRoute: RegisterRoute,
+  TermsRoute: TermsRoute,
   YttaRoute: YttaRouteWithChildren,
   GameSlugRoute: GameSlugRoute,
   OrderOrderIdRoute: OrderOrderIdRoute,

@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
+import { useMemo } from "react";
 import { m } from "@/paraglide/messages";
 
-const gameLinks = [
+const allGameLinks = [
   { label: "Mobile Legends", slug: "mobile-legends" },
   { label: "PUBG Mobile", slug: "pubg-mobile" },
   { label: "Free Fire", slug: "free-fire" },
@@ -15,17 +16,40 @@ const gameLinks = [
 export function Footer() {
   const currentYear = new Date().getFullYear();
 
+  const gameLinks = useMemo(() => {
+    const shuffled = [...allGameLinks].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, 4);
+  }, []);
+
+  const legalLinks = [
+    {
+      label: m.termsOfService?.() ?? "Terms & Conditions",
+      href: "/terms" as const,
+    },
+    {
+      label: m.privacyPolicy?.() ?? "Privacy Policy",
+      href: "/privacy" as const,
+    },
+    {
+      label: m.refundPolicy?.() ?? "Refund Policy",
+      href: "/refund" as const,
+    },
+    {
+      label: m.deliveryPolicy?.() ?? "Delivery Policy",
+      href: "/delivery" as const,
+    },
+  ];
+
   const supportLinks = [
-    { label: m.privacyPolicy?.() ?? "Privacy Policy", href: "/privacy" },
-    { label: m.faq?.() ?? "FAQ", href: "/faq" },
-    { label: m.refundPolicy?.() ?? "Refund Policy", href: "/refund" },
-    { label: m.contactUs?.() ?? "Contact Us", href: "/contact" },
+    { label: m.faq?.() ?? "FAQ", href: "/faq" as const },
+    { label: m.contactUs?.() ?? "Contact Us", href: "/contact" as const },
+    { label: m.aboutUs?.() ?? "About Us", href: "/about" as const },
   ];
 
   return (
     <footer className="mt-auto border-glass-border border-t bg-card/50">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
           <div>
             <Link className="mb-4 flex items-center gap-2" to="/">
@@ -60,13 +84,32 @@ export function Footer() {
             <h3 className="mb-4 font-semibold text-sm uppercase tracking-gaming">
               {m.games?.() ?? "Games"}
             </h3>
-            <ul className="grid grid-cols-2 gap-x-4 gap-y-2">
+            <ul className="space-y-2">
               {gameLinks.map(({ label, slug }) => (
                 <li key={slug}>
                   <Link
                     className="text-muted-foreground text-sm transition-colors hover:text-foreground"
                     params={{ slug }}
                     to="/game/$slug"
+                  >
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Legal */}
+          <div>
+            <h3 className="mb-4 font-semibold text-sm uppercase tracking-gaming">
+              {m.legal?.() ?? "Legal"}
+            </h3>
+            <ul className="space-y-2">
+              {legalLinks.map(({ label, href }) => (
+                <li key={href}>
+                  <Link
+                    className="text-muted-foreground text-sm transition-colors hover:text-foreground"
+                    to={href}
                   >
                     {label}
                   </Link>

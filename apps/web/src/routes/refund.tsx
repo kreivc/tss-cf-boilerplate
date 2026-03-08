@@ -19,6 +19,7 @@ function RefundPage() {
           <h1 className="mb-2 font-bold text-3xl">
             {m.refundPolicy?.() ?? "Refund Policy"}
           </h1>
+          <p className="text-muted-foreground text-sm">Last Updated: 2026</p>
         </div>
 
         <Card className="gaming-card">
@@ -28,38 +29,67 @@ function RefundPage() {
               {m.refundPolicy?.() ?? "Refund Policy"}
             </CardTitle>
           </CardHeader>
-          <CardContent className="prose prose-sm dark:prose-invert max-w-none space-y-4 text-muted-foreground">
-            <p>
-              Flazbit Products are subject to a strict no-refund policy. Please
-              ensure that the product you purchase is suitable for your needs
-              before completing your transaction.
-            </p>
+          <CardContent className="prose prose-sm dark:prose-invert max-w-none space-y-6 text-muted-foreground">
+            <section>
+              <h3 className="font-semibold text-foreground">1. Overview</h3>
+              <p>
+                Flazbit is a digital platform operated by PT Global Inti Digital
+                that provides game top-up services. All products sold through
+                the platform are digital goods delivered electronically to
+                users' game accounts. Because digital goods are delivered
+                instantly, transactions are generally non-refundable.
+              </p>
+            </section>
 
-            <p>
-              Customers are solely responsible for verifying the requirements of
-              the product. By purchasing any Flazbit product, you acknowledge
-              and agree that all sales are final.
-            </p>
+            <section>
+              <h3 className="font-semibold text-foreground">
+                2. Non-Refundable Transactions
+              </h3>
+              <p>Transactions are considered final when:</p>
+              <ul className="list-disc space-y-1 pl-6">
+                <li>The digital product has been successfully delivered</li>
+                <li>
+                  The transaction has been processed to the specified game
+                  account
+                </li>
+              </ul>
+              <p>
+                Users are responsible for verifying account information before
+                completing a purchase.
+              </p>
+            </section>
 
-            <p>
-              All products are non-refundable, non-returnable, and
-              non-exchangeable, including but not limited to cases of:
-            </p>
-            <ol className="list-decimal space-y-1 pl-6">
-              <li>Incorrect product selection</li>
-              <li>Device or software incompatibility</li>
-              <li>Change of mind after purchase</li>
-            </ol>
+            <section>
+              <h3 className="font-semibold text-foreground">
+                3. Refund Eligibility
+              </h3>
+              <p>
+                Refunds may only be issued if the transaction cannot be
+                completed due to:
+              </p>
+              <ul className="list-disc space-y-1 pl-6">
+                <li>Provider delivery failure</li>
+                <li>System or processing error</li>
+                <li>Duplicate payment caused by technical issues</li>
+              </ul>
+              <p>All refund requests are subject to verification.</p>
+            </section>
 
-            <p>
-              We do not offer refunds, replacements, or exchanges once the
-              product has been delivered.
-            </p>
-
-            <p>
-              If you have questions about compatibility or product details,
-              please contact our support team before making a purchase.
-            </p>
+            <section>
+              <h3 className="font-semibold text-foreground">
+                4. Refund Method
+              </h3>
+              <p>If a refund is approved:</p>
+              <ul className="list-disc space-y-1 pl-6">
+                <li>
+                  Registered users may receive refunds to their Flazbit wallet
+                  balance
+                </li>
+                <li>
+                  Non-registered users may contact support for manual review
+                </li>
+              </ul>
+            </section>
           </CardContent>
         </Card>
       </div>
