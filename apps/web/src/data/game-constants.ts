@@ -34,7 +34,7 @@ export const GAME_PUBLISHERS: Record<GameSlug, string> = {
   "free-fire": "Garena",
   "honor-of-kings": "TiMi Studio",
   "blood-strike": "Tencent",
-  "arena-breakout": "Tencent",
+  "arena-breakout": "MoreFun Studio",
   "magic-chess-gogo": "Moonton",
   valorant: "Riot Games",
 };
