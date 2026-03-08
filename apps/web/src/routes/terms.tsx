@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { FileTextIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { m } from "@/paraglide/messages";
 
 export const Route = createFileRoute("/terms")({
   component: TermsPage,
@@ -16,16 +15,14 @@ function TermsPage() {
           <div className="mx-auto mb-4 flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-gaming-primary to-gaming-secondary shadow-gaming-primary/30 shadow-lg">
             <FileTextIcon className="size-10 text-white" />
           </div>
-          <h1 className="mb-2 font-bold text-3xl">
-            {m.termsOfService?.() ?? "Terms & Conditions"}
-          </h1>
+          <h1 className="mb-2 font-bold text-3xl">Terms & Conditions</h1>
         </div>
 
         <Card className="gaming-card">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <FileTextIcon className="size-5 text-gaming-primary" />
-              {m.termsOfService?.() ?? "Terms & Conditions"}
+              Terms & Conditions
             </CardTitle>
           </CardHeader>
           <CardContent className="prose prose-sm dark:prose-invert max-w-none space-y-6 text-muted-foreground">

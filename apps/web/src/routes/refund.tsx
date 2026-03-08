@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ReceiptTextIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { m } from "@/paraglide/messages";
 
 export const Route = createFileRoute("/refund")({
   component: RefundPage,
@@ -16,9 +15,7 @@ function RefundPage() {
           <div className="mx-auto mb-4 flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-gaming-primary to-gaming-secondary shadow-gaming-primary/30 shadow-lg">
             <ReceiptTextIcon className="size-10 text-white" />
           </div>
-          <h1 className="mb-2 font-bold text-3xl">
-            {m.refundPolicy?.() ?? "Refund Policy"}
-          </h1>
+          <h1 className="mb-2 font-bold text-3xl">Refund Policy</h1>
           <p className="text-muted-foreground text-sm">Last Updated: 2026</p>
         </div>
 
@@ -26,7 +23,7 @@ function RefundPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <ReceiptTextIcon className="size-5 text-gaming-primary" />
-              {m.refundPolicy?.() ?? "Refund Policy"}
+              Refund Policy
             </CardTitle>
           </CardHeader>
           <CardContent className="prose prose-sm dark:prose-invert max-w-none space-y-6 text-muted-foreground">

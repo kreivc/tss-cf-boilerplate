@@ -7,7 +7,6 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { m } from "@/paraglide/messages";
 
 export const Route = createFileRoute("/faq")({
   component: FaqPage,
@@ -71,7 +70,7 @@ function FaqPage() {
             <HelpCircleIcon className="size-10 text-white" />
           </div>
           <h1 className="mb-2 font-bold text-3xl">
-            {m.faqTitle?.() ?? "Frequently Asked Questions"}
+            Frequently Asked Questions
           </h1>
           <p className="text-muted-foreground">
             Find answers to common questions about Flazbit
@@ -82,7 +81,7 @@ function FaqPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <HelpCircleIcon className="size-5 text-gaming-primary" />
-              {m.faq?.() ?? "FAQ"}
+              FAQ
             </CardTitle>
           </CardHeader>
           <CardContent>

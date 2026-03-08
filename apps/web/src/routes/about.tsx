@@ -1,13 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  BuildingIcon,
-  GlobeIcon,
-  HeadphonesIcon,
-  InfoIcon,
-  ZapIcon,
-} from "lucide-react";
+import { BuildingIcon, HeadphonesIcon, InfoIcon, ZapIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { m } from "@/paraglide/messages";
 
 export const Route = createFileRoute("/about")({
   component: AboutPage,
@@ -22,9 +15,7 @@ function AboutPage() {
           <div className="mx-auto mb-4 flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-gaming-primary to-gaming-secondary shadow-gaming-primary/30 shadow-lg">
             <InfoIcon className="size-10 text-white" />
           </div>
-          <h1 className="mb-2 font-bold text-3xl">
-            {m.aboutUs?.() ?? "About Us"}
-          </h1>
+          <h1 className="mb-2 font-bold text-3xl">About Us</h1>
           <p className="text-muted-foreground">
             Learn more about Flazbit and what we do
           </p>
@@ -89,14 +80,23 @@ function AboutPage() {
                   Digital Platform &ndash; Game Top-Up Services
                 </p>
               </div>
-              <div className="rounded-lg border border-glass-border bg-background/50 p-4">
+              <div className="rounded-lg border border-glass-border bg-background/50 p-4 sm:col-span-2">
                 <p className="mb-1 font-medium text-foreground text-sm">
-                  Registered Country
+                  Address
                 </p>
-                <div className="flex items-center gap-2">
-                  <GlobeIcon className="size-4 text-gaming-primary" />
-                  <p className="text-muted-foreground text-sm">Indonesia</p>
-                </div>
+                <p className="text-muted-foreground text-sm">
+                  Infiniti Office, MTH Square Ground Floor A4/A, Jl. Letjen M.T.
+                  Haryono Kav. 10 Jakarta Timur 13330, JAKARTA TIMUR, DKI
+                  Jakarta
+                </p>
+              </div>
+              <div className="rounded-lg border border-glass-border bg-background/50 p-4 sm:col-span-2">
+                <p className="mb-1 font-medium text-foreground text-sm">
+                  Registration Number
+                </p>
+                <p className="text-muted-foreground text-sm">
+                  AHU-007118.AH.01.30.Tahun 2026
+                </p>
               </div>
             </div>
           </CardContent>
