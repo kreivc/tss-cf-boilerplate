@@ -23,27 +23,27 @@ export function Footer() {
 
   const legalLinks = [
     {
-      label: m.termsOfService?.() ?? "Terms & Conditions",
+      label: "Terms & Conditions",
       href: "/terms" as const,
     },
     {
-      label: m.privacyPolicy?.() ?? "Privacy Policy",
+      label: "Privacy Policy",
       href: "/privacy" as const,
     },
     {
-      label: m.refundPolicy?.() ?? "Refund Policy",
+      label: "Refund Policy",
       href: "/refund" as const,
     },
     {
-      label: m.deliveryPolicy?.() ?? "Delivery Policy",
+      label: "Delivery Policy",
       href: "/delivery" as const,
     },
   ];
 
   const supportLinks = [
-    { label: m.faq?.() ?? "FAQ", href: "/faq" as const },
-    { label: m.contactUs?.() ?? "Contact Us", href: "/contact" as const },
-    { label: m.aboutUs?.() ?? "About Us", href: "/about" as const },
+    { label: "FAQ", href: "/faq" as const },
+    { label: "Contact Us", href: "/contact" as const },
+    { label: "About Us", href: "/about" as const },
   ];
 
   return (
