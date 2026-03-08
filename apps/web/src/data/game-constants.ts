@@ -30,11 +30,11 @@ export const LOCALE_TO_COUNTRY_CODE: Record<string, string> = {
  */
 export const GAME_PUBLISHERS: Record<GameSlug, string> = {
   "mobile-legends": "Moonton",
-  "pubg-mobile": "Krafton",
+  "pubg-mobile": "Tencent",
   "free-fire": "Garena",
   "honor-of-kings": "TiMi Studio",
-  "blood-strike": "NetEase",
-  "arena-breakout": "NetEase",
+  "blood-strike": "Tencent",
+  "arena-breakout": "Tencent",
   "magic-chess-gogo": "Moonton",
   valorant: "Riot Games",
 };
